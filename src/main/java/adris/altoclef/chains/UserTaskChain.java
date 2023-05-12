@@ -2,11 +2,14 @@ package adris.altoclef.chains;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.baritone.brain.BaritoneBrain;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.TaskFinishedEvent;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.util.time.Stopwatch;
+
+import java.time.LocalDateTime;
 
 // A task chain that runs a user defined task at the same priority.
 // This basically replaces our old Task Runner.
@@ -110,7 +113,15 @@ public class UserTaskChain extends SingleTaskChain {
         boolean actuallyDone = _mainTask == null;
         if (actuallyDone) {
             if (!_runningIdleTask) {
-                Debug.logMessage("User task FINISHED. Took %s seconds.", prettyPrintTimeDuration(seconds));
+                var text = String.format("User Task %s FINISHED. Took %s seconds.", oldTask == null ? "" : oldTask.getDebugState(), prettyPrintTimeDuration(seconds));
+                Debug.logMessage(text);
+                // Save to Memory
+                mod.getBaritoneBrain().memory.add(
+                        new BaritoneBrain.MemoryItem(
+                                text,
+                                LocalDateTime.now(),
+                                (int) (seconds % 2))
+                );
                 EventBus.publish(new TaskFinishedEvent(seconds, oldTask));
             }
             if (shouldIdle) {

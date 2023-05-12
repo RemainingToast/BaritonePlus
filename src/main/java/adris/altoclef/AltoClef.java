@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.baritone.brain.BaritoneBrain;
 import adris.altoclef.butler.Butler;
 import adris.altoclef.chains.*;
 import adris.altoclef.commandsystem.CommandExecutor;
@@ -77,6 +78,8 @@ public class AltoClef implements ModInitializer {
     private SlotHandler _slotHandler;
     // Butler
     private Butler _butler;
+    // Baritone Brain
+    private BaritoneBrain _baritoneBrain;
 
     // Are we in game (playing in a server/world)
     public static boolean inGame() {
@@ -136,6 +139,7 @@ public class AltoClef implements ModInitializer {
         _slotHandler = new SlotHandler(this);
 
         _butler = new Butler(this);
+        _baritoneBrain = new BaritoneBrain(this);
 
         initializeCommands();
 
@@ -453,6 +457,11 @@ public class AltoClef implements ModInitializer {
      */
     public MLGBucketFallChain getMLGBucketChain() {
         return _mlgBucketChain;
+    }
+
+
+    public BaritoneBrain getBaritoneBrain() {
+        return _baritoneBrain;
     }
 
     public void log(String message) {

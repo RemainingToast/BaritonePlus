@@ -44,7 +44,7 @@ public class RunAwayFromHostilesTask extends CustomBaritoneGoalTask {
 
     @Override
     protected String toDebugString() {
-        return "NIGERUNDAYOO, SUMOOKEYY!";
+        return "Run Away From Mobs..";
     }
 
     private class GoalRunAwayFromHostiles extends GoalRunAwayFromEntities {
@@ -61,7 +61,9 @@ public class RunAwayFromHostilesTask extends CustomBaritoneGoalTask {
                 if (!_includeSkeletons) {
                     stream = stream.filter(hostile -> !(hostile instanceof SkeletonEntity));
                 }
-                return stream.collect(Collectors.toList());
+                var list = stream.collect(Collectors.toList());
+                setDebugState(String.format("Running from %s hostiles", list.size()));
+                return list;
             }
         }
     }

@@ -220,7 +220,7 @@ public class BlockTracker extends Tracker {
         synchronized (_trackingBlocks) {
             for (Block block : blocks) {
                 if (!_trackingBlocks.containsKey(block)) {
-                    Debug.logWarning("BlockTracker: Not tracking block " + block + " right now.");
+//                    Debug.logWarning("BlockTracker: Not tracking block " + block + " right now.");
                     return Optional.empty();
                 }
             }

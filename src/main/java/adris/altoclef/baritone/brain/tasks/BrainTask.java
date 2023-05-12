@@ -1,6 +1,7 @@
 package adris.altoclef.baritone.brain.tasks;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.Debug;
 import adris.altoclef.baritone.brain.BaritoneBrain;
 import adris.altoclef.tasksystem.Task;
 
@@ -10,7 +11,10 @@ public class BrainTask extends Task {
 
     @Override
     protected void onStart(AltoClef mod) {
-        brain = new BaritoneBrain(mod);
+        brain = mod.getBaritoneBrain();
+        brain.updateWorldState();
+        setDebugState("Thinking...");
+//        Debug.logMessage(brain.chatGPT.generateTask(brain.getWorldState()));
     }
 
     @Override

@@ -1,10 +1,12 @@
 package adris.altoclef.baritone.brain;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.Debug;
 import adris.altoclef.baritone.brain.tasks.BrainTask;
 import adris.altoclef.baritone.brain.utils.ChatGPT;
 import adris.altoclef.baritone.brain.utils.WorldState;
 import adris.altoclef.tasks.movement.IdleTask;
+import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasksystem.Task;
 
 import java.time.LocalDateTime;
@@ -22,12 +24,13 @@ public class BaritoneBrain {
     public WorldState worldState;
     // ChatGPT
     public ChatGPT chatGPT;
-    public Task currentTask;
+
+    private boolean taskInProgress = false;
 
     public BaritoneBrain(AltoClef mod) {
         this.mod = mod;
         this.memory = new ArrayList<>();
-        this.worldState = new WorldState(mod.getWorld(), mod.getPlayer());
+//        this.worldState = new WorldState(mod.getWorld(), mod.getPlayer());
         this.chatGPT = new ChatGPT("");
     }
 
@@ -42,15 +45,20 @@ public class BaritoneBrain {
         // Decay memory
         decayMemory();
 
-        if (currentTask == null) {
-            try {
-                var nextTask = chatGPT.generateTask(worldState);
-                task.setDebugState(nextTask);
-            } catch (Exception e) {
-                task.setDebugState(e.getMessage());
-            }
-
-            currentTask = new IdleTask();
+        if (!taskInProgress) {
+            new Thread(() -> {
+                try {
+                    taskInProgress = true;  // Mark that a task is in progress
+                    var nextTask = chatGPT.generateTask(worldState);
+                    task.setDebugState(nextTask);
+                    Debug.logMessageBrain(nextTask);
+                    memory.forEach(memoryItem -> Debug.logMessageBrain(String.format("Memory: %s", memoryItem)));
+                } catch (Exception e) {
+                    task.setDebugState(e.getMessage());
+                    taskInProgress = false;  // If there was an error, allow a new task to be generated
+                    task.stop(mod);
+                }
+            }).start();
         }
 
         // Learn from outcomes
@@ -60,7 +68,7 @@ public class BaritoneBrain {
         communicateDecisions();
 
         // Return Task
-        return currentTask;
+        return new TimeoutWanderTask();
     }
 
     private void decayMemory() {
@@ -97,7 +105,7 @@ public class BaritoneBrain {
 
     }
 
-    static class MemoryItem {
+    public static class MemoryItem {
         private final String content;
         private final LocalDateTime timestamp;
         private final int importance;

@@ -20,16 +20,17 @@ public class Debug {
         if (jankModInstance != null) {
             return jankModInstance.getModSettings().getChatLogPrefix();
         }
-        return "[Alto Clef] ";
+        return "[AltoClef] ";
     }
 
-    public static void logMessage(String message, boolean prefix) {
+    public static void logMessage(String message, boolean ifPrefix, boolean baritoneBrain) {
         if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            if (prefix) {
-                message = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7r" + message;
+            if (ifPrefix) {
+                var prefix = baritoneBrain ? "[BaritoneBrain] " : getLogPrefix();
+                message = "\u00A72\u00A7l\u00A7o" + prefix + "\u00A7r" + message;
             }
             logInternal(message);
-//            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
             //MinecraftClient.getInstance().player.sendChatMessage(msg);
         } else {
             logInternal(message);
@@ -37,7 +38,11 @@ public class Debug {
     }
 
     public static void logMessage(String message) {
-        logMessage(message, true);
+        logMessage(message, true, false);
+    }
+
+    public static void logMessageBrain(String message) {
+        logMessage(message, true, true);
     }
 
     public static void logMessage(String format, Object... args) {

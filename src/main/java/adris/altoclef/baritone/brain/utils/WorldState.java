@@ -41,12 +41,12 @@ public class WorldState {
     @Override
     public String toString() {
         return "WorldState{" +
-                "playerHealth=" + playerHealth +
-                ", playerHunger=" + playerHunger +
-                ", playerLocation=" + playerLocation +
-                ", playerInventory=" + playerInventory +
-                ", currentBiome=" + currentBiome +
-                ", surroundingEntities=" + surroundingEntities +
+                "Health=" + playerHealth +
+                ", Hunger=" + playerHunger +
+                ", Location=" + playerLocation +
+//                ", playerInventory=" + playerInventory.ite +
+//                ", currentBiome=" + currentBiome.toString() +
+//                ", surroundingEntities=" + surroundingEntities +
                 '}';
     }
 }
