@@ -28,7 +28,7 @@ public class CommandStatusOverlay {
             }
 
             int color = 0xFFFFFFFF;
-            drawTaskChain(MinecraftClient.getInstance().textRenderer, matrixstack, 0, 0, color, 10, tasks, mod);
+            drawTaskChain(MinecraftClient.getInstance().textRenderer, matrixstack, 5, 5, color, 10, tasks, mod);
         }
     }
 
@@ -51,7 +51,9 @@ public class CommandStatusOverlay {
                 for (int i = 0; i < tasks.size(); ++i) {
                     // Skip over the next tasks
                     if (i == 0 || i > tasks.size() - maxLines) {
-                        renderer.draw(stack, tasks.get(i).toString(), dx, dy, color);
+                        var text = renderer.trimToWidth(tasks.get(i).toString(), MinecraftClient.getInstance().getWindow().getWidth() / 2);
+                        renderer.draw(stack, text, dx, dy, color);
+//                        renderer.draw(stack, tasks.get(i).toString(), dx, dy, color);
                     } else if (i == 1) {
                         renderer.draw(stack, " ... ", dx, dy, color);
                     } else {
@@ -63,13 +65,13 @@ public class CommandStatusOverlay {
             } else {
                 if (!tasks.isEmpty()) {
                     for (Task task : tasks) {
-                        renderer.draw(stack, task.toString(), dx, dy, color);
+                        var text = renderer.trimToWidth(task.toString(), MinecraftClient.getInstance().getWindow().getWidth() / 2);
+                        renderer.draw(stack, text, dx, dy, color);
                         dx += 8;
                         dy += fontHeight + 2;
                     }
                 }
             }
-
         }
     }
 }

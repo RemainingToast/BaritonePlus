@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.baritone.brain.commands.BrainCommand;
 import adris.altoclef.commands.*;
 import adris.altoclef.commandsystem.CommandException;
 
@@ -11,6 +12,7 @@ public class AltoClefCommands {
     public AltoClefCommands() throws CommandException {
         // List commands here
         AltoClef.getCommandExecutor().registerNewCommand(
+                new BrainCommand(),
                 new HelpCommand(),
                 new GetCommand(),
                 new FollowCommand(),

@@ -28,7 +28,8 @@ public class Debug {
             if (prefix) {
                 message = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7r" + message;
             }
-            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
+            logInternal(message);
+//            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
             //MinecraftClient.getInstance().player.sendChatMessage(msg);
         } else {
             logInternal(message);

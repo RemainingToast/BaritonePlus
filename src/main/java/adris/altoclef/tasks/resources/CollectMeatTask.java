@@ -82,22 +82,25 @@ public class CollectMeatTask extends Task {
 
     @Override
     protected Task onTick(AltoClef mod) {
-        if (mod.getEntityTracker().entityFound(ChickenEntity.class)) {
-            Optional<Entity> chickens = mod.getEntityTracker().getClosestEntity(ChickenEntity.class);
-            if (chickens.isPresent()) {
-                Iterable<Entity> entities = mod.getWorld().getEntities();
-                for (Entity entity : entities) {
-                    if (entity instanceof HostileEntity || entity instanceof SlimeEntity) {
-                        if (chickens.get().hasPassenger(entity)) {
-                            if (mod.getEntityTracker().isEntityReachable(entity)) {
-                                Debug.logMessage("Blacklisting chicken jockey.");
-                                mod.getEntityTracker().requestEntityUnreachable(chickens.get());
+        for (CookableFoodTarget cookable : COOKABLE_FOODS) {
+            if (mod.getEntityTracker().entityFound(cookable.mobToKill)) {
+                Optional<Entity> chickens = mod.getEntityTracker().getClosestEntity(cookable.mobToKill);
+                if (chickens.isPresent()) {
+                    Iterable<Entity> entities = mod.getWorld().getEntities();
+                    for (Entity entity : entities) {
+                        if (entity instanceof HostileEntity || entity instanceof SlimeEntity) {
+                            if (chickens.get().hasPassenger(entity)) {
+                                if (mod.getEntityTracker().isEntityReachable(entity)) {
+                                    Debug.logMessage("Blacklisting chicken jockey.");
+                                    mod.getEntityTracker().requestEntityUnreachable(chickens.get());
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
         // If we were previously smelting, keep on smelting.
         if (_smeltTask != null && _smeltTask.isActive() && !_smeltTask.isFinished(mod)) {
             setDebugState("Cooking...");
@@ -172,6 +175,7 @@ public class CollectMeatTask extends Task {
                 return _currentResourceTask;
             }
         }
+
         for (Item raw : ItemHelper.RAW_FOODS) {
             if (mod.getItemStorage().hasItem(raw)) {
                 Optional<Item> cooked = ItemHelper.getCookedFood(raw);

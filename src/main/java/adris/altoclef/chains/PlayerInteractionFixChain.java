@@ -74,7 +74,7 @@ public class PlayerInteractionFixChain extends TaskChain {
                         boolean isAllowedToManage = (!mod.getClientBaritone().getPathingBehavior().isPathing() ||
                                 bestToolSlot.get().getInventorySlot() >= 9) && !mod.getFoodChain().isTryingToEat();
                         if (isAllowedToManage) {
-                            Debug.logMessage("Found better tool in inventory, equipping.");
+//                            Debug.logMessage("Found better tool in inventory, equipping.");
                             ItemStack bestToolItemStack = StorageHelper.getItemStackInSlot(bestToolSlot.get());
                             Item bestToolItem = bestToolItemStack.getItem();
                             mod.getSlotHandler().forceEquipItem(bestToolItem);
@@ -96,7 +96,7 @@ public class PlayerInteractionFixChain extends TaskChain {
         // Refresh inventory
         if (_generalDuctTapeSwapTimeout.elapsed()) {
             if (!mod.getControllerExtras().isBreakingBlock()) {
-                Debug.logMessage("Refreshed inventory...");
+//                Debug.logMessage("Refreshed inventory...");
                 mod.getSlotHandler().refreshInventory();
                 _generalDuctTapeSwapTimeout.reset();
                 return Float.NEGATIVE_INFINITY;
