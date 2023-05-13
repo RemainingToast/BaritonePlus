@@ -19,8 +19,14 @@ public class CollectBedTask extends CraftWithMatchingWoolTask {
 
     public CollectBedTask(Item[] beds, ItemTarget wool, int count) {
         // Top 3 are wool, must be the same.
-        super(new ItemTarget(beds, count), colorfulItems -> colorfulItems.wool, colorfulItems -> colorfulItems.bed, createBedRecipe(wool), new boolean[]{true, true, true, false, false, false, false, false, false});
-        _visualBedTarget = new ItemTarget(beds, count);
+        super(
+            beds.length > 1 ? new ItemTarget(beds, count, "any bed") : new ItemTarget(beds, count),
+            colorfulItems -> colorfulItems.wool,
+            colorfulItems -> colorfulItems.bed,
+            createBedRecipe(wool),
+            new boolean[]{true, true, true, false, false, false, false, false, false}
+        );
+        _visualBedTarget = beds.length > 1 ? new ItemTarget(beds, count, "any bed") : new ItemTarget(beds, count);
     }
 
     public CollectBedTask(Item bed, String woolCatalogueName, int count) {
@@ -44,13 +50,11 @@ public class CollectBedTask extends CraftWithMatchingWoolTask {
 
     @Override
     protected void onResourceStart(AltoClef mod) {
-        super.onResourceStart(mod);
         mod.getBlockTracker().trackBlock(BEDS);
     }
 
     @Override
     protected void onResourceStop(AltoClef mod, Task interruptTask) {
-        super.onResourceStop(mod, interruptTask);
         mod.getBlockTracker().stopTracking(BEDS);
     }
 
@@ -59,9 +63,9 @@ public class CollectBedTask extends CraftWithMatchingWoolTask {
         // Break beds from the world if possible, that would be pretty fast.
         if (mod.getBlockTracker().anyFound(BEDS)) {
             // Failure + blacklisting is encapsulated within THIS task
-            return new MineAndCollectTask(new ItemTarget(ItemHelper.BED, 1), BEDS, MiningRequirement.HAND);
+            return new MineAndCollectTask(new ItemTarget(ItemHelper.BED, 1, "any bed"), BEDS, MiningRequirement.HAND);
         }
-        return super.onResourceTick(mod);
+        return null;
     }
 
     @Override
@@ -74,6 +78,6 @@ public class CollectBedTask extends CraftWithMatchingWoolTask {
 
     @Override
     protected String toDebugStringName() {
-        return "Crafting bed: " + _visualBedTarget;
+        return "Collecting a bed";
     }
 }

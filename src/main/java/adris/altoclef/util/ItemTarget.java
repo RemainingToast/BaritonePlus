@@ -26,12 +26,22 @@ public class ItemTarget {
     public ItemTarget(Item[] items, int targetCount) {
         _itemMatches = items;
         _targetCount = targetCount;
-        _infinite = false;
+        /* DEBUG: This notes when a list of items is passed without a descriptive string.
+        if (items.length > 1) {
+            Debug.logMessage("Friendly name for " + Arrays.toString(items) + " is not provided.");
+        }
+        */
     }
 
     public ItemTarget(String catalogueName, int targetCount) {
         _catalogueName = catalogueName;
         _itemMatches = TaskCatalogue.getItemMatches(catalogueName);
+        _targetCount = targetCount;
+    }
+
+    public ItemTarget(Item[] items, int targetCount, String catalogueName) {
+        _itemMatches = items;
+        _catalogueName = catalogueName;
         _targetCount = targetCount;
     }
 
@@ -47,6 +57,10 @@ public class ItemTarget {
         this(items, 1);
     }
 
+    public ItemTarget(Item[] items, String catalogueName) {
+        this(items, 1, catalogueName);
+    }
+
     public ItemTarget(Item item) {
         this(item, 1);
     }
@@ -59,6 +73,10 @@ public class ItemTarget {
         _catalogueName = toCopy._catalogueName;
         _targetCount = newCount;
         _infinite = toCopy._infinite;
+    }
+
+    public ItemTarget(ItemTarget toCopy) {
+        this(toCopy, toCopy._targetCount);
     }
 
     public static boolean nullOrEmpty(ItemTarget target) {
@@ -86,6 +104,12 @@ public class ItemTarget {
         if (_infinite) {
             return BASICALLY_INFINITY;
         }
+        if (_targetCount == BASICALLY_INFINITY) {
+            _infinite = true;
+            return BASICALLY_INFINITY;
+        }
+        // Workaround for when the ItemTarget is initialized as infinite (properly)
+        // but then another ItemTarget is created by copying the target count, not the infinite flag.
         return _targetCount;
     }
 
@@ -145,7 +169,6 @@ public class ItemTarget {
         } else if (isCatalogueItem()) {
             result.append(_catalogueName);
         } else {
-            result.append("[");
             int counter = 0;
             if (_itemMatches != null) {
                 for (Item item : _itemMatches) {
@@ -159,12 +182,15 @@ public class ItemTarget {
                     }
                 }
             }
-            result.append("]");
+            if (_itemMatches.length > 1) {
+                result.insert(0, "(");
+                result.append(")");
+            }
         }
-        if (!_infinite && !isEmpty()) {
-            result.append(" x ").append(_targetCount);
+        if (!_infinite && !isEmpty() && _targetCount > 1) {
+            result.append(" x").append(_targetCount);
         } else if (_infinite) {
-            result.append(" x infinity");
+            result.append(" (attempt for ∞)");
         }
 
         return result.toString();

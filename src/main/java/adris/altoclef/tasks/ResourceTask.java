@@ -225,17 +225,18 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
     @Override
     protected String toDebugString() {
         StringBuilder result = new StringBuilder();
-        result.append(toDebugStringName()).append(": [");
+        result.append(toDebugStringName()).append(" for §l");
         int c = 0;
-        if (_itemTargets != null) {
-            for (ItemTarget target : _itemTargets) {
-                result.append(target != null ? target.toString() : "(null)");
-                if (++c != _itemTargets.length) {
-                    result.append(", ");
-                }
+        for (ItemTarget target : _itemTargets) {
+            result.append(target != null ? target.toString() : "(null)");
+            if (++c != _itemTargets.length) {
+                result.append(", ");
             }
         }
-        result.append("]");
+        if (_itemTargets.length > 1) {
+            result.insert(0, "[").append("]");
+        }
+        result.append("§r");
         return result.toString();
     }
 
@@ -275,5 +276,20 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
 
     public ItemTarget[] getItemTargets() {
         return _itemTargets;
+    }
+
+    public String getItemName() {
+        StringBuilder result = new StringBuilder();
+        int c = 0;
+        for (ItemTarget target : _itemTargets) {
+            result.append(target != null ? target.toString() : "(null)");
+            if (++c != _itemTargets.length) {
+                result.append(", ");
+            }
+        }
+        if (_itemTargets.length > 1) {
+            result.insert(0, "[").append("]");
+        }
+        return result.toString();
     }
 }

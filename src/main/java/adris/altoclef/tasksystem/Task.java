@@ -212,7 +212,7 @@ public abstract class Task {
     }
 
     public static Task fromString(String string) {
-        if (string.contains("food")) {
+        if (string.contains("meat")) {
             return new CollectMeatTask(RandomUtils.nextDouble(1, 64));
         }
 

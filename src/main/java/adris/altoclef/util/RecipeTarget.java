@@ -30,10 +30,8 @@ public class RecipeTarget {
 
     @Override
     public String toString() {
-        return "RecipeTarget{" +
-                "_recipe=" + _recipe +
-                ", _item=" + _item + " x " + _targetCount +
-                '}';
+        return _recipe + " for " +
+            _item + " x" + _targetCount;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class CollectPlanksTask extends ResourceTask {
     private boolean _logsInNether;
 
     public CollectPlanksTask(Item[] planks, Item[] logs, int count, boolean logsInNether) {
-        super(new ItemTarget(planks, count));
+        super(planks.length > 1 ? new ItemTarget(planks, count, "any planks") : new ItemTarget(planks, count));
         _planks = planks;
         _logs = logs;
         _targetCount = count;
@@ -84,15 +84,15 @@ public class CollectPlanksTask extends ResourceTask {
         }
 
         // Collect planks and logs
-        ArrayList<ItemTarget> blocksTomine = new ArrayList<>(2);
-        blocksTomine.add(new ItemTarget(_logs));
+        ArrayList<ItemTarget> blocksToMine = new ArrayList<>(2);
+        blocksToMine.add(new ItemTarget(_logs, "any logs"));
         // Ignore planks if we're told to.
         if (!mod.getBehaviour().exclusivelyMineLogs()) {
             // TODO: Add planks back in, but with a heuristic check (so we don't go for abandoned mineshafts)
-            //blocksTomine.add(new ItemTarget(ItemUtil.PLANKS));
+            //blocksToMine.add(new ItemTarget(ItemUtil.PLANKS));
         }
 
-        ResourceTask mineTask = new MineAndCollectTask(blocksTomine.toArray(ItemTarget[]::new), MiningRequirement.HAND);
+        ResourceTask mineTask = new MineAndCollectTask(blocksToMine.toArray(ItemTarget[]::new), MiningRequirement.HAND);
         // Kinda jank
         if (_logsInNether) {
             mineTask.forceDimension(Dimension.NETHER);
@@ -112,7 +112,7 @@ public class CollectPlanksTask extends ResourceTask {
 
     @Override
     protected String toDebugStringName() {
-        return "Crafting " + _targetCount + " planks " + Arrays.toString(_planks);
+        return "Crafting " + _targetCount + " plank(s)";
     }
 
     public CollectPlanksTask logsInNether() {
