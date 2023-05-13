@@ -25,7 +25,6 @@ public class CraftInInventoryTask extends ResourceTask {
     private final RecipeTarget _target;
     private final boolean _collect;
     private final boolean _ignoreUncataloguedSlots;
-    private boolean _fullCheckFailed = false;
 
     public CraftInInventoryTask(RecipeTarget target, boolean collect, boolean ignoreUncataloguedSlots) {
         super(new ItemTarget(target.getOutputItem(), target.getTargetCount()));
@@ -45,7 +44,6 @@ public class CraftInInventoryTask extends ResourceTask {
 
     @Override
     protected void onResourceStart(AltoClef mod) {
-        _fullCheckFailed = false;
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         if (!cursorStack.isEmpty()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
@@ -60,6 +58,16 @@ public class CraftInInventoryTask extends ResourceTask {
         } else {
             StorageHelper.closeScreen();
         } // Just to be safe I guess
+
+        mod.getBehaviour().push();
+        // Our inventory slots are here for conversion
+        int recSlot = 0;
+        for (Slot slot : PlayerSlot.CRAFT_INPUT_SLOTS) {
+            ItemTarget valid = _target.getRecipe().getSlot(recSlot++);
+            mod.getBehaviour().markSlotAsConversionSlot(slot, stack -> valid.matches(stack.getItem()));
+        }
+
+        StorageHelper.closeScreen(); // Just to be safe I guess
     }
 
     @Override
@@ -125,16 +133,18 @@ public class CraftInInventoryTask extends ResourceTask {
 
     @Override
     protected String toDebugStringName() {
-        return toCraftingDebugStringName() + " " + _target;
+        return toDebugString();
+    }
+
+    @Override
+    protected String toDebugString() {
+        // example of _target: CraftingRecipe{craft planks} for *acacia_planks x4*
+        return "2x2 " + _target;
     }
 
     // virtual. By default assumes subtasks are CATALOGUED (in TaskCatalogue.java)
     protected Task collectRecipeSubTask(AltoClef mod) {
         return new CollectRecipeCataloguedResourcesTask(_ignoreUncataloguedSlots, _target);
-    }
-
-    protected String toCraftingDebugStringName() {
-        return "Craft 2x2 Task";
     }
 
     protected boolean isCraftingEqual(CraftInInventoryTask other) {

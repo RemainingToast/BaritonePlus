@@ -73,4 +73,19 @@ public class CraftWithMatchingPlanksTask extends CraftWithMatchingMaterialsTask 
         return false;
     }
 
+    @Override
+    protected void onResourceStart(AltoClef mod) {
+
+    }
+
+    @Override
+    protected Task onResourceTick(AltoClef mod) {
+        return null;
+    }
+
+    @Override
+    protected void onResourceStop(AltoClef mod, Task interruptTask) {
+
+    }
+
 }

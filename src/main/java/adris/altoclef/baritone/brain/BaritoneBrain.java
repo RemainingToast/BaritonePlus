@@ -6,6 +6,9 @@ import adris.altoclef.baritone.brain.gui.BrainTTS;
 import adris.altoclef.baritone.brain.tasks.BrainTask;
 import adris.altoclef.baritone.brain.utils.ChatGPT;
 import adris.altoclef.baritone.brain.utils.WorldState;
+import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.Subscription;
+import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasks.stupid.BeeMovieTask;
@@ -38,9 +41,7 @@ public class BaritoneBrain {
     public ChatGPT chatGPT;
     public BrainTTS brainTTS;
     private boolean taskInProgress = false;
-    @Getter
-    @Setter
-    private boolean textToSpeech = false;
+    private final Subscription<ChatMessageEvent> _commandResponsePrompt;
 
     public BaritoneBrain(AltoClef mod) {
         this.mod = mod;
@@ -48,9 +49,8 @@ public class BaritoneBrain {
         this.chatGPT = ChatGPT.build();
 
         var args = List.of(FabricLoader.getInstance().getLaunchArguments(true));
-        textToSpeech = args.contains("--tts");
 
-        if (textToSpeech) {
+        if (args.contains("--tts")) {
             SwingUtilities.invokeLater(() -> {
                 this.brainTTS = new BrainTTS(mod);
                 Debug.logInternal("TTS Enabled.");
@@ -58,6 +58,10 @@ public class BaritoneBrain {
         } else {
             Debug.logInternal("TTS Disabled.");
         }
+
+        _commandResponsePrompt = EventBus.subscribe(ChatMessageEvent.class, evt -> {
+            // TODO Prompt it self from the chat response
+        });
     }
 
     public BrainTTS getTTS() {
@@ -79,35 +83,27 @@ public class BaritoneBrain {
             new Thread(() -> {
                 try {
                     taskInProgress = true;  // Mark that a task is in progress
+
                     var nextTask = chatGPT.generateTask(worldState);
+
                     task.setDebugState(nextTask);
 
                     Debug.logMessageBrain(nextTask);
 
-//                    memory.forEach(memoryItem -> Debug.logMessageBrain(String.format("Memory: %s", memoryItem)));
-
-                    mod.runUserTask(Task.fromString(nextTask), () -> {
-//                        taskInProgress = false;
-//                        mod.runUserTask(task);
-                    });
-
                     var chat = mod.mc().getNetworkHandler();
-
-                    if (chat != null) {
-//                        chat.sendChatCommand(nextTask);
+                    if (nextTask.startsWith("@") && chat != null) {
+                        chat.sendChatMessage(nextTask);
+                    } else {
+                        mod.runUserTask(Task.fromString(nextTask), () -> {
+                            taskInProgress = false;
+                            mod.runUserTask(task);
+                        });
                     }
-
-//                    var stream = new ByteArrayInputStream(nextTask.getBytes(StandardCharsets.UTF_8));;
-//                    mod.runUserTask(
-//                            new BeeMovieTask(UUID.randomUUID().toString(),
-//                            worldState.playerLocation,
-//                            new InputStreamReader(stream)),
-//                            () -> mod.runUserTask(Task.fromString(nextTask),
-//                                    () -> task.stop(mod)));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     task.setDebugState(e.getMessage());
                     taskInProgress = false;  // If there was an error, allow a new task to be generated
-                    task.stop(mod);
+//                    task.stop(mod);
                 }
             }).start();
         }
@@ -115,11 +111,8 @@ public class BaritoneBrain {
         // Learn from outcomes
         learnFromOutcomes();
 
-        // Communicate thoughts and decisions
-        communicateDecisions();
-
         // Return Task
-        return new IdleTask()   ;
+        return new IdleTask();
     }
 
     private void decayMemory() {
@@ -134,10 +127,6 @@ public class BaritoneBrain {
 
     private void learnFromOutcomes() {
         // Code to incorporate feedback from completed goals
-    }
-
-    private void communicateDecisions() {
-        // Code to communicate thoughts and decisions
     }
 
     public WorldState getWorldState() {

@@ -57,12 +57,12 @@ public abstract class CraftWithMatchingMaterialsTask extends ResourceTask {
     }
 
     @Override
-    protected void onResourceStart(AltoClef mod) {
+    protected void onStart(AltoClef mod) {
 
     }
 
     @Override
-    protected Task onResourceTick(AltoClef mod) {
+    protected Task onTick(AltoClef mod) {
 
         // TODO: Scenario of
         //      Command: Get 3 beds
@@ -130,13 +130,13 @@ public abstract class CraftWithMatchingMaterialsTask extends ResourceTask {
     }
 
     @Override
-    protected void onResourceStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(AltoClef mod, Task interruptTask) {
 
     }
 
     // Virtual
     protected Task getAllSameResourcesTask(AltoClef mod) {
-        ItemTarget infinityVersion = new ItemTarget(_sameResourceTarget, 999999);
+        ItemTarget infinityVersion = new ItemTarget(_sameResourceTarget).infinite();
         return TaskCatalogue.getItemTask(infinityVersion);
     }
 

@@ -94,7 +94,7 @@ public class BrainTTS {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format(ELEVEN_LABS, FIT_MC)))
-                .header("xi-api-key", "")
+                .header("xi-api-key", "d755ebaffb9c30fba4400c9f4f9f0473")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();

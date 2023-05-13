@@ -1,6 +1,9 @@
 package adris.altoclef.baritone.brain.utils;
 
+import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.commandsystem.Command;
+import adris.altoclef.ui.MessagePriority;
 import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -17,7 +20,7 @@ public class ChatGPT {
     }
 
     public static ChatGPT build() {
-        return new ChatGPT("");
+        return new ChatGPT("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");
     }
 
     public String generateTaskNaturalLanguage(WorldState worldState) {
@@ -57,16 +60,25 @@ public class ChatGPT {
         // Create user message asking to convert task to command
         ChatMessage userMessage = new ChatMessage(
                 "user",
-                String.format("Given this task: '%s', what would be the appropriate Alto Clef bot command to accomplish it?", task)
+                String.format("Given this task: '%s', what would be the appropriate command to accomplish it? Execute consecutve commands by separating them with ; (e.g @get iron_axe;get log 100;goto 0 0;give Player log 100)", task)
         );
+
+        StringBuilder lines = new StringBuilder();
+        for (Command c : AltoClef.getCommandExecutor().allCommands()) {
+            lines.append("@").append(c.getHelpRepresentation()).append(" | ").append(c.getDescription());
+            lines.append("\n");
+        }
 
         // Create system message
         ChatMessage systemMessage = new ChatMessage(
                 "system",
-                "You are an AI assistant tasked with understanding and converting user inputs into valid tasks for the Alto Clef bot in Minecraft. " +
-                        "Ensure to convert inputs into the most specific tasks possible and fill out required parameters. " +
-                        "If no valid task can be derived from the input, return the Idle task." +
-                        "Format: e.g 'mine wood' 'collect food 5' 'collect item'"
+                "You are an AI assistant tasked with understanding and converting user inputs into valid commands for the Alto Clef bot in Minecraft.\n" +
+                        "Ensure to convert inputs into the most specific commands possible and fill out required parameters. Including coordinates/locations\n" +
+                        "If no valid task can be derived from the input, return the @idle command\n" +
+                        "Respond only with the command chain - no explanations - only command\n" +
+                        "Parameters requiring name assume specific item name e.g diamond_chestplate\n" +
+                        "You must fill out all parameters with values. \n" +
+                        "AltoClef Commands that you can use: " + lines
         );
 
         // Create chat completion request
