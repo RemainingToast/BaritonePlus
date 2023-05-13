@@ -39,11 +39,11 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 
 public class MobDefenseChain extends SingleTaskChain {
-    private static final double DANGER_KEEP_DISTANCE = 30;
-    private static final double CREEPER_KEEP_DISTANCE = 10;
-    private static final double ARROW_KEEP_DISTANCE_HORIZONTAL = 2;//4;
-    private static final double ARROW_KEEP_DISTANCE_VERTICAL = 10;//15;
-    private static final double SAFE_KEEP_DISTANCE = 8;
+    private static final double DANGER_KEEP_DISTANCE = 50;
+    private static final double CREEPER_KEEP_DISTANCE = 20;
+    private static final double ARROW_KEEP_DISTANCE_HORIZONTAL = 4;//2;
+    private static final double ARROW_KEEP_DISTANCE_VERTICAL = 15;//10;
+    private static final double SAFE_KEEP_DISTANCE = 16;
     private final DragonBreathTracker _dragonBreathTracker = new DragonBreathTracker();
     private final KillAura _killAura = new KillAura();
     private final HashMap<Entity, TimerGame> _closeAnnoyingEntities = new HashMap<>();
@@ -227,6 +227,12 @@ public class MobDefenseChain extends SingleTaskChain {
         if (mod.getPlayer().getHealth() <= 10 || _runAwayTask != null || mod.getEntityTracker().entityFound(PotionEntity.class) ||
                 (!mod.getItemStorage().hasItem(Items.SHIELD) && !mod.getItemStorage().hasItemInOffhand(Items.SHIELD))) {
             if (!mod.getFoodChain().needsToEat() && mod.getModSettings().isDodgeProjectiles() && isProjectileClose(mod)) {
+                if (isVulnurable(mod)) {
+                    _runAwayTask = new RunAwayFromHostilesTask(DANGER_KEEP_DISTANCE, true);
+                    setTask(_runAwayTask);
+                    return 70;
+                }
+
                 _doingFunkyStuff = true;
                 //Debug.logMessage("DODGING");
                 _runAwayTask = new DodgeProjectilesTask(ARROW_KEEP_DISTANCE_HORIZONTAL, ARROW_KEEP_DISTANCE_VERTICAL);
@@ -234,6 +240,7 @@ public class MobDefenseChain extends SingleTaskChain {
                 return 65;
             }
         }
+
         // Dodge all mobs cause we boutta die son
         if (isInDanger(mod) && !escapeDragonBreath(mod) && !mod.getFoodChain().isShouldStop()) {
             if (_targetEntity == null) {
@@ -288,7 +295,7 @@ public class MobDefenseChain extends SingleTaskChain {
                                 boolean piglinBruteAttacking = hostile instanceof PiglinBruteEntity;
                                 if (blazeAttacking || witherSkeletonAttacking || hoglinAttacking || zoglinAttacking ||
                                         piglinBruteAttacking || endermanAttacking || witherAttacking || wardenAttacking) {
-                                    if (mod.getPlayer().getHealth() <= 10) {
+                                    if (isVulnurable(mod)) {
                                         _closeAnnoyingEntities.put(hostile, new TimerGame(0));
                                     } else {
                                         _closeAnnoyingEntities.put(hostile, new TimerGame(Float.POSITIVE_INFINITY));

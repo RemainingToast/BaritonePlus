@@ -4,7 +4,6 @@ import adris.altoclef.Debug;
 import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
-import com.theokanning.openai.finetune.FineTuneRequest;
 import com.theokanning.openai.service.OpenAiService;
 
 import java.time.Duration;
@@ -13,12 +12,12 @@ import java.util.List;
 public class ChatGPT {
     private final OpenAiApi api;
 
-    public ChatGPT(String apiKey) {
+    protected ChatGPT(String apiKey) {
         this.api = OpenAiService.buildApi(apiKey, Duration.ofMinutes(1));
-//        this.api.createFineTune(new FineTuneRequest(
-//
-//        ))
-//        this.service = new OpenAiService(apiKey);
+    }
+
+    public static ChatGPT build() {
+        return new ChatGPT("");
     }
 
     public String generateTaskNaturalLanguage(WorldState worldState) {
@@ -34,9 +33,13 @@ public class ChatGPT {
                 "You are an AI playing on an anarchy Minecraft server. Use the information provided to decide the best next task. Max 50 Words."
         );
 
+        return prompt(List.of(systemMessage, userMessage));
+    }
+
+    public String prompt(List<ChatMessage> messages) {
         // Create chat completion request
         ChatCompletionRequest completionRequest = ChatCompletionRequest.builder()
-                .messages(List.of(systemMessage, userMessage))
+                .messages(messages)
                 .model("gpt-3.5-turbo")
                 .build();
 

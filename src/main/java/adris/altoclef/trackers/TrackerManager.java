@@ -1,6 +1,8 @@
 package adris.altoclef.trackers;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.tasks.InteractWithBlockTask;
+import adris.altoclef.tasks.construction.DestroyBlockTask;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,11 @@ public class TrackerManager {
             // This is a a spaghetti. Fix at some point.
             _mod.getChunkTracker().reset(_mod);
             _mod.getMiscBlockTracker().reset();
+
+            var _tts = _mod.getBaritoneBrain().getTTS();
+            if (_tts != null) {
+                _tts.clearDialogue();
+            }
         }
         _wasInGame = inGame;
 

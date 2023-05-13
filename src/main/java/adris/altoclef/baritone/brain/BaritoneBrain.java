@@ -2,6 +2,7 @@ package adris.altoclef.baritone.brain;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.baritone.brain.gui.BrainTTS;
 import adris.altoclef.baritone.brain.tasks.BrainTask;
 import adris.altoclef.baritone.brain.utils.ChatGPT;
 import adris.altoclef.baritone.brain.utils.WorldState;
@@ -9,8 +10,13 @@ import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasks.stupid.BeeMovieTask;
 import adris.altoclef.tasksystem.Task;
+import lombok.Getter;
+import lombok.Setter;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -30,12 +36,32 @@ public class BaritoneBrain {
     public WorldState worldState;
     // ChatGPT
     public ChatGPT chatGPT;
+    public BrainTTS brainTTS;
     private boolean taskInProgress = false;
+    @Getter
+    @Setter
+    private boolean textToSpeech = false;
 
     public BaritoneBrain(AltoClef mod) {
         this.mod = mod;
         this.memory = new ArrayList<>();
-        this.chatGPT = new ChatGPT("");
+        this.chatGPT = ChatGPT.build();
+
+        var args = List.of(FabricLoader.getInstance().getLaunchArguments(true));
+        textToSpeech = args.contains("--tts");
+
+        if (textToSpeech) {
+            SwingUtilities.invokeLater(() -> {
+                this.brainTTS = new BrainTTS(mod);
+                Debug.logInternal("TTS Enabled.");
+            });
+        } else {
+            Debug.logInternal("TTS Disabled.");
+        }
+    }
+
+    public BrainTTS getTTS() {
+        return brainTTS;
     }
 
     public void updateWorldState() {

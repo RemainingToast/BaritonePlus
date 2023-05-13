@@ -408,10 +408,27 @@ public interface WorldHelper {
         if (world != null) {
             // You can sleep during thunderstorms
             if (world.isThundering() && world.isRaining())
-                return true;
+                return !canSleepOnServer();
             time = (int) (world.getTimeOfDay() % 24000);
         }
         // https://minecraft.fandom.com/wiki/Daylight_cycle
-        return 12542 <= time && time <= 23992;
+        return !canSleepOnServer() && 12542 <= time && time <= 23992;
+    }
+
+    static boolean canSleepOnServer() {
+        var world = MinecraftClient.getInstance().world;
+
+        if (world == null) {
+            return false;
+        }
+
+        var server = world.getServer();
+
+        if (server == null || world.isClient()) {
+            return true;
+        }
+
+        var count = server.getCurrentPlayerCount();
+        return count <= 1;
     }
 }

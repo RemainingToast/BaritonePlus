@@ -2,6 +2,8 @@ package adris.altoclef.tasksystem;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.tasks.InteractWithBlockTask;
+import adris.altoclef.tasks.construction.DestroyBlockTask;
 import adris.altoclef.tasks.examples.ExampleTask2;
 import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
@@ -31,6 +33,12 @@ public abstract class Task {
     public void tick(AltoClef mod, TaskChain parentChain) {
         parentChain.addTaskToChain(this);
         if (_first) {
+            var tts = mod.getBaritoneBrain().getTTS();
+            if (tts != null) {
+                if (!(this instanceof DestroyBlockTask || this instanceof InteractWithBlockTask))
+                    tts.narrateTask(this);
+            }
+
             Debug.logInternal("Task START: " + this);
             _active = true;
             onStart(mod);
@@ -86,6 +94,13 @@ public abstract class Task {
      */
     public void stop(AltoClef mod, Task interruptTask) {
         if (!_active) return;
+
+        var tts = mod.getBaritoneBrain().getTTS();
+        if (tts != null) {
+            if (!(this instanceof DestroyBlockTask || this instanceof InteractWithBlockTask))
+                tts.removeTask(this);
+        }
+
         Debug.logInternal("Task STOP: " + this + ", interrupted by " + interruptTask);
         if (!_first) {
             onStop(mod, interruptTask);
