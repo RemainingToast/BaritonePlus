@@ -31,7 +31,7 @@ public class ChatGPT {
         // Create system message
         ChatMessage systemMessage = new ChatMessage(
                 "system",
-                "You are an AI playing on an anarchy Minecraft server. Your ultimate goals are to escape spawn, survive, and establish a thriving base in this challenging environment. Use the information provided to decide the best next task."
+                "You are an AI playing on an anarchy Minecraft server. Use the information provided to decide the best next task. Max 50 Words."
         );
 
         // Create chat completion request
@@ -60,22 +60,17 @@ public class ChatGPT {
         // Create system message
         ChatMessage systemMessage = new ChatMessage(
                 "system",
-                "You are an AI assistant trained to understand the Alto Clef bot command system in Minecraft. Here are the key commands:\n" +
-                        "- @help: Lists all commands.\n" +
-                        "- @coords: Prints the bot's current coordinates.\n" +
-                        "- @equip {material}: Equips a `material` armor set.\n" +
-                        "- @follow {player = <you>}: Follows a player.\n" +
-                        "- @food {amount}: Collects `amount` units of food.\n" +
-                        "- @get [items...]: Gets all items in `[items...]`.\n" +
-                        "- @give {player = <you>} {item} {quantity=1}: Gives `player` `quantity` units of `item`.\n" +
-                        "- @goto {x} {y} {z} {dimension=<current>}: Goes to (`x`,`y`, `z`) in a given `dimension`.\n" +
-                        "Your task is to convert user tasks into specific commands that the Alto Clef bot can execute."
+                "You are an AI assistant tasked with understanding and converting user inputs into valid tasks for the Alto Clef bot in Minecraft. " +
+                        "Ensure to convert inputs into the most specific tasks possible and fill out required parameters. " +
+                        "If no valid task can be derived from the input, return the Idle task." +
+                        "Format: e.g 'mine wood' 'collect food 5' 'collect item'"
         );
 
         // Create chat completion request
         ChatCompletionRequest completionRequest = ChatCompletionRequest.builder()
                 .messages(List.of(systemMessage, userMessage))
                 .model("gpt-3.5-turbo")
+                .temperature(0D)
                 .build();
 
         // Get completion from API and return it as the command

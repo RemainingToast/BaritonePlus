@@ -34,11 +34,11 @@ public abstract class AbstractObjectBlacklist<T> {
             if (newTool.ordinal() > entry.bestTool.ordinal()) entry.bestTool = newTool;
             if (newDistance < entry.bestDistanceSq) entry.bestDistanceSq = newDistance;
             entry.numberOfFailures = 0;
-            Debug.logMessage("Blacklist RESET: " + item.toString());
+            Debug.logInternal("Blacklist RESET: " + item.toString());
         }
         entry.numberOfFailures++;
         entry.numberOfFailuresAllowed = numberOfFailuresAllowed;
-        Debug.logMessage("Blacklist: " + item.toString() + ": Try " + entry.numberOfFailures + " / " + entry.numberOfFailuresAllowed);
+        Debug.logInternal("Blacklist: " + item.toString() + ": Try " + entry.numberOfFailures + " / " + entry.numberOfFailuresAllowed);
     }
 
     protected abstract Vec3d getPos(T item);

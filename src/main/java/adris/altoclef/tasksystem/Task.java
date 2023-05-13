@@ -2,7 +2,16 @@ package adris.altoclef.tasksystem;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.tasks.examples.ExampleTask2;
+import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
+import adris.altoclef.tasks.resources.CollectMeatTask;
+import adris.altoclef.tasks.resources.CollectPlanksTask;
+import adris.altoclef.tasks.resources.MineAndCollectTask;
+import adris.altoclef.util.ItemTarget;
+import adris.altoclef.util.MiningRequirement;
+import adris.altoclef.util.helpers.ItemHelper;
+import org.apache.commons.lang3.RandomUtils;
 
 import java.util.function.Predicate;
 
@@ -185,5 +194,17 @@ public abstract class Task {
 
     public String getDebugState() {
         return _debugState;
+    }
+
+    public static Task fromString(String string) {
+        if (string.contains("food")) {
+            return new CollectMeatTask(RandomUtils.nextDouble(1, 64));
+        }
+
+        if (string.contains("wood")) {
+            return new CollectPlanksTask(RandomUtils.nextInt(1, 64));
+        }
+
+        return new ExampleTask2();
     }
 }

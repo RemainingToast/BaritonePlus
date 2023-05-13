@@ -7,11 +7,17 @@ import adris.altoclef.baritone.brain.utils.ChatGPT;
 import adris.altoclef.baritone.brain.utils.WorldState;
 import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
+import adris.altoclef.tasks.stupid.BeeMovieTask;
 import adris.altoclef.tasksystem.Task;
+import net.minecraft.client.MinecraftClient;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BaritoneBrain {
 
@@ -24,18 +30,16 @@ public class BaritoneBrain {
     public WorldState worldState;
     // ChatGPT
     public ChatGPT chatGPT;
-
     private boolean taskInProgress = false;
 
     public BaritoneBrain(AltoClef mod) {
         this.mod = mod;
         this.memory = new ArrayList<>();
-//        this.worldState = new WorldState(mod.getWorld(), mod.getPlayer());
         this.chatGPT = new ChatGPT("");
     }
 
     public void updateWorldState() {
-        this.worldState = new WorldState(mod.getWorld(), mod.getPlayer());;
+        this.worldState = new WorldState(mod);
     }
 
     public Task process(BrainTask task) {
@@ -51,8 +55,29 @@ public class BaritoneBrain {
                     taskInProgress = true;  // Mark that a task is in progress
                     var nextTask = chatGPT.generateTask(worldState);
                     task.setDebugState(nextTask);
+
                     Debug.logMessageBrain(nextTask);
-                    memory.forEach(memoryItem -> Debug.logMessageBrain(String.format("Memory: %s", memoryItem)));
+
+//                    memory.forEach(memoryItem -> Debug.logMessageBrain(String.format("Memory: %s", memoryItem)));
+
+                    mod.runUserTask(Task.fromString(nextTask), () -> {
+//                        taskInProgress = false;
+//                        mod.runUserTask(task);
+                    });
+
+                    var chat = mod.mc().getNetworkHandler();
+
+                    if (chat != null) {
+//                        chat.sendChatCommand(nextTask);
+                    }
+
+//                    var stream = new ByteArrayInputStream(nextTask.getBytes(StandardCharsets.UTF_8));;
+//                    mod.runUserTask(
+//                            new BeeMovieTask(UUID.randomUUID().toString(),
+//                            worldState.playerLocation,
+//                            new InputStreamReader(stream)),
+//                            () -> mod.runUserTask(Task.fromString(nextTask),
+//                                    () -> task.stop(mod)));
                 } catch (Exception e) {
                     task.setDebugState(e.getMessage());
                     taskInProgress = false;  // If there was an error, allow a new task to be generated
@@ -68,7 +93,7 @@ public class BaritoneBrain {
         communicateDecisions();
 
         // Return Task
-        return new TimeoutWanderTask();
+        return new IdleTask()   ;
     }
 
     private void decayMemory() {
@@ -102,7 +127,7 @@ public class BaritoneBrain {
     }
 
     public void onStop(AltoClef mod, Task interruptTask) {
-
+        taskInProgress = false;
     }
 
     public static class MemoryItem {

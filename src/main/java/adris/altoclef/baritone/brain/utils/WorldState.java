@@ -1,5 +1,6 @@
 package adris.altoclef.baritone.brain.utils;
 
+import adris.altoclef.AltoClef;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -22,7 +23,10 @@ public class WorldState {
     public final Biome currentBiome;
     public final List<Entity> surroundingEntities;
 
-    public WorldState(ClientWorld world, ClientPlayerEntity player) {
+    public WorldState(AltoClef mod) {
+        var player = mod.getPlayer();
+        var world = mod.getWorld();
+
         this.playerHealth = player.getHealth();
         this.playerHunger = player.getHungerManager().getFoodLevel();
         this.playerLocation = player.getBlockPos();

@@ -171,6 +171,7 @@ public class MobDefenseChain extends SingleTaskChain {
         // Run away if a weird mob is close by.
         Optional<Entity> universallyDangerous = getUniversallyDangerousMob(mod);
         if (universallyDangerous.isPresent()) {
+//            mod.getBlockTracker().requestBlockUnreachable(universallyDangerous.get().getBlockPos(), 0);
             _runAwayTask = new RunAwayFromHostilesTask(DANGER_KEEP_DISTANCE, true);
             setTask(_runAwayTask);
             return 70;
@@ -194,6 +195,7 @@ public class MobDefenseChain extends SingleTaskChain {
             } else {
                 _doingFunkyStuff = true;
                 //Debug.logMessage("RUNNING AWAY!");
+//                mod.getBlockTracker().requestBlockUnreachable(blowingUp.getBlockPos(), 0);
                 _runAwayTask = new RunAwayFromCreepersTask(CREEPER_KEEP_DISTANCE);
                 setTask(_runAwayTask);
                 return 50 + blowingUp.getClientFuseTime(1) * 50;
@@ -235,6 +237,10 @@ public class MobDefenseChain extends SingleTaskChain {
         // Dodge all mobs cause we boutta die son
         if (isInDanger(mod) && !escapeDragonBreath(mod) && !mod.getFoodChain().isShouldStop()) {
             if (_targetEntity == null) {
+//                for (Entity entity : mod.getEntityTracker().getHostiles()) {
+//                    mod.getBlockTracker().requestBlockUnreachable(entity.getBlockPos(), 0);
+//                }
+
                 _runAwayTask = new RunAwayFromHostilesTask(DANGER_KEEP_DISTANCE, true);
                 setTask(_runAwayTask);
                 return 70;
@@ -367,6 +373,10 @@ public class MobDefenseChain extends SingleTaskChain {
                     return 65;
                 } else {
                     // We can't deal with it
+//                    for (Entity entity : toDealWith) {
+//                        mod.getBlockTracker().requestBlockUnreachable(entity.getBlockPos(), 0);
+//                    }
+
                     _runAwayTask = new RunAwayFromHostilesTask(DANGER_KEEP_DISTANCE, true);
                     setTask(_runAwayTask);
                     return 80;

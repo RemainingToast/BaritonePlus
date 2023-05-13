@@ -385,14 +385,18 @@ public class AltoClef implements ModInitializer {
      * Minecraft player client access (could just be static honestly)
      */
     public ClientPlayerEntity getPlayer() {
-        return MinecraftClient.getInstance().player;
+        return mc().player;
     }
 
     /**
      * Minecraft world access (could just be static honestly)
      */
     public ClientWorld getWorld() {
-        return MinecraftClient.getInstance().world;
+        return mc().world;
+    }
+
+    public MinecraftClient mc() {
+        return MinecraftClient.getInstance();
     }
 
     /**

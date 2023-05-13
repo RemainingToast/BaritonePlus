@@ -27,8 +27,11 @@ import adris.altoclef.tasks.stupid.BeeMovieTask;
 import adris.altoclef.tasks.stupid.ReplaceBlocksTask;
 import adris.altoclef.tasks.stupid.SCP173Task;
 import adris.altoclef.tasks.stupid.TerminatorTask;
+import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.WorldHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -40,10 +43,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.EmptyChunk;
+import org.reflections.Reflections;
 
 import java.io.*;
-import java.util.List;
-import java.util.Scanner;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * For testing.
@@ -56,7 +62,32 @@ import java.util.Scanner;
 @SuppressWarnings("EnhancedSwitchMigration")
 public class Playground {
 
+    public static void printAllTaskClasses() {
+        Reflections reflections = new Reflections("adris.altoclef.tasks");
+        Set<Class<? extends Task>> allClasses =
+                reflections.getSubTypesOf(Task.class);
+
+        List<String> taskClasses = new ArrayList<>();
+        for (Class<? extends Task> taskClass : allClasses) {
+            Constructor<?>[] constructors = taskClass.getConstructors();
+            List<String> constructorSignatures = new ArrayList<>();
+            for (Constructor<?> constructor : constructors) {
+                List<String> paramTypes = Arrays.stream(constructor.getParameterTypes())
+                        .map(Class::getName)
+                        .collect(Collectors.toList());
+                constructorSignatures.add(String.join(",", paramTypes));
+            }
+
+            String constructorsString = String.join("|", constructorSignatures);
+            taskClasses.add(taskClass.getName());
+        }
+
+        String jsonString = new Gson().toJson(taskClasses);
+        System.out.println(jsonString);
+    }
+
     public static void IDLE_TEST_INIT_FUNCTION(AltoClef mod) {
+        printAllTaskClasses();
         // Test code here
 
         // Print all uncatalogued resources as well as resources that don't have a corresponding item

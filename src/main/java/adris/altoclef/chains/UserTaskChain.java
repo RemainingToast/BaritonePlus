@@ -113,7 +113,7 @@ public class UserTaskChain extends SingleTaskChain {
         boolean actuallyDone = _mainTask == null;
         if (actuallyDone) {
             if (!_runningIdleTask) {
-                var text = String.format("User Task %s FINISHED. Took %s seconds.", oldTask == null ? "" : oldTask.getDebugState(), prettyPrintTimeDuration(seconds));
+                var text = String.format("User Task: {%s} FINISHED. Took %s seconds.", oldTask == null ? "null" : oldTask.getDebugState(), prettyPrintTimeDuration(seconds));
                 Debug.logMessage(text);
                 // Save to Memory
                 mod.getBaritoneBrain().memory.add(
