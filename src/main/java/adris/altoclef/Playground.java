@@ -2,6 +2,9 @@ package adris.altoclef;
 
 import adris.altoclef.butler.WhisperChecker;
 import adris.altoclef.tasks.CraftGenericManuallyTask;
+import adris.altoclef.tasks.MissingTask;
+import adris.altoclef.tasks.RandomRadiusGoalTask;
+import adris.altoclef.tasks.SchematicBuildTask;
 import adris.altoclef.tasks.construction.PlaceBlockNearbyTask;
 import adris.altoclef.tasks.construction.PlaceSignTask;
 import adris.altoclef.tasks.construction.PlaceStructureBlockTask;
@@ -153,6 +156,13 @@ public class Playground {
             case "sign":
                 mod.runUserTask(new PlaceSignTask("Hello there!"));
                 break;
+            case "randr":
+                mod.runUserTask(new RandomRadiusGoalTask(mod.getPlayer().getBlockPos(), 6));
+                break;
+//            case "randr2":
+//                final Goal goal = new GoalRandomSpotNearby();
+//                mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(goal);
+//                break;
             case "sign2":
                 mod.runUserTask(new PlaceSignTask(new BlockPos(10, 3, 10), "Hello there!"));
                 break;
@@ -227,6 +237,15 @@ public class Playground {
             break;
             case "iron":
                 mod.runUserTask(new ConstructIronGolemTask());
+            case "avoidremove":
+                //mod.getBehaviour().clearAvoidBlockBreaking();
+                break;
+            case "printit":
+                System.out.println("PRINTIT---------");
+                System.out.println(mod.getBehaviour().getAvoidanceCount());
+                System.out.println(mod.getBehaviour().getAvoidanceCount2());
+
+                System.out.println("PRINTIT---------");
                 break;
             case "avoid":
                 // Test block break predicate
@@ -245,7 +264,9 @@ public class Playground {
                     Debug.logWarning("No zombs found.");
                 } else {
                     LivingEntity entity = zombs.get(0);
-                    mod.runUserTask(new KillEntityTask(entity));
+                    mod.getEntityTracker().getClosestEntity(ZombieEntity.class).ifPresent(zombie -> {
+                        mod.runUserTask(new KillEntityTask(entity));
+                    });
                 }
                 break;
             case "craft":
@@ -349,6 +370,18 @@ public class Playground {
                 break;
             case "chest":
                 mod.runUserTask(new StoreInAnyContainerTask(true, new ItemTarget(Items.DIAMOND, 3)));
+                break;
+            case "missing":
+                mod.runUserTask(new MissingTask());
+                break;
+            case "build":
+                mod.runUserTask(new SchematicBuildTask("test8.schem"));
+                break;
+            case "build2":
+                mod.runUserTask(new SchematicBuildTask("test9.schem"));
+                break;
+            case "house":
+                mod.runUserTask(new SchematicBuildTask("house.schem"));
                 break;
             case "173":
                 mod.runUserTask(new SCP173Task());

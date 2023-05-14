@@ -40,7 +40,9 @@ public class AltoClefCommands {
                 new SetGammaCommand(),
                 new ListCommand(),
                 new CoverWithSandCommand(),
-                new CoverWithBlocksCommand()
+                new CoverWithBlocksCommand(),
+                new RoundtripCommand(),
+                new BuildCommand()
                 //new TestMoveInventoryCommand(),
                 //    new TestSwapInventoryCommand()
         );
