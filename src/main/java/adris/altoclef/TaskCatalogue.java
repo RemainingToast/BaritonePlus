@@ -8,7 +8,6 @@ import adris.altoclef.tasks.container.UpgradeInSmithingTableTask;
 import adris.altoclef.tasks.resources.*;
 import adris.altoclef.tasks.resources.wood.*;
 import adris.altoclef.tasks.squashed.CataloguedResourceTask;
-import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
@@ -49,8 +48,11 @@ public class TaskCatalogue {
 
             /// RAW RESOURCES
             mine("log", MiningRequirement.HAND, ItemHelper.LOG, ItemHelper.LOG).anyDimension();
+            mine("oak_wood", MiningRequirement.HAND, Blocks.OAK_WOOD, Items.OAK_WOOD);
             woodTasks("log", wood -> wood.log, (wood, count) -> new MineAndCollectTask(wood.log, count, new Block[]{Block.getBlockFromItem(wood.log)}, MiningRequirement.HAND), true);
             mine("dirt", MiningRequirement.HAND, new Block[]{Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.DIRT_PATH}, Items.DIRT);
+            alias("grass_block", "dirt");
+//            mine("grass_block", MiningRequirement.HAND, Blocks.GRASS_BLOCK, Items.GRASS_BLOCK);
             simple("cobblestone", Items.COBBLESTONE, CollectCobblestoneTask::new).dontMineIfPresent();
             simple("cobbled_deepslate", Items.COBBLED_DEEPSLATE, CollectCobbledDeepslateTask::new).dontMineIfPresent();
             mine("andesite", MiningRequirement.WOOD, Blocks.ANDESITE, Items.ANDESITE);
@@ -667,7 +669,6 @@ public class TaskCatalogue {
     }
 
     public static ResourceTask getItemTask(String name, int count) {
-
         if (!taskExists(name)) {
             Debug.logWarning("Task " + name + " does not exist. Error possibly.");
             Debug.logStack();
@@ -679,9 +680,7 @@ public class TaskCatalogue {
 
     public static ResourceTask getItemTask(Item item, int count) {
         if (!taskExists(item)) {
-            Debug.logWarning("Task " + item + " does not exist. Error possibly.");
-            Debug.logStack();
-            return null;
+            return getItemTask(item.toString(), count);
         }
 
         return _itemToResourceTask.get(item).getResource(count);

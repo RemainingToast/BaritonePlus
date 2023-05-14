@@ -7,19 +7,22 @@ import adris.altoclef.tasks.resources.CollectFoodTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.trackers.storage.ItemStorageTracker;
 import adris.altoclef.util.CubeBounds;
+import adris.altoclef.util.ItemTarget;
+import adris.altoclef.util.helpers.ItemHelper;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import adris.altoclef.util.time.TimerGame;
 import baritone.api.schematic.ISchematic;
 import baritone.process.BuilderProcess;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,21 +30,13 @@ import java.util.Map;
 public class SchematicBuildTask extends Task {
     private boolean finished;
     private BuilderProcess builder;
-    private String schematicFileName;
-    private BlockPos startPos;
-    private int allowedResourceStackCount;
-    private Map<BlockState, Integer> needToSource;
-    private boolean gotBackup;
-    private boolean needBackup;
+    private final String schematicFileName;
+    private final BlockPos startPos;
+    private final int allowedResourceStackCount;
     private Vec3i schemSize;
-    private CubeBounds bounds;
     private Map<BlockState, Integer> missing;
     private boolean sourced;
-    private boolean pause;
     private boolean addedAvoidance;
-    //private final MovementProgressChecker _progressChecker = new MovementProgressChecker(3);
-    private BlockPos _currentTry = null;
-    private boolean clearRunning = false;
     private String name;
     private ISchematic schematic;
     private static final int FOOD_UNITS = 80;
@@ -55,40 +50,42 @@ public class SchematicBuildTask extends Task {
     }
 
     public SchematicBuildTask(final String schematicFileName, final BlockPos startPos) {
-        this(schematicFileName, startPos, 3);
+        this(schematicFileName, startPos, 8);
     }
 
     public SchematicBuildTask(final String schematicFileName, final BlockPos startPos, final int allowedResourceStackCount) {
-        this();
+        this.sourced = false;
+        this.addedAvoidance = false;
         this.schematicFileName = schematicFileName;
         this.startPos = startPos;
         this.allowedResourceStackCount = allowedResourceStackCount;
-    }
-
-    public SchematicBuildTask() {
-        this.needToSource = new HashMap<>();
-        this.gotBackup = false;
-        this.needBackup = false;
-        this.sourced = false;
-        this.addedAvoidance = false;
-    }
-
-    public SchematicBuildTask(String name, ISchematic schematic, final BlockPos startPos) {
-        this();
-        this.name = name;
-        this.schematic = schematic;
-        this.startPos = startPos;
     }
 
     @Override
     protected void onStart(AltoClef mod) {
         this.finished = false;
 
+        mod.getClientBaritoneSettings().buildInLayers.value = true;
+        mod.getClientBaritoneSettings().buildIgnoreExisting.value = true;
+
+        mod.getClientBaritoneSettings().buildSubstitutes.value.put(
+                Blocks.GRASS_BLOCK,
+                List.of(Blocks.DIRT)
+        );
+
+        for (Block block : ItemHelper.itemsToBlocks(ItemHelper.BED)) {
+            mod.getClientBaritoneSettings().buildSubstitutes.value.put(
+                    block,
+                    List.of(ItemHelper.itemsToBlocks(ItemHelper.BED))
+            );
+        }
+
         if (isNull(builder)) {
             builder = mod.getClientBaritone().getBuilderProcess();
         }
 
-        final File file = new File("schematics/" + schematicFileName);
+        var file = new File(new File(MinecraftClient.getInstance().runDirectory, "schematics"), schematicFileName);
+
         if (!file.exists()) {
             Debug.logMessage("Could not locate schematic file. Terminating...");
             this.finished = true;
@@ -98,113 +95,77 @@ public class SchematicBuildTask extends Task {
         builder.clearState();
 
         if (this.schematic == null) {
-            builder.build(schematicFileName, startPos); //TODO: I think there should be a state queue in baritone
+            builder.build(this.schematicFileName, file, startPos, true); //TODO: I think there should be a state queue in baritone
         } else {
-            builder.build(this.name, this.schematic, startPos);
+            builder.build(this.name, this.schematic, startPos, true);
         }
 
         if (isNull(schemSize)) {
             this.schemSize = builder.getSchemSize();
         }
 
+        overrideMissing();
+
         if (!isNull(schemSize) && builder.isFromAltoclef() && !this.addedAvoidance) {
-            this.bounds = new CubeBounds(mod.getPlayer().getBlockPos(), this.schemSize.getX(), this.schemSize.getY(), this.schemSize.getZ());
+            CubeBounds bounds = new CubeBounds(mod.getPlayer().getBlockPos(), this.schemSize.getX(), this.schemSize.getY(), this.schemSize.getZ());
             this.addedAvoidance = true;
-            mod.getBehaviour().avoidWalkingThrough(bounds.getPredicate());
+            mod.getBehaviour().avoidBlockBreaking(bounds.getPredicate());
         }
-        this.pause = false;
 
         _moveChecker.reset();
         _clickTimer.reset();
-    }
 
-    private List<BlockState> getTodoList(final AltoClef mod, final Map<BlockState, Integer> missing) {
-        final ItemStorageTracker inventory = mod.getItemStorage();
-        int finishedStacks = 0;
-        final List<BlockState> listOfFinished = new ArrayList<>();
-
-        for (final BlockState state : missing.keySet()) {
-            final Item item = state.getBlock().asItem();
-            final int count = inventory.getItemCount(item);
-            final int maxCount = item.getMaxCount();
-
-            if (finishedStacks < this.allowedResourceStackCount) {
-                listOfFinished.add(state);
-                if (count >= missing.get(state)) {
-                    finishedStacks++;
-                    listOfFinished.remove(state);
-                } else if (count >= maxCount) {
-                    finishedStacks += Math.ceil(count / maxCount);
-
-                    if (finishedStacks >= this.allowedResourceStackCount) {
-                        listOfFinished.remove(state);
-                    }
-                }
-            }
-        }
-
-        return listOfFinished;
-    }
-
-    private boolean isNull(Object o) {
-        return o == null;
-    }
-
-    private void overrideMissing() {
-        this.missing = builder.getMissing();
-    }
-
-    private Map<BlockState, Integer> getMissing() {
-        if (isNull(this.missing)) {
-            overrideMissing();
-        }
-        return this.missing;
+        setDebugState("Building %s".formatted(this.schematicFileName));
     }
 
     @Override
     protected Task onTick(AltoClef mod) {
-        if (clearRunning && builder.isActive()) {
-            return null;
-        }
-
-        clearRunning = false;
         overrideMissing();
-        this.sourced = false;
+
+        this.sourced = getTodoList(mod, getMissing()).isEmpty();
 
         if (!isNull(getMissing()) && !getMissing().isEmpty() && (builder.isPaused() || !builder.isFromAltoclef()) || !builder.isActive()) {
+            setDebugState("Getting Schematic Materials...");
 //            if (!mod.inAvoidance(this.bounds)) {
 //                mod.setAvoidanceOf(this.bounds);
 //            }
+            
             if (StorageHelper.calculateInventoryFoodScore(mod) < MIN_FOOD_UNITS) {
                 return new CollectFoodTask(FOOD_UNITS);
             }
-            for (final BlockState state : getTodoList(mod, missing)) {
-                return TaskCatalogue.getItemTask(state.getBlock().asItem(), missing.get(state));
+
+            for (final Map.Entry<BlockState, Integer> entry : getTodoList(mod, getMissing()).entrySet()) {
+                var _newTarget = new ItemTarget(
+                        entry.getKey().getBlock().asItem(),
+                        entry.getValue()
+                );
+//                Debug.logMessage("Added Target: %s %s", _newTarget.toString(), _newTarget.getTargetCount());
+                return TaskCatalogue.getItemTask(_newTarget);
             }
-            this.sourced = true;
         }
 
 //        mod.unsetAvoidanceOf(this.bounds);
 
-        if (this.sourced == true && !builder.isActive()) {
+        if (this.sourced && !builder.isActive()) {
 //            if (mod.inAvoidance(this.bounds)) {
 //                mod.unsetAvoidanceOf(this.bounds);
 //            }
-
+            Debug.logInternal("Resuming build process...");
+            setDebugState("Resuming build process...");
             builder.resume();
-            Debug.logMessage("Resuming build process...");
-            System.out.println("Resuming builder...");
         }
 
         if (_moveChecker.check(mod)) {
             _clickTimer.reset();
         }
+
         if (_clickTimer.elapsed()) {
             if (isNull(walkAroundTask)) {
                 walkAroundTask = new RandomRadiusGoalTask(mod.getPlayer().getBlockPos(), 5d).next(mod.getPlayer().getBlockPos());
             }
             Debug.logMessage("Timer elapsed.");
         }
+
         if (!isNull(walkAroundTask)) {
             if (!walkAroundTask.isFinished(mod)) {
                 return walkAroundTask;
@@ -247,8 +208,7 @@ public class SchematicBuildTask extends Task {
 
     @Override
     protected void onStop(AltoClef mod, Task interruptTask) {
-        builder.pause();
-        this.pause = true;
+        builder = null;
     }
 
     @Override
@@ -263,9 +223,41 @@ public class SchematicBuildTask extends Task {
 
     @Override
     public boolean isFinished(AltoClef mod) {
-        if (!isNull(builder) && builder.isFromAltoclefFinished() || this.finished == true) {
+        if (!isNull(builder) && builder.isFromAltoclefFinished() || this.finished) {
             return true;
         }
         return false;
+    }
+
+    private Map<BlockState, Integer> getTodoList(final AltoClef mod, final Map<BlockState, Integer> missing) {
+        final ItemStorageTracker inventory = mod.getItemStorage();
+        final Map<BlockState, Integer> todo = new HashMap<>();
+
+        for (final Map.Entry<BlockState, Integer> entry : missing.entrySet()) {
+            final Item item = entry.getKey().getBlock().asItem();
+            final int currentCount = inventory.getItemCount(item);
+            final int neededCount = entry.getValue();
+            
+            if (currentCount >= neededCount) continue;
+            
+            todo.put(entry.getKey(), neededCount - currentCount);
+        }
+
+        return todo;
+    }
+
+    private boolean isNull(Object o) {
+        return o == null;
+    }
+
+    private void overrideMissing() {
+        this.missing = builder.getMissing();
+    }
+
+    private Map<BlockState, Integer> getMissing() {
+        if (isNull(this.missing)) {
+            overrideMissing();
+        }
+        return this.missing;
     }
 }
