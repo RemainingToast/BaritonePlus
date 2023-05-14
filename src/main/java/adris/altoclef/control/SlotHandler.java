@@ -108,14 +108,24 @@ public class SlotHandler {
         _mod.getPlayer().getInventory().selectedSlot = 1;
 
         // If our item is in our cursor, simply move it to the hotbar.
-        boolean inCursor = StorageHelper.getItemStackInSlot(CursorSlot.SLOT).getItem() == toEquip;
+        boolean inCursor = StorageHelper.getItemStackInSlot(CursorSlot.SLOT).getItem() == toEquip
+                && toEquip != Items.AIR;
 
         List<Slot> itemSlots = _mod.getItemStorage().getSlotsWithItemScreen(toEquip);
+
+        if (toEquip == Items.AIR) {
+            Debug.logInternal(itemSlots.toString());
+        }
+
         if (itemSlots.size() != 0) {
             for (Slot ItemSlots : itemSlots) {
                 int hotbar = 1;
                 //_mod.getPlayer().getInventory().swapSlotWithHotbar();
-                clickSlotForce(Objects.requireNonNull(ItemSlots), inCursor ? 0 : hotbar, inCursor ? SlotActionType.PICKUP : SlotActionType.SWAP);
+                clickSlotForce(
+                        Objects.requireNonNull(ItemSlots),
+                        inCursor ? 0 : hotbar,
+                        inCursor ? SlotActionType.PICKUP : SlotActionType.SWAP
+                );
                 //registerSlotAction();
             }
             return true;

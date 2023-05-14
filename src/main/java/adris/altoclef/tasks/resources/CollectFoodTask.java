@@ -12,10 +12,7 @@ import adris.altoclef.tasks.movement.PickupDroppedItemTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasks.speedrun.MarvionBeatMinecraftTask;
 import adris.altoclef.tasksystem.Task;
-import adris.altoclef.util.CraftingRecipe;
-import adris.altoclef.util.ItemTarget;
-import adris.altoclef.util.RecipeTarget;
-import adris.altoclef.util.SmeltTarget;
+import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.slots.SmokerSlot;
@@ -66,7 +63,8 @@ public class CollectFoodTask extends Task {
 
     private static final CropTarget[] CROPS = new CropTarget[]{
             new CropTarget(Items.WHEAT, Blocks.WHEAT),
-            new CropTarget(Items.CARROT, Blocks.CARROTS)
+            new CropTarget(Items.CARROT, Blocks.CARROTS),
+            new CropTarget(Items.APPLE, Blocks.OAK_LEAVES)
     };
 
     private final double _unitsNeeded;
@@ -134,6 +132,11 @@ public class CollectFoodTask extends Task {
 
         mod.getBlockTracker().trackBlock(Blocks.HAY_BLOCK);
         mod.getBlockTracker().trackBlock(Blocks.SWEET_BERRY_BUSH);
+
+        mod.getBehaviour().setBlockBreakAdditionalPenalty(
+                StorageHelper.getCurrentMiningRequirement(mod) == MiningRequirement.HAND
+                        ? Integer.MAX_VALUE : 0
+        );
     }
 
     @Override

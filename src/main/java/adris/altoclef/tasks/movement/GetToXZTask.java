@@ -13,6 +13,10 @@ public class GetToXZTask extends CustomBaritoneGoalTask {
     private final int _x, _z;
     private final Dimension _dimension;
 
+    public GetToXZTask(BlockPos pos) {
+        this(pos.getX(), pos.getZ(), null);
+    }
+
     public GetToXZTask(int x, int z) {
         this(x, z, null);
     }

@@ -1,6 +1,7 @@
 package adris.altoclef.baritone.brain.utils;
 
 import adris.altoclef.AltoClef;
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -20,8 +21,6 @@ public class WorldState {
     public final int playerHunger;
     public final BlockPos playerLocation;
     public final PlayerInventory playerInventory;
-    public final Biome currentBiome;
-    public final List<Entity> surroundingEntities;
 
     public WorldState(AltoClef mod) {
         var player = mod.getPlayer();
@@ -31,26 +30,33 @@ public class WorldState {
         this.playerHunger = player.getHungerManager().getFoodLevel();
         this.playerLocation = player.getBlockPos();
         this.playerInventory = player.getInventory();
+    }
 
-        this.currentBiome = world.getBiome(this.playerLocation).value();
-        this.surroundingEntities = new ArrayList<>();
+    private String inventoryToString(PlayerInventory inventory) {
+        var str = new StringBuilder();
+        var main = inventory.main;
 
-        world.getEntities().forEach(entity -> {
-            if (entity.distanceTo(entity) <= 48) {
-                this.surroundingEntities.add(entity);
+        main.forEach(itemStack -> {
+            if (itemStack == null || itemStack.isEmpty()) {
+                return;
             }
+
+            str.append(itemStack.getCount())
+                    .append("x ")
+                    .append(itemStack.getItem().getName().getString())
+                    .append(", ");
         });
+
+        return str.toString();
     }
 
     @Override
     public String toString() {
-        return "WorldState{" +
-                "Health=" + playerHealth +
-                ", Hunger=" + playerHunger +
-                ", Location=" + playerLocation +
-//                ", playerInventory=" + playerInventory.ite +
-//                ", currentBiome=" + currentBiome.toString() +
-//                ", surroundingEntities=" + surroundingEntities +
-                '}';
+        return "{" +
+                "health=" + playerHealth +
+                ", hunger=" + playerHunger +
+                ", location=" + playerLocation +
+                ", inventory=" + inventoryToString(playerInventory) +
+                "}";
     }
 }

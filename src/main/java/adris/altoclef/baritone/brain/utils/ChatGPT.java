@@ -20,7 +20,7 @@ public class ChatGPT {
     }
 
     public static ChatGPT build() {
-        return new ChatGPT("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");
+        return new ChatGPT("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");
     }
 
     public String generateTaskNaturalLanguage(WorldState worldState) {
