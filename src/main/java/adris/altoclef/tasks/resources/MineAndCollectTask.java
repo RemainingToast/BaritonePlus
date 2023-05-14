@@ -16,12 +16,14 @@ import adris.altoclef.util.slots.CursorSlot;
 import adris.altoclef.util.slots.PlayerSlot;
 import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -39,7 +41,7 @@ public class MineAndCollectTask extends ResourceTask {
 
     public MineAndCollectTask(ItemTarget[] itemTargets, Block[] blocksToMine, MiningRequirement requirement) {
         super(itemTargets);
-        _requirement = requirement;
+        _requirement = optimiseMiningRequirement(_itemTargets, requirement);
         _blocksToMine = blocksToMine;
         _subtask = new MineOrCollectTask(_blocksToMine, _itemTargets);
     }
@@ -88,8 +90,10 @@ public class MineAndCollectTask extends ResourceTask {
 
     @Override
     protected Task onResourceTick(AltoClef mod) {
-        if (!StorageHelper.miningRequirementMet(mod, _requirement)) {
-            return new SatisfyMiningRequirementTask(_requirement);
+        for (BlockState _toMine : Arrays.stream(_blocksToMine).map(Block::getDefaultState).toList()) {
+            if (!StorageHelper.miningRequirementMet(mod, _requirement, _toMine)) {
+                return new SatisfyMiningRequirementTask(_requirement, _toMine);
+            }
         }
 
         if (_subtask.isMining()) {
@@ -121,6 +125,45 @@ public class MineAndCollectTask extends ResourceTask {
     @Override
     protected String toDebugStringName() {
         return "Mine And Collect";
+    }
+
+    /**
+     * In this code, we want to check if we have to collect a lot of items.
+     * If so, we want to increase the mining requirement to make the mining more efficient.
+     * To do this, we are counting all the items that we need more than or equal to 64 of.
+     *
+     * @return _requirement
+     */
+    private MiningRequirement optimiseMiningRequirement(ItemTarget[] targets, MiningRequirement _requirement) {
+        int _countThreshold = switch (_requirement) {
+            case HAND -> 16;
+            case WOOD -> 32;
+            default -> 64;
+        };
+
+        // Create a map to keep track of the total counts of each unique item
+        Map<Item, Integer> _count = new HashMap<>();
+
+        for (Pair<ItemTarget, Item[]> _itemMatches : Arrays.stream(targets).map(_itemTarget -> new Pair<>(_itemTarget, _itemTarget.getMatches())).toList()) {
+            for (Item _itemMatch : _itemMatches.getRight()) {
+                _count.put(
+                        _itemMatch,
+                        _count.getOrDefault(_itemMatch, 1) + _itemMatches.getLeft().getTargetCount()
+                );
+            }
+        }
+
+        // Now check the total count of each item with the threshold
+        for (Map.Entry<Item, Integer> entry : _count.entrySet()) {
+            int count = entry.getValue();
+
+            while (count >= _countThreshold) {
+                _requirement = _requirement.next();
+                count -= _countThreshold;
+            }
+        }
+
+        return _requirement;
     }
 
     private void makeSureToolIsEquipped(AltoClef mod) {
@@ -179,16 +222,16 @@ public class MineAndCollectTask extends ResourceTask {
 
         @Override
         protected Optional<Object> getClosestTo(AltoClef mod, Vec3d pos) {
+            Optional<ItemEntity> closestDrop = Optional.empty();
+            if (mod.getEntityTracker().itemDropped(_targets)) {
+                closestDrop = mod.getEntityTracker().getClosestItemDrop(pos, _targets);
+            }
+
             Optional<BlockPos> closestBlock = mod.getBlockTracker().getNearestTracking(pos, check -> {
                 if (_blacklist.contains(check)) return false;
                 if (mod.getBlockTracker().unreachable(check)) return false;
                 return WorldHelper.canBreak(mod, check);
             }, _blocks);
-
-            Optional<ItemEntity> closestDrop = Optional.empty();
-            if (mod.getEntityTracker().itemDropped(_targets)) {
-                closestDrop = mod.getEntityTracker().getClosestItemDrop(pos, _targets);
-            }
 
             double blockSq = closestBlock.isEmpty() ? Double.POSITIVE_INFINITY : closestBlock.get().getSquaredDistance(pos);
             double dropSq = closestDrop.isEmpty() ? Double.POSITIVE_INFINITY : closestDrop.get().squaredDistanceTo(pos) + 10; // + 5 to make the bot stop mining a bit less

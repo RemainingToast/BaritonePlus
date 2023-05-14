@@ -163,10 +163,7 @@ public class BeatMinecraft2Task extends Task {
         return state.get(EndPortalFrameBlock.EYE);
     }
 
-    // Just a helpful utility to reduce reuse recycle.
-    private static boolean shouldForce(AltoClef mod, Task task) {
-        return task != null && task.isActive() && !task.isFinished(mod);
-    }
+
 
     private static ItemTarget[] toItemTargets(Item... items) {
         return Arrays.stream(items).map(item -> new ItemTarget(item, 1)).toArray(ItemTarget[]::new);
@@ -349,7 +346,7 @@ public class BeatMinecraft2Task extends Task {
             }
             if (!mod.getItemStorage().hasItem(ItemHelper.BED)) {
                 if (mod.getBlockTracker().anyFound(blockPos -> WorldHelper.canBreak(mod, blockPos), ItemHelper.itemsToBlocks(ItemHelper.BED))
-                        || shouldForce(mod, _getOneBedTask)) {
+                        || _shouldForce(mod, _getOneBedTask)) {
                     setDebugState("Grabbing a bed we found to sleep through the night.");
                     return _getOneBedTask;
                 }
@@ -456,7 +453,7 @@ public class BeatMinecraft2Task extends Task {
     }
 
     private boolean needsBuildingMaterials(AltoClef mod) {
-        return StorageHelper.getBuildingMaterialCount(mod) < _config.minBuildMaterialCount || shouldForce(mod, _buildMaterialsTask);
+        return StorageHelper.getBuildingMaterialCount(mod) < _config.minBuildMaterialCount || _shouldForce(mod, _buildMaterialsTask);
     }
 
     private void updateCachedEndItems(AltoClef mod) {
@@ -630,7 +627,7 @@ public class BeatMinecraft2Task extends Task {
                         return new EquipArmorTask(COLLECT_EYE_ARMOR);
                     }
                 }
-                if (shouldForce(mod, _lootTask)) {
+                if (_shouldForce(mod, _lootTask)) {
                     return _lootTask;
                 }
                 if (_config.searchRuinedPortals) {
@@ -651,11 +648,11 @@ public class BeatMinecraft2Task extends Task {
                         return _lootTask;
                     }
                 }
-                if (shouldForce(mod, _gearTask) && !StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR)) {
+                if (_shouldForce(mod, _gearTask) && !StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR)) {
                     setDebugState("Getting gear for Ender Eye journey");
                     return _gearTask;
                 }
-                if (shouldForce(mod, _foodTask)) {
+                if (_shouldForce(mod, _foodTask)) {
                     setDebugState("Getting Food for Ender Eye journey");
                     return _foodTask;
                 }
@@ -720,7 +717,7 @@ public class BeatMinecraft2Task extends Task {
         } else {
             _bedSpawnLocation = null;
         }
-        if (shouldForce(mod, _setBedSpawnTask)) {
+        if (_shouldForce(mod, _setBedSpawnTask)) {
             // Set spawnpoint and set our bed spawn when it happens.
             setDebugState("Setting spawnpoint now.");
             return _setBedSpawnTask;
@@ -762,7 +759,7 @@ public class BeatMinecraft2Task extends Task {
         boolean needsToSetSpawn = _config.placeSpawnNearEndPortal &&
                 (
                         !spawnSetNearPortal(mod, _endPortalCenterLocation)
-                                && !shouldForce(mod, _setBedSpawnTask)
+                                && !_shouldForce(mod, _setBedSpawnTask)
                 );
         int bedsInEnd = 0;
         for (Item bed : ItemHelper.BED) {

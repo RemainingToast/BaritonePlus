@@ -75,6 +75,7 @@ public class StoreInStashTask extends Task {
             );
         }
 
+        // TODO Craft Chests and place in Stash range
         setDebugState("Traveling to stash (no non-full containers in stash range found)");
         BlockPos centerStash = _stashRange.getCenter();
         return new GetToXZTask(centerStash.getX(), centerStash.getZ());

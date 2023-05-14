@@ -5,14 +5,9 @@ import adris.altoclef.Debug;
 import adris.altoclef.tasks.InteractWithBlockTask;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
 import adris.altoclef.tasks.examples.ExampleTask2;
-import adris.altoclef.tasks.movement.IdleTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasks.resources.CollectMeatTask;
 import adris.altoclef.tasks.resources.CollectPlanksTask;
-import adris.altoclef.tasks.resources.MineAndCollectTask;
-import adris.altoclef.util.ItemTarget;
-import adris.altoclef.util.MiningRequirement;
-import adris.altoclef.util.helpers.ItemHelper;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.function.Predicate;
@@ -221,5 +216,10 @@ public abstract class Task {
         }
 
         return new ExampleTask2();
+    }
+
+    // Baritone Brain - Remove Duplicate Code From Beat Minecraft Tasks
+    public static boolean _shouldForce(AltoClef mod, Task task) {
+        return task != null && task.isActive() && !task.isFinished(mod);
     }
 }

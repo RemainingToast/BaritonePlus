@@ -213,11 +213,6 @@ public class MarvionBeatMinecraftTask extends Task {
         return state.get(EndPortalFrameBlock.EYE);
     }
 
-    // Just a helpful utility to reduce reuse recycle.
-    private static boolean shouldForce(AltoClef mod, Task task) {
-        return task != null && task.isActive() && !task.isFinished(mod);
-    }
-
     @Override
     public boolean isFinished(AltoClef mod) {
         return getInstance().currentScreen instanceof CreditsScreen ||
@@ -225,7 +220,7 @@ public class MarvionBeatMinecraftTask extends Task {
     }
 
     private boolean needsBuildingMaterials(AltoClef mod) {
-        return StorageHelper.getBuildingMaterialCount(mod) < _config.minBuildMaterialCount || shouldForce(mod, _buildMaterialsTask);
+        return StorageHelper.getBuildingMaterialCount(mod) < _config.minBuildMaterialCount || _shouldForce(mod, _buildMaterialsTask);
     }
 
     private void updateCachedEndItems(AltoClef mod) {
@@ -944,7 +939,7 @@ public class MarvionBeatMinecraftTask extends Task {
             }
             if (!mod.getItemStorage().hasItem(ItemHelper.BED)) {
                 if (mod.getBlockTracker().anyFound(blockPos -> WorldHelper.canBreak(mod, blockPos), ItemHelper.itemsToBlocks(ItemHelper.BED))
-                        || shouldForce(mod, _getOneBedTask)) {
+                        || _shouldForce(mod, _getOneBedTask)) {
                     setDebugState("Getting one bed to sleep in at night.");
                     return _getOneBedTask;
                 }
@@ -1150,7 +1145,7 @@ public class MarvionBeatMinecraftTask extends Task {
         } else {
             _bedSpawnLocation = null;
         }
-        if (shouldForce(mod, _setBedSpawnTask)) {
+        if (_shouldForce(mod, _setBedSpawnTask)) {
             // Set spawnpoint and set our bed spawn when it happens.
             setDebugState("Setting spawnpoint now.");
             return _setBedSpawnTask;
@@ -1177,7 +1172,7 @@ public class MarvionBeatMinecraftTask extends Task {
 
     private Task getEnderPearlTask(AltoClef mod, int count) {
         isGettingEnderPearls = true;
-        if (shouldForce(mod, getTwistingVines)) {
+        if (_shouldForce(mod, getTwistingVines)) {
             setDebugState("Getting twisting vines for MLG purposes.");
             return getTwistingVines;
         }
@@ -1215,7 +1210,7 @@ public class MarvionBeatMinecraftTask extends Task {
         boolean needsToSetSpawn = _config.placeSpawnNearEndPortal &&
                 (
                         !spawnSetNearPortal(mod, _endPortalCenterLocation)
-                                && !shouldForce(mod, _setBedSpawnTask)
+                                && !_shouldForce(mod, _setBedSpawnTask)
                 );
         int bedsInEnd = 0;
         for (Item bed : ItemHelper.BED) {
@@ -1338,19 +1333,19 @@ public class MarvionBeatMinecraftTask extends Task {
                 } else {
                     getBedTask = null;
                 }
-                if (shouldForce(mod, _logsTask)) {
+                if (_shouldForce(mod, _logsTask)) {
                     setDebugState("Getting logs for later.");
                     return _logsTask;
                 } else {
                     _logsTask = null;
                 }
-                if (shouldForce(mod, _stoneGearTask)) {
+                if (_shouldForce(mod, _stoneGearTask)) {
                     setDebugState("Getting stone gear for later.");
                     return _stoneGearTask;
                 } else {
                     _stoneGearTask = null;
                 }
-                if (shouldForce(mod, _getPorkchopTask)) {
+                if (_shouldForce(mod, _getPorkchopTask)) {
                     setDebugState("Getting porkchop just for fun.");
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
@@ -1362,19 +1357,19 @@ public class MarvionBeatMinecraftTask extends Task {
                 } else {
                     _getPorkchopTask = null;
                 }
-                if (shouldForce(mod, _starterGearTask)) {
+                if (_shouldForce(mod, _starterGearTask)) {
                     setDebugState("Getting starter gear.");
                     return _starterGearTask;
                 } else {
                     _starterGearTask = null;
                 }
-                if (shouldForce(mod, _foodTask)) {
+                if (_shouldForce(mod, _foodTask)) {
                     setDebugState("Getting food for ender eye journey.");
                     return _foodTask;
                 } else {
                     _foodTask = null;
                 }
-                if (shouldForce(mod, _smeltTask)) {
+                if (_shouldForce(mod, _smeltTask)) {
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
                             if (_timer1.elapsed()) {
@@ -1405,23 +1400,23 @@ public class MarvionBeatMinecraftTask extends Task {
                     }
                 }
                 // Make sure we have gear, then food.
-                if (shouldForce(mod, _lootTask)) {
+                if (_shouldForce(mod, _lootTask)) {
                     setDebugState("Looting chest for goodies");
                     return _lootTask;
                 }
-                if (shouldForce(mod, _shieldTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD)) {
+                if (_shouldForce(mod, _shieldTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD)) {
                     setDebugState("Getting shield for defense purposes only.");
                     return _shieldTask;
                 } else {
                     _shieldTask = null;
                 }
-                if (shouldForce(mod, _ironGearTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_IRON_ARMOR)) {
+                if (_shouldForce(mod, _ironGearTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_IRON_ARMOR)) {
                     setDebugState("Getting iron gear before diamond gear for defense purposes only.");
                     return _ironGearTask;
                 } else {
                     _ironGearTask = null;
                 }
-                if (shouldForce(mod, _gearTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_EYE_ARMOR)) {
+                if (_shouldForce(mod, _gearTask) && !StorageHelper.isArmorEquipped(mod, COLLECT_EYE_ARMOR)) {
                     setDebugState("Getting diamond gear for ender eye journey.");
                     return _gearTask;
                 } else {

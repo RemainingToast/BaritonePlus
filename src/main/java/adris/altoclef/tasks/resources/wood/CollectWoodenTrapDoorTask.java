@@ -22,8 +22,10 @@ public class CollectWoodenTrapDoorTask extends CraftWithMatchingPlanksTask {
     }
 
     private static CraftingRecipe createRecipe(ItemTarget planks) {
-        ItemTarget p = planks;
-        ItemTarget o = null;
-        return CraftingRecipe.newShapedRecipe(new ItemTarget[]{p, p, p, p, p, p, o, o, o}, 2);
+        return CraftingRecipe.newShapedRecipe(new ItemTarget[]{
+                planks, planks, planks,
+                planks, planks, planks,
+                null, null, null
+        }, 2);
     }
 }

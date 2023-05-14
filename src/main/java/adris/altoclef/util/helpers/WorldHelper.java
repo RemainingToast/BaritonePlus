@@ -21,6 +21,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -431,5 +432,11 @@ public interface WorldHelper {
 
         var count = server.getCurrentPlayerCount();
         return count <= 1;
+    }
+
+    static Difficulty getDifficulty() {
+        var world = MinecraftClient.getInstance().world;
+        if (world == null) return Difficulty.PEACEFUL;
+        return world.getDifficulty();
     }
 }

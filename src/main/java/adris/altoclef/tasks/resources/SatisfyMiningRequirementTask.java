@@ -5,7 +5,7 @@ import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.MiningRequirement;
 import adris.altoclef.util.helpers.StorageHelper;
-import net.minecraft.item.Items;
+import net.minecraft.block.BlockState;
 
 /**
  * Make sure we have a tool at or above a mining level.
@@ -13,9 +13,11 @@ import net.minecraft.item.Items;
 public class SatisfyMiningRequirementTask extends Task {
 
     private final MiningRequirement _requirement;
+    private final BlockState _toMine;
 
-    public SatisfyMiningRequirementTask(MiningRequirement requirement) {
+    public SatisfyMiningRequirementTask(MiningRequirement requirement, BlockState toMine) {
         _requirement = requirement;
+        _toMine = toMine;
     }
 
     @Override
@@ -25,7 +27,10 @@ public class SatisfyMiningRequirementTask extends Task {
 
     @Override
     protected Task onTick(AltoClef mod) {
-        switch (_requirement) {
+        var _tool = _requirement.getBestTool(_toMine);
+        if (_tool == null) return null;
+        return TaskCatalogue.getItemTask(_tool, 1);
+        /*switch (_requirement) {
             case HAND:
                 // Will never happen if you program this right
                 break;
@@ -38,7 +43,7 @@ public class SatisfyMiningRequirementTask extends Task {
             case DIAMOND:
                 return TaskCatalogue.getItemTask(Items.DIAMOND_PICKAXE, 1);
         }
-        return null;
+        return null;*/
     }
 
     @Override
@@ -61,6 +66,6 @@ public class SatisfyMiningRequirementTask extends Task {
 
     @Override
     public boolean isFinished(AltoClef mod) {
-        return StorageHelper.miningRequirementMetInventory(mod, _requirement);
+        return StorageHelper.miningRequirementMetInventory(mod, _requirement, _toMine);
     }
 }

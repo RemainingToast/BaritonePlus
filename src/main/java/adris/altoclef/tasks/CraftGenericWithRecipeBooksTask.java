@@ -93,7 +93,9 @@ public class CraftGenericWithRecipeBooksTask extends Task implements ITaskUsesCr
         }
         setDebugState("Crafting.");
         if (mod.getSlotHandler().canDoSlotAction()) {
-            StorageHelper.instantFillRecipeViaBook(mod, _target.getRecipe(), _target.getOutputItem(), true);
+            if (!StorageHelper.instantFillRecipeViaBook(mod, _target.getRecipe(), _target.getOutputItem(), true)) {
+                return null;
+            }
             mod.getSlotHandler().registerSlotAction();
         }
         return null;

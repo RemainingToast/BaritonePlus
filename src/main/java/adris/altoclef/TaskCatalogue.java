@@ -48,8 +48,19 @@ public class TaskCatalogue {
 
             /// RAW RESOURCES
             mine("log", MiningRequirement.HAND, ItemHelper.LOG, ItemHelper.LOG).anyDimension();
-            mine("oak_wood", MiningRequirement.HAND, Blocks.OAK_WOOD, Items.OAK_WOOD);
-            woodTasks("log", wood -> wood.log, (wood, count) -> new MineAndCollectTask(wood.log, count, new Block[]{Block.getBlockFromItem(wood.log)}, MiningRequirement.HAND), true);
+            woodTasks("log", wood -> wood.log,
+                    (wood, count) -> new MineAndCollectTask(
+                            wood.log,
+                            count,
+                            new Block[]{Block.getBlockFromItem(wood.log)},
+                            MiningRequirement.HAND), true);
+            woodTasks("oak_log", wood -> Items.OAK_LOG,
+                    (wood, count) -> new MineAndCollectTask(
+                            wood.log,
+                            count,
+                            new Block[]{Block.getBlockFromItem(wood.log)},
+                            MiningRequirement.HAND
+                    ), false);
             mine("dirt", MiningRequirement.HAND, new Block[]{Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.DIRT_PATH}, Items.DIRT);
             alias("grass_block", "dirt");
 //            mine("grass_block", MiningRequirement.HAND, Blocks.GRASS_BLOCK, Items.GRASS_BLOCK);
@@ -205,6 +216,10 @@ public class TaskCatalogue {
             }, true)) {
                 // Don't mine individual planks either!! Handled internally.
                 woodCatalogue.dontMineIfPresent();
+            }
+            {
+                String w = "oak_log";
+                shapedRecipe2x2("oak_wood", Items.OAK_WOOD, 3, w, w, w, w);
             }
             // shapedRecipe2x2("stick", Items.STICK, 4, p, o, p, o);
             simple("stick", Items.STICK, CollectSticksTask::new);
@@ -640,7 +655,8 @@ public class TaskCatalogue {
         // If this resource is just one item, consider it collectable.
         if (matches.length == 1) {
             if (_itemToResourceTask.containsKey(matches[0])) {
-                throw new IllegalStateException("Tried cataloguing " + matches[0].getTranslationKey() + " twice!");
+                return result;
+//                throw new IllegalStateException("Tried cataloguing " + matches[0].getTranslationKey() + " twice!");
             }
             _itemToResourceTask.put(matches[0], result);
         }

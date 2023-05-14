@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.*;
+import net.minecraft.world.Difficulty;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -85,10 +86,13 @@ public class StorageHelper {
 
     public static MiningRequirement getCurrentMiningRequirement(AltoClef mod) {
         MiningRequirement[] order = new MiningRequirement[]{
-                MiningRequirement.DIAMOND, MiningRequirement.IRON, MiningRequirement.STONE, MiningRequirement.WOOD
+                MiningRequirement.DIAMOND,
+                MiningRequirement.IRON,
+                MiningRequirement.STONE,
+                MiningRequirement.WOOD
         };
         for (MiningRequirement check : order) {
-            if (miningRequirementMet(mod, check)) {
+            if (miningRequirementMet(mod, check, check.getBlockState())) {
                 return check;
             }
         }
@@ -102,30 +106,37 @@ public class StorageHelper {
         return mod.getItemStorage().hasItem(items);
     }
 
-    private static boolean miningRequirementMetInner(AltoClef mod, boolean inventoryOnly, MiningRequirement requirement) {
-        switch (requirement) {
-            case HAND:
-                return true;
-            case WOOD:
-                return h(mod, inventoryOnly, Items.WOODEN_PICKAXE) || h(mod, inventoryOnly, Items.STONE_PICKAXE) || h(mod, inventoryOnly, Items.IRON_PICKAXE) || h(mod, inventoryOnly, Items.GOLDEN_PICKAXE) || h(mod, inventoryOnly, Items.DIAMOND_PICKAXE) || h(mod, inventoryOnly, Items.NETHERITE_PICKAXE);
-            case STONE:
-                return h(mod, inventoryOnly, Items.STONE_PICKAXE) || h(mod, inventoryOnly, Items.IRON_PICKAXE) || h(mod, inventoryOnly, Items.GOLDEN_PICKAXE) || h(mod, inventoryOnly, Items.DIAMOND_PICKAXE) || h(mod, inventoryOnly, Items.NETHERITE_PICKAXE);
-            case IRON:
-                return h(mod, inventoryOnly, Items.IRON_PICKAXE) || h(mod, inventoryOnly, Items.GOLDEN_PICKAXE) || h(mod, inventoryOnly, Items.DIAMOND_PICKAXE) || h(mod, inventoryOnly, Items.NETHERITE_PICKAXE);
-            case DIAMOND:
-                return h(mod, inventoryOnly, Items.DIAMOND_PICKAXE) || h(mod, inventoryOnly, Items.NETHERITE_PICKAXE);
-            default:
-                Debug.logError("You missed a spot");
-                return false;
+    private static boolean miningRequirementMetInner(AltoClef mod, boolean inventoryOnly, MiningRequirement requirement, BlockState mining) {
+        // For HAND, no tool is needed, so return true
+        if (requirement == MiningRequirement.HAND) {
+            return true;
         }
+
+        // For other requirements, check if the player has the best tool for the current block
+        Item bestTool = requirement.getBestTool(mining);
+        if (bestTool == null) {
+            Debug.logError("Could not find a best tool for block " + mining.getBlock().getTranslationKey());
+            return false;
+        }
+
+        // Check if the player has the best tool in their inventory
+        return h(mod, inventoryOnly, bestTool);
     }
 
     public static boolean miningRequirementMet(AltoClef mod, MiningRequirement requirement) {
-        return miningRequirementMetInner(mod, false, requirement);
+        return miningRequirementMetInner(mod, false, requirement, requirement.getBlockState());
     }
 
     public static boolean miningRequirementMetInventory(AltoClef mod, MiningRequirement requirement) {
-        return miningRequirementMetInner(mod, true, requirement);
+        return miningRequirementMetInner(mod, true, requirement, requirement.getBlockState());
+    }
+
+    public static boolean miningRequirementMet(AltoClef mod, MiningRequirement requirement, BlockState toMine) {
+        return miningRequirementMetInner(mod, false, requirement, toMine);
+    }
+
+    public static boolean miningRequirementMetInventory(AltoClef mod, MiningRequirement requirement, BlockState toMine) {
+        return miningRequirementMetInner(mod, true, requirement, toMine);
     }
 
     public static Optional<Slot> getBestToolSlot(AltoClef mod, BlockState state) {
@@ -391,7 +402,7 @@ public class StorageHelper {
                     result += Objects.requireNonNull(stack.getItem().getFoodComponent()).getHunger() * stack.getCount();
             }
         }
-        return result;
+        return WorldHelper.getDifficulty() == Difficulty.PEACEFUL ? Integer.MAX_VALUE : result; // No Hunger Loss in Peaceful
     }
 
     public static double calculateInventoryFuelCount(AltoClef mod) {
@@ -623,12 +634,14 @@ public class StorageHelper {
         return results;
     }
 
-    public static void instantFillRecipeViaBook(AltoClef mod, CraftingRecipe recipe, Item output, boolean craftAll) {
+    public static boolean instantFillRecipeViaBook(AltoClef mod, CraftingRecipe recipe, Item output, boolean craftAll) {
         Optional<Recipe<?>> recipeToSend = JankCraftingRecipeMapping.getMinecraftMappedRecipe(recipe, output);
         if (recipeToSend.isPresent()) {
             mod.getController().clickRecipe(MinecraftClient.getInstance().player.currentScreenHandler.syncId, recipeToSend.get(), craftAll);
+            return true;
         } else {
             Debug.logError("Could not find recipe stored in Minecraft!! Recipe: " + recipe + " with output " + output);
+            return false;
         }
     }
 }

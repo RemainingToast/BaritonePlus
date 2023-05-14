@@ -1,6 +1,7 @@
 package adris.altoclef.util.helpers;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.TaskCatalogue;
 import adris.altoclef.util.WoodType;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -15,6 +16,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
@@ -386,6 +388,17 @@ public class ItemHelper {
 
     public static boolean isFuel(Item item) {
         return getFuelTimeMap().containsKey(item);
+    }
+
+    public static List<Item> getUnobtainables() {
+        var unobtainable = new ArrayList<Item>();
+        for (Identifier id : Registries.ITEM.getIds()) {
+            Item item = Registries.ITEM.get(id);
+            if (!TaskCatalogue.isObtainable(item)) {
+                unobtainable.add(item);
+            }
+        }
+        return unobtainable;
     }
 
     public boolean isRawFood(Item item) {

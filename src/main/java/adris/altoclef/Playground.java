@@ -374,14 +374,11 @@ public class Playground {
             case "missing":
                 mod.runUserTask(new MissingTask());
                 break;
-            case "build":
-                mod.runUserTask(new SchematicBuildTask("test8.schem"));
-                break;
-            case "build2":
-                mod.runUserTask(new SchematicBuildTask("test9.schem"));
+            case "house2":
+                mod.runUserTask(new SchematicBuildTask("house2.schem"));
                 break;
             case "house":
-                mod.runUserTask(new SchematicBuildTask("house.schem"));
+                mod.runUserTask(new SchematicBuildTask("house.litematic"));
                 break;
             case "173":
                 mod.runUserTask(new SCP173Task());

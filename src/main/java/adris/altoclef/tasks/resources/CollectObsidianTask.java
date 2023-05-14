@@ -97,9 +97,9 @@ public class CollectObsidianTask extends ResourceTask {
         }
 
         // Get a diamond pickaxe FIRST
-        if (!StorageHelper.miningRequirementMet(mod, MiningRequirement.DIAMOND)) {
+        if (!StorageHelper.miningRequirementMet(mod, MiningRequirement.DIAMOND, Blocks.OBSIDIAN.getDefaultState())) {
             setDebugState("Getting diamond pickaxe first");
-            return new SatisfyMiningRequirementTask(MiningRequirement.DIAMOND);
+            return new SatisfyMiningRequirementTask(MiningRequirement.DIAMOND, Blocks.OBSIDIAN.getDefaultState());
         }
 
         if (_forceCompleteTask != null && _forceCompleteTask.isActive() && !_forceCompleteTask.isFinished(mod)) {

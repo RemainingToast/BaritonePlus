@@ -12,7 +12,7 @@ import adris.altoclef.eventbus.events.ClientRenderEvent;
 import adris.altoclef.eventbus.events.ClientTickEvent;
 import adris.altoclef.eventbus.events.SendChatEvent;
 import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
-import adris.altoclef.tasks.movement.IdleTask;
+import adris.altoclef.tasks.SchematicBuildTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.trackers.*;
@@ -21,8 +21,6 @@ import adris.altoclef.trackers.storage.ItemStorageTracker;
 import adris.altoclef.ui.CommandStatusOverlay;
 import adris.altoclef.ui.MessagePriority;
 import adris.altoclef.ui.MessageSender;
-import adris.altoclef.util.CubeBounds;
-import adris.altoclef.util.filestream.AvoidanceFile;
 import adris.altoclef.util.helpers.InputHelper;
 import baritone.Baritone;
 import baritone.altoclef.AltoClefSettings;
@@ -187,7 +185,8 @@ public class AltoClef implements ModInitializer {
         // External mod initialization
         runEnqueuedPostInits();
 
-        //loadAvoidanceFile();
+        // Copy Default Schematics
+        SchematicBuildTask.copyAllSchematicsIfNotExists();
     }
 
     // Client tick

@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEntity> implements ITaskRequiresGrounded {
-    private static final Task getPickaxeFirstTask = new SatisfyMiningRequirementTask(MiningRequirement.STONE);
+    private static final Task getPickaxeFirstTask = new SatisfyMiningRequirementTask(MiningRequirement.STONE, Blocks.STONE.getDefaultState());
     // Not clean practice, but it helps keep things self contained I think.
     private static boolean isGettingPickaxeFirstFlag = false;
     private final TimeoutWanderTask _wanderTask = new TimeoutWanderTask(5, true);
@@ -171,12 +171,13 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
         _mod = mod;
 
         // If we're getting a pickaxe for THIS resource...
-        if (isIsGettingPickaxeFirst(mod) && _collectingPickaxeForThisResource && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
+        if (isIsGettingPickaxeFirst(mod) && _collectingPickaxeForThisResource
+                && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE, MiningRequirement.STONE.getBlockState())) {
             _progressChecker.reset();
             setDebugState("Collecting pickaxe first");
             return getPickaxeFirstTask;
         } else {
-            if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
+            if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE, MiningRequirement.STONE.getBlockState())) {
                 isGettingPickaxeFirstFlag = false;
             }
             _collectingPickaxeForThisResource = false;
@@ -186,7 +187,7 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
             mod.getClientBaritone().getPathingBehavior().forceCancel();
             if (_currentDrop != null && !_currentDrop.getStack().isEmpty()) {
                 // We might want to get a pickaxe first.
-                if (!isGettingPickaxeFirstFlag && mod.getModSettings().shouldCollectPickaxeFirst() && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
+                if (!isGettingPickaxeFirstFlag && mod.getModSettings().shouldCollectPickaxeFirst() && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE, MiningRequirement.STONE.getBlockState())) {
                     Debug.logMessage("Failed to pick up drop, will try to collect a stone pickaxe first and try again!");
                     _collectingPickaxeForThisResource = true;
                     isGettingPickaxeFirstFlag = true;
