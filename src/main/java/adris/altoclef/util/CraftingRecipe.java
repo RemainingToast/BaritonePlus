@@ -131,7 +131,7 @@ public class CraftingRecipe {
 
     @Override
     public String toString() {
-        String name = "CraftingRecipe{";
+        String name = "{";
         if (_shortName != null) {
             name += "craft " + _shortName;
         } else {

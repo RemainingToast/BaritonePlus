@@ -2,6 +2,9 @@ package adris.altoclef;
 
 import adris.altoclef.butler.WhisperChecker;
 import adris.altoclef.tasks.CraftGenericManuallyTask;
+import adris.altoclef.tasks.MissingTask;
+import adris.altoclef.tasks.RandomRadiusGoalTask;
+import adris.altoclef.tasks.SchematicBuildTask;
 import adris.altoclef.tasks.construction.PlaceBlockNearbyTask;
 import adris.altoclef.tasks.construction.PlaceSignTask;
 import adris.altoclef.tasks.construction.PlaceStructureBlockTask;
@@ -11,10 +14,7 @@ import adris.altoclef.tasks.container.SmeltInFurnaceTask;
 import adris.altoclef.tasks.container.StoreInAnyContainerTask;
 import adris.altoclef.tasks.entity.KillEntityTask;
 import adris.altoclef.tasks.examples.ExampleTask2;
-import adris.altoclef.tasks.misc.EquipArmorTask;
-import adris.altoclef.tasks.misc.PlaceBedAndSetSpawnTask;
-import adris.altoclef.tasks.misc.RavageDesertTemplesTask;
-import adris.altoclef.tasks.misc.RavageRuinedPortalsTask;
+import adris.altoclef.tasks.misc.*;
 import adris.altoclef.tasks.movement.*;
 import adris.altoclef.tasks.resources.CollectBlazeRodsTask;
 import adris.altoclef.tasks.resources.CollectFlintTask;
@@ -31,7 +31,6 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.WorldHelper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -47,7 +46,6 @@ import org.reflections.Reflections;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,6 +156,13 @@ public class Playground {
             case "sign":
                 mod.runUserTask(new PlaceSignTask("Hello there!"));
                 break;
+            case "randr":
+                mod.runUserTask(new RandomRadiusGoalTask(mod.getPlayer().getBlockPos(), 6));
+                break;
+//            case "randr2":
+//                final Goal goal = new GoalRandomSpotNearby();
+//                mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(goal);
+//                break;
             case "sign2":
                 mod.runUserTask(new PlaceSignTask(new BlockPos(10, 3, 10), "Hello there!"));
                 break;
@@ -226,8 +231,21 @@ public class Playground {
                 ItemTarget material = new ItemTarget("iron_ore", 4);
                 mod.runUserTask(new SmeltInFurnaceTask(new SmeltTarget(target, material)));
                 break;
+            case "repair":
+//                mod.runUserTask(new RepairToolTask(new ItemTarget("leather_chestplate", 1), new ItemTarget("golden_boots", 1) , new ItemTarget("iron_sword", 1)));
+                mod.runUserTask(new RepairToolTask());
+            break;
             case "iron":
                 mod.runUserTask(new ConstructIronGolemTask());
+            case "avoidremove":
+                //mod.getBehaviour().clearAvoidBlockBreaking();
+                break;
+            case "printit":
+                System.out.println("PRINTIT---------");
+                System.out.println(mod.getBehaviour().getAvoidanceCount());
+                System.out.println(mod.getBehaviour().getAvoidanceCount2());
+
+                System.out.println("PRINTIT---------");
                 break;
             case "avoid":
                 // Test block break predicate
@@ -246,7 +264,9 @@ public class Playground {
                     Debug.logWarning("No zombs found.");
                 } else {
                     LivingEntity entity = zombs.get(0);
-                    mod.runUserTask(new KillEntityTask(entity));
+                    mod.getEntityTracker().getClosestEntity(ZombieEntity.class).ifPresent(zombie -> {
+                        mod.runUserTask(new KillEntityTask(entity));
+                    });
                 }
                 break;
             case "craft":
@@ -350,6 +370,18 @@ public class Playground {
                 break;
             case "chest":
                 mod.runUserTask(new StoreInAnyContainerTask(true, new ItemTarget(Items.DIAMOND, 3)));
+                break;
+            case "missing":
+                mod.runUserTask(new MissingTask());
+                break;
+            case "build":
+                mod.runUserTask(new SchematicBuildTask("test8.schem"));
+                break;
+            case "build2":
+                mod.runUserTask(new SchematicBuildTask("test9.schem"));
+                break;
+            case "house":
+                mod.runUserTask(new SchematicBuildTask("house.schem"));
                 break;
             case "173":
                 mod.runUserTask(new SCP173Task());

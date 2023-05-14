@@ -297,6 +297,12 @@ public class Settings implements IFailableConfigFile {
     private String deathCommand = "";
 
     /**
+     * true: ignores recorded constructions made by altoclefs schematic builder.
+     * false: no avoidance.
+     */
+    private boolean useAvoidanceList = true;
+
+    /**
      * If we need to throw away something, throw away these items first.
      */
     @JsonSerialize(using = ItemSerializer.class)
@@ -615,6 +621,7 @@ public class Settings implements IFailableConfigFile {
                 if (protection.contains(pos)) return true;
             }
         }
+
         return false;
     }
 

@@ -130,7 +130,7 @@ public class MobDefenseChain extends SingleTaskChain {
             return Float.NEGATIVE_INFINITY;
         }
 
-        if (!mod.getModSettings().isMobDefense()) {
+        if (!mod.getModSettings().isMobDefense() || mod.getBehaviour().isDefenseDisabled()) {
             return Float.NEGATIVE_INFINITY;
         }
 
@@ -293,8 +293,10 @@ public class MobDefenseChain extends SingleTaskChain {
                                 boolean hoglinAttacking = hostile instanceof HoglinEntity;
                                 boolean zoglinAttacking = hostile instanceof ZoglinEntity;
                                 boolean piglinBruteAttacking = hostile instanceof PiglinBruteEntity;
-                                if (blazeAttacking || witherSkeletonAttacking || hoglinAttacking || zoglinAttacking ||
-                                        piglinBruteAttacking || endermanAttacking || witherAttacking || wardenAttacking) {
+                                boolean phantomAttacking = hostile instanceof PhantomEntity;
+                                if (blazeAttacking || witherSkeletonAttacking || hoglinAttacking || zoglinAttacking
+                                        || piglinBruteAttacking || endermanAttacking || witherAttacking
+                                        || wardenAttacking || phantomAttacking) {
                                     if (isVulnurable(mod)) {
                                         _closeAnnoyingEntities.put(hostile, new TimerGame(0));
                                     } else {
@@ -675,5 +677,9 @@ public class MobDefenseChain extends SingleTaskChain {
     @Override
     public String getName() {
         return "Mob Defense";
+    }
+
+    public CustomBaritoneGoalTask getRunAwayTask() {
+        return _runAwayTask;
     }
 }

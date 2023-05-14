@@ -8,6 +8,7 @@ import adris.altoclef.tasks.container.UpgradeInSmithingTableTask;
 import adris.altoclef.tasks.resources.*;
 import adris.altoclef.tasks.resources.wood.*;
 import adris.altoclef.tasks.squashed.CataloguedResourceTask;
+import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
@@ -286,6 +287,7 @@ public class TaskCatalogue {
             alias("eye_of_ender", "ender_eye");
             shapedRecipe2x2("fermented_spider_eye", Items.FERMENTED_SPIDER_EYE, 1, "brown_mushroom", "sugar", o, "spider_eye");
             shapedRecipe3x3("fire_charge", Items.FIRE_CHARGE, 3, o, "blaze_powder", o, o, "coal", o, o, "gunpowder", o);
+            shapedRecipe2x2("firework_rocket", Items.FIREWORK_ROCKET, 3, "paper", "gunpowder", o, o);
             shapedRecipe2x2("flower_banner_pattern", Items.FLOWER_BANNER_PATTERN, 1, "paper", "oxeye_daisy", o, o);
             simple("magma_cream", Items.MAGMA_CREAM, CollectMagmaCreamTask::new);
             // Slabs + Stairs + Walls
@@ -695,6 +697,20 @@ public class TaskCatalogue {
         }
     }
 
+    public static ResourceTask getItemTask(ItemTarget target, final int count) {
+        if (target.isCatalogueItem()) {
+            return getItemTask(target.getCatalogueName(), count);
+        } else if (target.getMatches().length == 1) {
+            return getItemTask(target.getMatches()[0], count);
+        } else {
+            return getSquashedItemTask(target);
+        }
+    }
+
+    private static ItemTarget t(String cataloguedName) {
+        return new ItemTarget(cataloguedName);
+    }
+
     public static boolean taskExists(String name) {
         return _nameToResourceTask.containsKey(name);
     }
@@ -887,10 +903,6 @@ public class TaskCatalogue {
             _nameToResourceTask.put(newName, _nameToResourceTask.get(original));
             _nameToItemMatches.put(newName, _nameToItemMatches.get(original));
         }
-    }
-
-    private static ItemTarget t(String cataloguedName) {
-        return new ItemTarget(cataloguedName);
     }
 
     private static class CataloguedResource {

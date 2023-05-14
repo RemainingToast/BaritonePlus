@@ -22,6 +22,7 @@ public class AltoClefCommands {
                 new DepositCommand(),
                 new StashCommand(),
                 new GotoCommand(),
+                new GotoWithElytraCommand(),
                 new IdleCommand(),
                 new CoordsCommand(),
                 new StatusCommand(),
@@ -39,7 +40,9 @@ public class AltoClefCommands {
                 new SetGammaCommand(),
                 new ListCommand(),
                 new CoverWithSandCommand(),
-                new CoverWithBlocksCommand()
+                new CoverWithBlocksCommand(),
+                new RoundtripCommand(),
+                new BuildCommand()
                 //new TestMoveInventoryCommand(),
                 //    new TestSwapInventoryCommand()
         );

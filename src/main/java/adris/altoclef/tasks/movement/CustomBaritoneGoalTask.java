@@ -7,9 +7,15 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import baritone.api.pathing.goals.Goal;
+import baritone.api.pathing.goals.GoalComposite;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Turns a baritone goal into a task.
@@ -158,13 +164,21 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
                 if (!_checker.check(mod)) {
                     Debug.logMessage("Failed to make progress on goal, wandering.");
                     onWander(mod);
+                    _checker.reset();
                     return _wanderTask;
                 }
             }
         }
 
         if (!mod.getClientBaritone().getCustomGoalProcess().isActive()) {
-            mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(_cachedGoal);
+            var runAwayTask = mod.getMobDefenseChain().getRunAwayTask();
+            var goals = new ArrayList<>(Arrays.asList(_cachedGoal, runAwayTask != null ? runAwayTask._cachedGoal : null));
+            goals.removeIf(Objects::isNull);
+
+            var goalsArray = new Goal[goals.size()];
+            goals.toArray(goalsArray);
+            mod.getClientBaritone().getCustomGoalProcess()
+                    .setGoalAndPath(new GoalComposite(goalsArray));
         }
 
         setDebugState("Completing goal.");

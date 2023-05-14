@@ -114,7 +114,8 @@ public interface WorldHelper {
 
 
     static boolean isSolid(AltoClef mod, BlockPos pos) {
-        return mod.getWorld().getBlockState(pos).isSolidBlock(mod.getWorld(), pos);
+        BlockState state = mod.getWorld().getBlockState(pos);
+        return state.isSolidBlock(mod.getWorld(), pos) || state.hasSolidTopSurface(mod.getWorld(), pos, mod.getPlayer());
     }
 
     /**
@@ -398,8 +399,8 @@ public interface WorldHelper {
         return b instanceof ChestBlock || b instanceof EnderChestBlock;
     }
 
-    static boolean isBlock(AltoClef mod, BlockPos pos, Block block) {
-        return mod.getWorld().getBlockState(pos).getBlock() == block;
+    static boolean isBlock(AltoClef mod, BlockPos pos, Block... blocks) {
+        return mod.getBlockTracker().blockIsValid(pos, blocks);
     }
 
     static boolean canSleep() {
