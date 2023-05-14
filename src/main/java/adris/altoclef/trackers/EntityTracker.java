@@ -106,7 +106,8 @@ public class EntityTracker extends Tracker {
         ensureUpdated();
         ItemTarget[] tempTargetList = new ItemTarget[items.length];
         for (int i = 0; i < items.length; ++i) {
-            tempTargetList[i] = new ItemTarget(items[i]).infinite();
+//            tempTargetList[i] = new ItemTarget(items[i]).infinite();
+            tempTargetList[i] = new ItemTarget(items[i]);
         }
         return getClosestItemDrop(position, acceptPredicate, tempTargetList);
     }

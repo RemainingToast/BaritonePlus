@@ -31,7 +31,6 @@ public class ShearSheepTask extends AbstractDoToEntityTask {
             mod.getController().interactEntity(mod.getPlayer(), entity, Hand.MAIN_HAND);
         }
 
-
         return null;
     }
 

@@ -21,7 +21,7 @@ public class ItemTarget {
     private Item[] _itemMatches;
     private int _targetCount;
     private String _catalogueName = null;
-    private boolean _infinite = false;
+//    private boolean _infinite = false;
 
     public ItemTarget(Item[] items, int targetCount) {
         _itemMatches = items;
@@ -72,7 +72,7 @@ public class ItemTarget {
         }
         _catalogueName = toCopy._catalogueName;
         _targetCount = newCount;
-        _infinite = toCopy._infinite;
+//        _infinite = toCopy._infinite;
     }
 
     public ItemTarget(ItemTarget toCopy) {
@@ -91,23 +91,23 @@ public class ItemTarget {
         return result.toArray(Item[]::new);
     }
 
-    public ItemTarget infinite() {
-        _infinite = true;
-        return this;
-    }
+//    public ItemTarget infinite() {
+//        _infinite = true;
+//        return this;
+//    }
 
     public Item[] getMatches() {
         return _itemMatches != null ? _itemMatches : new Item[0];
     }
 
     public int getTargetCount() {
-        if (_infinite) {
-            return BASICALLY_INFINITY;
-        }
-        if (_targetCount == BASICALLY_INFINITY) {
-            _infinite = true;
-            return BASICALLY_INFINITY;
-        }
+//        if (_infinite) {
+//            return BASICALLY_INFINITY;
+//        }
+//        if (_targetCount == BASICALLY_INFINITY) {
+//            _infinite = true;
+//            return BASICALLY_INFINITY;
+//        }
         // Workaround for when the ItemTarget is initialized as infinite (properly)
         // but then another ItemTarget is created by copying the target count, not the infinite flag.
         return _targetCount;
@@ -134,12 +134,13 @@ public class ItemTarget {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ItemTarget other) {
-            if (_infinite) {
-                if (!other._infinite) return false;
-            } else {
-                // Neither are infinite
-                if (_targetCount != other._targetCount) return false;
-            }
+//            if (_infinite) {
+//                if (!other._infinite) return false;
+//            } else {
+//                // Neither are infinite
+//                if (_targetCount != other._targetCount) return false;
+//            }
+            if (_targetCount != other._targetCount) return false;
             if ((other._itemMatches == null) != (_itemMatches == null)) return false;
             if (_itemMatches != null) {
                 if (_itemMatches.length != other._itemMatches.length) return false;
@@ -187,11 +188,12 @@ public class ItemTarget {
                 result.append(")");
             }
         }
-        if (!_infinite && !isEmpty() && _targetCount > 1) {
+        if (!isEmpty() && _targetCount > 1) {
             result.append(" x").append(_targetCount);
-        } else if (_infinite) {
-            result.append(" (attempt for ∞)");
         }
+//        else if (_infinite) {
+//            result.append(" (attempt for ∞)");
+//        }
 
         return result.toString();
     }

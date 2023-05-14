@@ -3,6 +3,7 @@ package adris.altoclef.tasks.resources;
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.ResourceTask;
+import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.CraftingRecipe;
 import adris.altoclef.util.ItemTarget;
@@ -65,7 +66,7 @@ public class CollectBedTask extends CraftWithMatchingWoolTask {
             // Failure + blacklisting is encapsulated within THIS task
             return new MineAndCollectTask(new ItemTarget(ItemHelper.BED, 1, "any bed"), BEDS, MiningRequirement.HAND);
         }
-        return null;
+        return new TimeoutWanderTask();
     }
 
     @Override
