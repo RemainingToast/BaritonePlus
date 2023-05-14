@@ -11,10 +11,7 @@ import adris.altoclef.tasks.container.SmeltInFurnaceTask;
 import adris.altoclef.tasks.container.StoreInAnyContainerTask;
 import adris.altoclef.tasks.entity.KillEntityTask;
 import adris.altoclef.tasks.examples.ExampleTask2;
-import adris.altoclef.tasks.misc.EquipArmorTask;
-import adris.altoclef.tasks.misc.PlaceBedAndSetSpawnTask;
-import adris.altoclef.tasks.misc.RavageDesertTemplesTask;
-import adris.altoclef.tasks.misc.RavageRuinedPortalsTask;
+import adris.altoclef.tasks.misc.*;
 import adris.altoclef.tasks.movement.*;
 import adris.altoclef.tasks.resources.CollectBlazeRodsTask;
 import adris.altoclef.tasks.resources.CollectFlintTask;
@@ -31,7 +28,6 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.WorldHelper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -47,7 +43,6 @@ import org.reflections.Reflections;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -226,6 +221,10 @@ public class Playground {
                 ItemTarget material = new ItemTarget("iron_ore", 4);
                 mod.runUserTask(new SmeltInFurnaceTask(new SmeltTarget(target, material)));
                 break;
+            case "repair":
+//                mod.runUserTask(new RepairToolTask(new ItemTarget("leather_chestplate", 1), new ItemTarget("golden_boots", 1) , new ItemTarget("iron_sword", 1)));
+                mod.runUserTask(new RepairToolTask());
+            break;
             case "iron":
                 mod.runUserTask(new ConstructIronGolemTask());
                 break;
