@@ -22,6 +22,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -438,5 +439,20 @@ public interface WorldHelper {
         var world = MinecraftClient.getInstance().world;
         if (world == null) return Difficulty.PEACEFUL;
         return world.getDifficulty();
+    }
+
+    static int getHighestY(AltoClef mod) {
+        var _blockPos = mod.getPlayer().getBlockPos();
+        return mod.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE,
+                _blockPos.getX(),
+                _blockPos.getZ()
+        );
+    }
+
+    static boolean isUnderground(AltoClef mod, int threshold) {
+        int highestY = getHighestY(mod);
+        int currentY = mod.getPlayer().getBlockPos().getY();
+
+        return (highestY - currentY) > threshold;
     }
 }

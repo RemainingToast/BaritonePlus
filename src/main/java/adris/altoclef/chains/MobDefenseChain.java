@@ -293,10 +293,9 @@ public class MobDefenseChain extends SingleTaskChain {
                                 boolean hoglinAttacking = hostile instanceof HoglinEntity;
                                 boolean zoglinAttacking = hostile instanceof ZoglinEntity;
                                 boolean piglinBruteAttacking = hostile instanceof PiglinBruteEntity;
-                                boolean phantomAttacking = hostile instanceof PhantomEntity;
                                 if (blazeAttacking || witherSkeletonAttacking || hoglinAttacking || zoglinAttacking
                                         || piglinBruteAttacking || endermanAttacking || witherAttacking
-                                        || wardenAttacking || phantomAttacking) {
+                                        || wardenAttacking) {
                                     if (isVulnurable(mod)) {
                                         _closeAnnoyingEntities.put(hostile, new TimerGame(0));
                                     } else {

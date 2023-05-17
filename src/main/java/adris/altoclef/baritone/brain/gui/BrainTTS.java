@@ -25,8 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class BrainTTS {
 
     private final String ELEVEN_LABS = "https://api.elevenlabs.io/v1/text-to-speech/%s";
-    private final String DONALD_TRUMP = "mknJFtyZvEeGM4w0Tqk1";
-    private final String FIT_MC = "9xpRL3WTA9FtDLHMul3v";
+    private final String DONALD_TRUMP = "";
+    private final String FIT_MC = "";
 
     private final BlockingQueue<Task> queue = new LinkedBlockingQueue<>();
 
@@ -94,7 +94,7 @@ public class BrainTTS {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format(ELEVEN_LABS, FIT_MC)))
-                .header("xi-api-key", "d755ebaffb9c30fba4400c9f4f9f0473")
+                .header("xi-api-key", "")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();

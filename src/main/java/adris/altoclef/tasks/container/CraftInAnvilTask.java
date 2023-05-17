@@ -18,7 +18,7 @@ public class CraftInAnvilTask extends DoStuffInContainerTask {
     }
 
     @Override
-    protected boolean isContainerOpen(AltoClef mod) {
+    public boolean isContainerOpen(AltoClef mod) {
         throw new NotImplementedException("Anvil Not Implemented, whoops");
     }
 

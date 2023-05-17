@@ -158,7 +158,7 @@ public class SmeltInSmokerTask extends ResourceTask {
         }
 
         @Override
-        protected boolean isContainerOpen(AltoClef mod) {
+        public boolean isContainerOpen(AltoClef mod) {
             return (mod.getPlayer().currentScreenHandler instanceof SmokerScreenHandler);
         }
 

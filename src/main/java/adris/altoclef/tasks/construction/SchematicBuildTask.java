@@ -1,8 +1,9 @@
-package adris.altoclef.tasks;
+package adris.altoclef.tasks.construction;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
+import adris.altoclef.tasks.RandomRadiusGoalTask;
 import adris.altoclef.tasks.resources.CollectFoodTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.trackers.storage.ItemStorageTracker;
@@ -29,10 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 // TODO
@@ -213,6 +211,7 @@ public class SchematicBuildTask extends Task {
                         ).toList())
                 ));
 
+                var _missingTargets = new ArrayList<ItemTarget>();
                 for (final Map.Entry<BlockState, Integer> entry : materialList) {
                     var _entryItem = entry.getKey().getBlock().asItem();
                     var _newTarget = new ItemTarget(
@@ -220,10 +219,12 @@ public class SchematicBuildTask extends Task {
                             entry.getValue()
                     );
                     mod.getClientBaritoneSettings().acceptableThrowawayItems.value.remove(_entryItem);
-                    _resourceTask = TaskCatalogue.getItemTask(_newTarget);
-                    return _resourceTask;
+                    _missingTargets.add(_newTarget);
                 }
 //            }
+            _resourceTask = TaskCatalogue.getSquashedItemTask(_missingTargets.toArray(ItemTarget[]::new));
+            return _resourceTask;
+        } else {
             this.sourced = true;
         }
 
@@ -394,6 +395,7 @@ public class SchematicBuildTask extends Task {
             mod.getClientBaritoneSettings().buildInLayers.value = false;
             mod.getClientBaritoneSettings().buildIgnoreDirection.value = false;
             mod.getClientBaritoneSettings().buildIgnoreExisting.value = true;
+            mod.getClientBaritoneSettings().breakFromAbove.value = true;
 
             // Ignore Blocks Baritone Struggles With - Start
             // TODO - Add *ALL* Problematic Blocks

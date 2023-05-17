@@ -2,6 +2,7 @@ package adris.altoclef.tasks.container;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.CraftGenericManuallyTask;
 import adris.altoclef.tasks.CraftGenericWithRecipeBooksTask;
 import adris.altoclef.tasks.CraftInInventoryTask;
@@ -21,6 +22,7 @@ import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
@@ -30,6 +32,7 @@ import java.util.*;
 /**
  * Crafts an item in a crafting table, obtaining and placing the table down if none was found.
  */
+// TODO - Should pick Crafting Table back up when complete
 public class CraftInTableTask extends ResourceTask {
 
     private final RecipeTarget[] _targets;
@@ -72,6 +75,14 @@ public class CraftInTableTask extends ResourceTask {
 
     @Override
     protected Task onResourceTick(AltoClef mod) {
+        if (_craftTask.isFinished(mod)) {
+            // Pick back up crafting table when we are done - probably useful
+            if (!mod.getItemStorage().hasItem(Items.CRAFTING_TABLE)) {
+//                mod.getBehaviour()
+                return TaskCatalogue.getItemTask(Items.CRAFTING_TABLE, 1);
+            }
+        }
+
         return _craftTask;
     }
 
@@ -91,7 +102,6 @@ public class CraftInTableTask extends ResourceTask {
         } else {
             StorageHelper.closeScreen();
         }
-        //mod.getControllerExtras().closeCurrentContainer();
     }
 
     @Override
@@ -109,6 +119,11 @@ public class CraftInTableTask extends ResourceTask {
 
     public RecipeTarget[] getRecipeTargets() {
         return _targets;
+    }
+
+    @Override
+    public boolean isFinished(AltoClef mod) {
+        return _craftTask.isFinished(mod) && mod.getItemStorage().hasItem(Items.CRAFTING_TABLE);
     }
 }
 
@@ -182,7 +197,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     protected Task onTick(AltoClef mod) {
         mod.getBehaviour().addProtectedItems(getMaterialsArray());
         List<BlockPos> craftingTablePos = mod.getBlockTracker().getKnownLocations(Blocks.CRAFTING_TABLE);
-        if (!craftingTablePos.isEmpty()) {
+        if (!craftingTablePos.isEmpty() && mod.getItemStorage().hasItem(Items.CRAFTING_TABLE)) {
             for (BlockPos CraftingTablePos : craftingTablePos) {
                 mod.getBehaviour().avoidBlockBreaking(CraftingTablePos);
             }
@@ -213,7 +228,6 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
 
         if (_collect) {
             if (!_collectTask.isFinished(mod)) {
-
                 if (!StorageHelper.hasRecipeMaterialsOrTarget(mod, _targets)) {
                     setDebugState("Getting recipe materials: " + Arrays.toString(_targets));
                     return _collectTask;
@@ -249,7 +263,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     }
 
     @Override
-    protected boolean isContainerOpen(AltoClef mod) {
+    public boolean isContainerOpen(AltoClef mod) {
         return (mod.getPlayer().currentScreenHandler instanceof CraftingScreenHandler);
     }
 

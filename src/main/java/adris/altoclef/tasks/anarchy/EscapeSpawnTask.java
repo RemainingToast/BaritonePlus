@@ -1,11 +1,9 @@
 package adris.altoclef.tasks.anarchy;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.tasks.anarchy.duping.TameDonkeyTask;
+import adris.altoclef.tasks.entity.TameDonkeyTask;
 import adris.altoclef.tasks.container.StoreInContainerTask;
 import adris.altoclef.tasks.movement.FastTravelTask;
-import adris.altoclef.tasks.movement.GetToXZTask;
-import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasks.resources.CollectFoodTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;

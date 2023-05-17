@@ -5,6 +5,7 @@ import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.container.CraftInTableTask;
 import adris.altoclef.tasks.container.UpgradeInSmithingTableTask;
+import adris.altoclef.tasks.resources.MineAndCollectTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.StorageHelper;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 
 public class CataloguedResourceTask extends ResourceTask {
-
 
     private final TaskSquasher _squasher;
     private final ItemTarget[] _targets;
@@ -107,7 +107,7 @@ public class CataloguedResourceTask extends ResourceTask {
         public TaskSquasher() {
             _squashMap.put(CraftInTableTask.class, new CraftSquasher());
             _squashMap.put(UpgradeInSmithingTableTask.class, new SmithingSquasher());
-            //_squashMap.put(MineAndCollectTask.class)
+            _squashMap.put(MineAndCollectTask.class, new MineCollectSquasher());
         }
 
         public void addTask(ResourceTask t) {

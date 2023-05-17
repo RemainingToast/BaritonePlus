@@ -3,7 +3,7 @@ package adris.altoclef.commands;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.commandsystem.*;
-import adris.altoclef.tasks.SchematicBuildTask;
+import adris.altoclef.tasks.construction.SchematicBuildTask;
 
 public class BuildCommand extends Command {
     public BuildCommand() throws CommandException {

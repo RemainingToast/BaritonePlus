@@ -1,6 +1,7 @@
 package adris.altoclef.tasks;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.tasks.container.DoStuffInContainerTask;
 import adris.altoclef.tasks.container.PickupFromContainerTask;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
 import adris.altoclef.tasks.movement.PickupDroppedItemTask;
@@ -91,8 +92,10 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
         mod.getBehaviour().addProtectedItems(ItemTarget.getMatches(_itemTargets));
         // If we have an item in an INACCESSIBLE inventory slot
         if (!(thisOrChildSatisfies(task -> task instanceof ITaskUsesCraftingGrid)) || _ensureFreeCraftingGridTask.isActive()) {
+            var _bool =  mod.getUserTaskChain().getCurrentTask()
+                    .thisOrChildSatisfies(task -> task.thisOrChildAreTimedOut() || !task.isActive());
             for (ItemTarget target : _itemTargets) {
-                if (StorageHelper.isItemInaccessibleToContainer(mod, target)) {
+                if (StorageHelper.isItemInaccessibleToContainer(mod, target) && _bool) {
                     setDebugState("Moving from SPECIAL inventory slot");
                     return new MoveInaccessibleItemToInventoryTask(target);
                 }
@@ -163,9 +166,16 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
                 if (Arrays.stream(_itemTargets).noneMatch(target -> container.get().hasItem(target.getMatches()))) {
                     _currentContainer = null;
                 } else {
-                    // We have a current chest, grab from it.
-                    setDebugState("Picking up from container");
-                    return new PickupFromContainerTask(_currentContainer.getBlockPos(), _itemTargets);
+                    var _containerInUse =
+                            mod.getBlockTracker().isTracking(mod.getWorld().getBlockState(_currentContainer.getBlockPos()).getBlock());
+                    var _containerInUse1 = mod.getTaskRunner().getCurrentTaskChain().getTasks().stream()
+                            .filter(task -> task instanceof DoStuffInContainerTask)
+                            .map(task -> (DoStuffInContainerTask) task).toList().stream().noneMatch(Task::isActive);
+                    if (!_containerInUse && !_containerInUse1) {
+                        // We have a current chest, grab from it.
+                        setDebugState("Picking up from container");
+                        return new PickupFromContainerTask(_currentContainer.getBlockPos(), _itemTargets);
+                    }
                 }
             } else {
                 _currentContainer = null;
@@ -191,7 +201,10 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
             }
         }
         // Make sure that items don't get stuck in the player crafting grid. May be an issue if a future task isn't a resource task.
-        if (StorageHelper.isPlayerInventoryOpen()) {
+        var _bool =  mod.getUserTaskChain().getCurrentTask()
+                .thisOrChildSatisfies(task -> task.thisOrChildAreTimedOut() || !task.isActive());
+
+        if (StorageHelper.isPlayerInventoryOpen() && _bool) {
             if (!(thisOrChildSatisfies(task -> task instanceof ITaskUsesCraftingGrid)) || _ensureFreeCraftingGridTask.isActive()) {
                 for (Slot slot : PlayerSlot.CRAFT_INPUT_SLOTS) {
                     if (!StorageHelper.getItemStackInSlot(slot).isEmpty()) {

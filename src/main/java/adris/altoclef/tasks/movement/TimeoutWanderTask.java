@@ -16,6 +16,7 @@ import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.SlotActionType;
@@ -185,11 +186,14 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
         }
         if (!_progressChecker.check(mod) || !stuckCheck.check(mod)) {
             List<Entity> closeEntities = mod.getEntityTracker().getCloseEntities();
-            for (Entity CloseEntities : closeEntities) {
-                if (CloseEntities instanceof MobEntity &&
-                        CloseEntities.getPos().isInRange(mod.getPlayer().getPos(), 1)) {
+            for (Entity _closeEntity : closeEntities) {
+                if (_closeEntity instanceof Tameable tameable && tameable.getOwner() == mod.getPlayer()) {
+                    continue; // Don't kill Pets - TODO consider butler players pets too?
+                }
+                if (_closeEntity instanceof MobEntity &&
+                        _closeEntity.getPos().isInRange(mod.getPlayer().getPos(), 1)) {
                     setDebugState("Killing annoying entity.");
-                    return new KillEntitiesTask(CloseEntities.getClass());
+                    return new KillEntitiesTask(_closeEntity.getClass());
                 }
             }
             BlockPos blockStuck = stuckInBlock(mod);

@@ -115,8 +115,8 @@ public class StorageHelper {
         // For other requirements, check if the player has the best tool for the current block
         Item bestTool = requirement.getBestTool(mining);
         if (bestTool == null) {
-            Debug.logError("Could not find a best tool for block " + mining.getBlock().getTranslationKey());
-            return false;
+//            Debug.logError("Could not find a best tool for block " + mining.getBlock().getTranslationKey());
+            return true; // assume no tool is needed
         }
 
         // Check if the player has the best tool in their inventory

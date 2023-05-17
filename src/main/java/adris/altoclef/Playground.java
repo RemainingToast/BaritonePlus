@@ -4,7 +4,8 @@ import adris.altoclef.butler.WhisperChecker;
 import adris.altoclef.tasks.CraftGenericManuallyTask;
 import adris.altoclef.tasks.MissingTask;
 import adris.altoclef.tasks.RandomRadiusGoalTask;
-import adris.altoclef.tasks.SchematicBuildTask;
+import adris.altoclef.tasks.construction.SchematicBuildTask;
+import adris.altoclef.tasks.entity.TameDonkeyTask;
 import adris.altoclef.tasks.construction.PlaceBlockNearbyTask;
 import adris.altoclef.tasks.construction.PlaceSignTask;
 import adris.altoclef.tasks.construction.PlaceStructureBlockTask;
@@ -408,6 +409,10 @@ public class Playground {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+                break;
+            }
+            case "donkey": {
+                mod.runUserTask(new TameDonkeyTask());
                 break;
             }
             default:

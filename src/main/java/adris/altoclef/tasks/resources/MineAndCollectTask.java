@@ -23,7 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MiningToolItem;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -41,7 +40,7 @@ public class MineAndCollectTask extends ResourceTask {
 
     public MineAndCollectTask(ItemTarget[] itemTargets, Block[] blocksToMine, MiningRequirement requirement) {
         super(itemTargets);
-        _requirement = optimiseMiningRequirement(_itemTargets, requirement);
+        _requirement = MiningRequirement.optimiseMiningRequirement(_itemTargets, requirement);
         _blocksToMine = blocksToMine;
         _subtask = new MineOrCollectTask(_blocksToMine, _itemTargets);
     }
@@ -127,45 +126,6 @@ public class MineAndCollectTask extends ResourceTask {
         return "Mine And Collect";
     }
 
-    /**
-     * In this code, we want to check if we have to collect a lot of items.
-     * If so, we want to increase the mining requirement to make the mining more efficient.
-     * To do this, we are counting all the items that we need more than or equal to 64 of.
-     *
-     * @return _requirement
-     */
-    private MiningRequirement optimiseMiningRequirement(ItemTarget[] targets, MiningRequirement _requirement) {
-        int _countThreshold = switch (_requirement) {
-            case HAND -> 16;
-            case WOOD -> 32;
-            default -> 64;
-        };
-
-        // Create a map to keep track of the total counts of each unique item
-        Map<Item, Integer> _count = new HashMap<>();
-
-        for (Pair<ItemTarget, Item[]> _itemMatches : Arrays.stream(targets).map(_itemTarget -> new Pair<>(_itemTarget, _itemTarget.getMatches())).toList()) {
-            for (Item _itemMatch : _itemMatches.getRight()) {
-                _count.put(
-                        _itemMatch,
-                        _count.getOrDefault(_itemMatch, 1) + _itemMatches.getLeft().getTargetCount()
-                );
-            }
-        }
-
-        // Now check the total count of each item with the threshold
-        for (Map.Entry<Item, Integer> entry : _count.entrySet()) {
-            int count = entry.getValue();
-
-            while (count >= _countThreshold) {
-                _requirement = _requirement.next();
-                count -= _countThreshold;
-            }
-        }
-
-        return _requirement;
-    }
-
     private void makeSureToolIsEquipped(AltoClef mod) {
         if (_cursorStackTimer.elapsed() && !mod.getFoodChain().needsToEat()) {
             assert MinecraftClient.getInstance().player != null;
@@ -192,6 +152,10 @@ public class MineAndCollectTask extends ResourceTask {
             }
             _cursorStackTimer.reset();
         }
+    }
+
+    public MiningRequirement getRequirement() {
+        return _requirement;
     }
 
     private static class MineOrCollectTask extends AbstractDoToClosestObjectTask<Object> {

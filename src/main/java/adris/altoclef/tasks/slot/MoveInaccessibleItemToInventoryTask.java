@@ -28,6 +28,7 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
 
     @Override
     protected Task onTick(AltoClef mod) {
+        if (mod.getUserTaskChain().getCurrentTask().isActive()) return null;
 
         // Ensure inventory is closed.
         if (!StorageHelper.isPlayerInventoryOpen()) {
@@ -77,7 +78,7 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
                 if (Slot.isCursor(toMove)) {
                     mod.getSlotHandler().clickSlot(toMoveTo.get(), 0, SlotActionType.PICKUP);
                 } else {
-                    mod.getSlotHandler().clickSlot(toMove, 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(toMove, 0, SlotActionType.QUICK_MOVE);
                 }
                 return null;
             } else {

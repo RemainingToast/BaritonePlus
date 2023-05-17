@@ -3,7 +3,6 @@ package adris.altoclef.baritone.brain.utils;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.commandsystem.Command;
-import adris.altoclef.ui.MessagePriority;
 import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -20,7 +19,7 @@ public class ChatGPT {
     }
 
     public static ChatGPT build() {
-        return new ChatGPT("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");
+        return new ChatGPT("");
     }
 
     public String generateTaskNaturalLanguage(WorldState worldState) {

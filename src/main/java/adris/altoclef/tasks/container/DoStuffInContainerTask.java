@@ -53,6 +53,7 @@ public abstract class DoStuffInContainerTask extends Task {
     @Override
     protected void onStart(AltoClef mod) {
         mod.getBehaviour().push();
+
         if (_openTableTask == null) {
             _openTableTask = new DoToClosestBlockTask(InteractWithBlockTask::new, _containerBlocks);
         }
@@ -191,7 +192,7 @@ public abstract class DoStuffInContainerTask extends Task {
 
     protected abstract boolean isSubTaskEqual(DoStuffInContainerTask other);
 
-    protected abstract boolean isContainerOpen(AltoClef mod);
+    public abstract boolean isContainerOpen(AltoClef mod);
 
     protected abstract Task containerSubTask(AltoClef mod);
 

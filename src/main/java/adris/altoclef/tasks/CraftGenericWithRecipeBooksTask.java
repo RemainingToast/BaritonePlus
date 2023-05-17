@@ -98,6 +98,7 @@ public class CraftGenericWithRecipeBooksTask extends Task implements ITaskUsesCr
             }
             mod.getSlotHandler().registerSlotAction();
         }
+
         return null;
     }
 
