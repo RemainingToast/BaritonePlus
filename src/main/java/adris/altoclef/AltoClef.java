@@ -1,6 +1,6 @@
 package adris.altoclef;
 
-import adris.altoclef.baritone.brain.BaritoneBrain;
+import adris.altoclef.brainWIP.BaritoneBrain;
 import adris.altoclef.butler.Butler;
 import adris.altoclef.chains.*;
 import adris.altoclef.commandsystem.CommandExecutor;

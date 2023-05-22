@@ -1,10 +1,10 @@
-package adris.altoclef.baritone.brain.commands;
+package adris.altoclef.brainWIP.commands;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.commandsystem.ArgParser;
 import adris.altoclef.commandsystem.Command;
 import adris.altoclef.commandsystem.CommandException;
-import adris.altoclef.baritone.brain.tasks.BrainTask;
+import adris.altoclef.brainWIP.tasks.BrainTask;
 
 public class BrainCommand extends Command {
     public BrainCommand() throws CommandException {

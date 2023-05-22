@@ -1,9 +1,8 @@
-package adris.altoclef.baritone.brain.utils;
+package adris.altoclef.brainWIP.utils;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.commandsystem.Command;
-import adris.altoclef.ui.MessagePriority;
 import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;

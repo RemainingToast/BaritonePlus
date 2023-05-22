@@ -1,6 +1,6 @@
 plugins {
-    id "fabric-loom" version "1.1-SNAPSHOT"
     id "maven-publish"
+    id "fabric-loom" version "1.1-SNAPSHOT"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -48,19 +48,11 @@ dependencies {
     shadow('com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2')
     shadow('com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2')
 
-    // Thank you georgeagostino for fixing my garbage
-    if (getProject().hasProperty("altoclef.development")) {
-        // Must run build from baritone-plus once
-        modImplementation 'baritone-api-fabric:baritone-unoptimized-fabric-1.19.4-beta1'
-        include "baritone-api-fabric:baritone-unoptimized-fabric-1.19.4-beta1"
-    } else {
-        modImplementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
-        include "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
-    }
-    //modImplementation 'baritone-api-fabric:baritone-api-fabric:1.6.3'
-    //implementation files('baritone-plus/build/libs/baritone-unoptimized-fabric-1.6.3.jar')
+    // Baritone
+    modImplementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
+    include "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
 
-    // Baritone Brain
+    // Baritone Plus
     implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
     implementation 'org.reflections:reflections:0.9.12'
     implementation 'com.github.umjammer:jlayer:1.0.2'
