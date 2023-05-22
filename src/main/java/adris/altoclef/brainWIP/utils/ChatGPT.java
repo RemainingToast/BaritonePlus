@@ -1,4 +1,4 @@
-package adris.altoclef.baritone.brain.utils;
+package adris.altoclef.brainWIP.utils;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;

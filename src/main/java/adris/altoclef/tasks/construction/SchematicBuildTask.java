@@ -351,9 +351,9 @@ public class SchematicBuildTask extends Task {
 
     public static void copyAllSchematicsIfNotExists() {
         try {
-            var sourcePath = "assets/altoclef/schematics";
+            var sourcePath = "assets/baritone-plus/schematics";
             var loader = FabricLoader.getInstance();
-            var modContainer = loader.getModContainer("altoclef")
+            var modContainer = loader.getModContainer("baritone-plus")
                     .orElseThrow(() -> new IOException("Mod container not found"));
             var sourceDirectory = modContainer.getPath(sourcePath);
 

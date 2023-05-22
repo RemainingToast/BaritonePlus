@@ -1,6 +1,6 @@
 package adris.altoclef;
 
-import adris.altoclef.baritone.brain.commands.BrainCommand;
+import adris.altoclef.brainWIP.commands.BrainCommand;
 import adris.altoclef.commands.*;
 import adris.altoclef.commandsystem.CommandException;
 
