@@ -1,8 +1,8 @@
-package adris.altoclef.baritone.brain.gui;
+package adris.altoclef.brainWIP.gui;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.baritone.brain.utils.ChatGPT;
+import adris.altoclef.brainWIP.utils.ChatGPT;
 import adris.altoclef.tasksystem.Task;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;

@@ -1,21 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "altoclef",
-  "version": "1.20-beta1",
-  "name": "AltoClef",
+  "id": "baritone-plus",
+  "version": "${version}",
+  "name": "Baritone+",
   "description": "Plays Block Game",
   "authors": [
-    "TacoTechnica",
-    "JamesGreen",
-    "MarvionKirito",
-    "RemainingToast"
+    "RemainingToast",
+    "Baritone",
+    "AltoClef"
   ],
   "contact": {
-    "homepage": "https://fabricc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://toastmc.dev",
+    "sources": "https://github.com/RemainingToast/BaritonePlus"
   },
   "license": "CC0-1.0",
-  "icon": "assets/altoclef/icon.png",
+  "icon": "assets/baritone-plus/baritone-plus.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -23,6 +22,6 @@
     ]
   },
   "mixins": [
-    "altoclef.mixins.json"
+    "baritone-plus.mixins.json"
   ]
 }

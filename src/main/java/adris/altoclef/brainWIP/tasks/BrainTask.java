@@ -1,8 +1,7 @@
-package adris.altoclef.baritone.brain.tasks;
+package adris.altoclef.brainWIP.tasks;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.Debug;
-import adris.altoclef.baritone.brain.BaritoneBrain;
+import adris.altoclef.brainWIP.BaritoneBrain;
 import adris.altoclef.tasksystem.Task;
 
 public class BrainTask extends Task {
