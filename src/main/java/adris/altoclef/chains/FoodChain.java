@@ -14,7 +14,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 

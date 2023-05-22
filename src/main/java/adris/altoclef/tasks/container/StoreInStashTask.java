@@ -10,7 +10,7 @@ import adris.altoclef.util.BlockRange;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;

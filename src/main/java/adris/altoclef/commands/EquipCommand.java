@@ -10,7 +10,7 @@ import baritone.api.command.exception.CommandInvalidTypeException;
 import baritone.api.command.exception.CommandNotEnoughArgumentsException;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 public class EquipCommand extends PlusCommand {
     public EquipCommand() {

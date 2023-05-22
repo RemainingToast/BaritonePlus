@@ -24,14 +24,19 @@ import baritone.altoclef.AltoClefSettings;
 import baritone.api.BaritoneAPI;
 import baritone.api.Settings;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
+import net.minecraft.server.management.PlayerInteractionManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayDeque;
@@ -177,7 +182,7 @@ public class AltoClef implements ModInitializer {
         // Tick with the client
         EventBus.subscribe(ClientTickEvent.class, evt -> onClientTick());
         // Render
-        EventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack));
+        EventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay());
 
         // Playground
         Playground.IDLE_TEST_INIT_FUNCTION(this);
@@ -218,8 +223,8 @@ public class AltoClef implements ModInitializer {
 
     /// GETTERS AND SETTERS
 
-    private void onClientRenderOverlay(MatrixStack matrixStack) {
-        _commandStatusOverlay.render(this, matrixStack);
+    private void onClientRenderOverlay(/*MatrixStack matrixStack*/) {
+        _commandStatusOverlay.render(this/*, matrixStack*/);
     }
 
     private void initializeBaritoneSettings() {
@@ -385,26 +390,26 @@ public class AltoClef implements ModInitializer {
     /**
      * Minecraft player client access (could just be static honestly)
      */
-    public ClientPlayerEntity getPlayer() {
+    public EntityPlayerSP getPlayer() {
         return mc().player;
     }
 
     /**
      * Minecraft world access (could just be static honestly)
      */
-    public ClientWorld getWorld() {
+    public WorldClient getWorld() {
         return mc().world;
     }
 
-    public MinecraftClient mc() {
-        return MinecraftClient.getInstance();
+    public Minecraft mc() {
+        return Minecraft.getMinecraft();
     }
 
     /**
      * Minecraft client interaction controller access (could just be static honestly)
      */
-    public ClientPlayerInteractionManager getController() {
-        return MinecraftClient.getInstance().interactionManager;
+    public PlayerControllerMP getController() {
+        return Minecraft.getMinecraft().playerController;
     }
 
     /**

@@ -9,7 +9,7 @@ import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.time.TimerGame;
 import baritone.api.utils.input.Input;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;

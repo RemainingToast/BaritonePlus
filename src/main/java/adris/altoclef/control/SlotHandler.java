@@ -9,10 +9,11 @@ import adris.altoclef.util.slots.CursorSlot;
 import adris.altoclef.util.slots.PlayerSlot;
 import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.*;
-import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,11 +51,11 @@ public class SlotHandler {
     }
 
 
-    public void clickSlot(Slot slot, int mouseButton, SlotActionType type) {
+    public void clickSlot(Slot slot, int mouseButton, ClickType type) {
         if (!canDoSlotAction()) return;
 
         if (slot.getWindowSlot() == -1) {
-            clickSlot(PlayerSlot.UNDEFINED, 0, SlotActionType.PICKUP);
+            clickSlot(PlayerSlot.UNDEFINED, 0, ClickType.PICKUP);
             return;
         }
         // NOT THE CASE! We may have something in the cursor slot to place.
@@ -63,21 +64,23 @@ public class SlotHandler {
         clickWindowSlot(slot.getWindowSlot(), mouseButton, type);
     }
 
-    private void clickSlotForce(Slot slot, int mouseButton, SlotActionType type) {
+    private void clickSlotForce(Slot slot, int mouseButton, ClickType type) {
         forceAllowNextSlotAction();
         clickSlot(slot, mouseButton, type);
     }
 
-    private void clickWindowSlot(int windowSlot, int mouseButton, SlotActionType type) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    private void clickWindowSlot(int windowSlot, int mouseButton, ClickType type) {
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;
         }
+        
         registerSlotAction();
-        int syncId = player.currentScreenHandler.syncId;
+        
+        int syncId = player.openContainer.windowId;
 
         try {
-            _mod.getController().clickSlot(syncId, windowSlot, mouseButton, type, player);
+            _mod.getController().windowClick(syncId, windowSlot, mouseButton, type, player);
         } catch (Exception e) {
             Debug.logWarning("Slot Click Error (ignored)");
             e.printStackTrace();
@@ -92,9 +95,9 @@ public class SlotHandler {
                 toEquip);
         for (Slot CurrentItemSlot : currentItemSlot) {
             if (!Slot.isCursor(CurrentItemSlot)) {
-                _mod.getSlotHandler().clickSlot(CurrentItemSlot, 0, SlotActionType.PICKUP);
+                _mod.getSlotHandler().clickSlot(CurrentItemSlot, 0, ClickType.PICKUP);
             } else {
-                _mod.getSlotHandler().clickSlot(PlayerSlot.OFFHAND_SLOT, 0, SlotActionType.PICKUP);
+                _mod.getSlotHandler().clickSlot(PlayerSlot.OFFHAND_SLOT, 0, ClickType.PICKUP);
             }
         }
     }
@@ -105,7 +108,7 @@ public class SlotHandler {
         if (StorageHelper.getItemStackInSlot(PlayerSlot.getEquipSlot()).getItem() == toEquip) return true;
 
         // Always equip to the second slot. First + last is occupied by baritone.
-        _mod.getPlayer().getInventory().selectedSlot = 1;
+        _mod.getPlayer().inventory.selectedSlot = 1; // TODO
 
         // If our item is in our cursor, simply move it to the hotbar.
         boolean inCursor = StorageHelper.getItemStackInSlot(CursorSlot.SLOT).getItem() == toEquip
@@ -124,7 +127,7 @@ public class SlotHandler {
                 clickSlotForce(
                         Objects.requireNonNull(ItemSlots),
                         inCursor ? 0 : hotbar,
-                        inCursor ? SlotActionType.PICKUP : SlotActionType.SWAP
+                        inCursor ? ClickType.PICKUP : ClickType.SWAP
                 );
                 //registerSlotAction();
             }
@@ -140,25 +143,25 @@ public class SlotHandler {
     public void forceDeequipRightClickableItem() {
         forceDeequip(stack -> {
                     Item item = stack.getItem();
-                    return item instanceof BucketItem // water,lava,milk,fishes
-                            || item instanceof EnderEyeItem
+                    return item instanceof ItemBucket // water,lava,milk,fishes
+                            || item instanceof ItemEnderEye
                             || item == Items.BOW
-                            || item == Items.CROSSBOW
+//                            || item == Items.CROSSBOW
                             || item == Items.FLINT_AND_STEEL || item == Items.FIRE_CHARGE
                             || item == Items.ENDER_PEARL
-                            || item instanceof FireworkRocketItem
-                            || item instanceof SpawnEggItem
+                            || item instanceof ItemFirework
+                            || item instanceof ItemEgg
                             || item == Items.END_CRYSTAL
                             || item == Items.EXPERIENCE_BOTTLE
-                            || item instanceof PotionItem // also includes splash/lingering
-                            || item == Items.TRIDENT
+                            || item instanceof ItemPotion // also includes splash/lingering
+//                            || item == Items.TRIDENT
                             || item == Items.WRITABLE_BOOK
                             || item == Items.WRITTEN_BOOK
-                            || item instanceof FishingRodItem
-                            || item instanceof OnAStickItem
+                            || item instanceof ItemFishingRod
+                            || item instanceof ItemCarrotOnAStick
                             || item == Items.COMPASS
-                            || item instanceof EmptyMapItem
-                            || item instanceof Equipment
+                            || item instanceof ItemEmptyMap
+                            || item instanceof ItemArmor
                             || item == Items.LEAD
                             || item == Items.SHIELD;
                 }
@@ -177,32 +180,32 @@ public class SlotHandler {
         if (isBad.test(cursor)) {
             // Throw away cursor slot OR move
             Optional<Slot> fittableSlots = _mod.getItemStorage().getSlotThatCanFitInPlayerInventory(equip, false);
-            if (fittableSlots.isEmpty()) {
+            if (!fittableSlots.isPresent()) {
                 // Try to swap items with the first non-bad slot.
                 for (Slot slot : Slot.getCurrentScreenSlots()) {
                     if (!isBad.test(StorageHelper.getItemStackInSlot(slot))) {
-                        clickSlotForce(slot, 0, SlotActionType.PICKUP);
+                        clickSlotForce(slot, 0, ClickType.PICKUP);
                         return false;
                     }
                 }
                 if (ItemHelper.canThrowAwayStack(_mod, cursor)) {
-                    clickSlotForce(PlayerSlot.UNDEFINED, 0, SlotActionType.PICKUP);
+                    clickSlotForce(PlayerSlot.UNDEFINED, 0, ClickType.PICKUP);
                     return true;
                 }
                 // Can't throw :(
                 return false;
             } else {
                 // Put in the empty/available slot.
-                clickSlotForce(fittableSlots.get(), 0, SlotActionType.PICKUP);
+                clickSlotForce(fittableSlots.get(), 0, ClickType.PICKUP);
                 return true;
             }
         } else if (isBad.test(equip)) {
             // Pick up the item
-            clickSlotForce(PlayerSlot.getEquipSlot(), 0, SlotActionType.PICKUP);
+            clickSlotForce(PlayerSlot.getEquipSlot(), 0, ClickType.PICKUP);
             return false;
         } else if (equip.isEmpty() && !cursor.isEmpty()) {
             // cursor is good and equip is empty, so finish filling it in.
-            clickSlotForce(PlayerSlot.getEquipSlot(), 0, SlotActionType.PICKUP);
+            clickSlotForce(PlayerSlot.getEquipSlot(), 0, ClickType.PICKUP);
             return true;
         }
         // We're already de-equipped
@@ -211,7 +214,7 @@ public class SlotHandler {
 
     public void forceEquipSlot(Slot slot) {
         Slot target = PlayerSlot.getEquipSlot();
-        clickSlotForce(slot, target.getInventorySlot(), SlotActionType.SWAP);
+        clickSlotForce(slot, target.getInventorySlot(), ClickType.SWAP);
     }
 
     public boolean forceEquipItem(Item[] matches, boolean unInterruptable) {
@@ -244,12 +247,12 @@ public class SlotHandler {
     }
 
     public void refreshInventory() {
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getMinecraft().player == null)
             return;
-        for (int i = 0; i < MinecraftClient.getInstance().player.getInventory().main.size(); ++i) {
+        for (int i = 0; i < Minecraft.getMinecraft().player.inventory.mainInventory.size(); ++i) {
             Slot slot = Slot.getFromCurrentScreenInventory(i);
-            clickSlotForce(slot, 0, SlotActionType.PICKUP);
-            clickSlotForce(slot, 0, SlotActionType.PICKUP);
+            clickSlotForce(slot, 0, ClickType.PICKUP);
+            clickSlotForce(slot, 0, ClickType.PICKUP);
         }
     }
 }

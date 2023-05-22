@@ -11,7 +11,7 @@ import adris.altoclef.util.time.TimerGame;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EyeOfEnderEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;

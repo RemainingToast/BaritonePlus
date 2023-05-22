@@ -15,7 +15,7 @@ import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -145,10 +145,10 @@ public abstract class DoStuffInContainerTask extends Task {
                 return new EnsureFreeInventorySlotTask();
             }
             if (ItemHelper.canThrowAwayStack(mod, StorageHelper.getItemStackInCursorSlot())) {
-                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                 return null;
             }
-            mod.getSlotHandler().clickSlot(toMoveTo.get(), 0, SlotActionType.PICKUP);
+            mod.getSlotHandler().clickSlot(toMoveTo.get(), 0, ClickType.PICKUP);
             return null;
         }
         return _openTableTask;

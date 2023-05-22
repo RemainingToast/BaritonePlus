@@ -13,7 +13,7 @@ import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.slots.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -76,9 +76,9 @@ public class GiveItemToPlayerTask extends Task {
                             target = new ItemTarget(target, target.getTargetCount() - stack.getCount());
                             _throwTarget.set(i, target);
                             Debug.logMessage("THROWING: " + has.get());
-                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                         } else {
-                            mod.getSlotHandler().clickSlot(currentlyPresent, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(currentlyPresent, 0, ClickType.PICKUP);
                         }
                         return null;
                     }

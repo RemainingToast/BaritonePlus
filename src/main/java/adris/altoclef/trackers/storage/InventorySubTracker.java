@@ -13,7 +13,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.screen.ScreenHandler;
 
 import java.util.ArrayList;

@@ -14,10 +14,10 @@ import adris.altoclef.util.helpers.ItemHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.BufferedReader;

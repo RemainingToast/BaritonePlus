@@ -11,7 +11,7 @@ import adris.altoclef.util.slots.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.FurnaceScreenHandler;
 import net.minecraft.screen.SmokerScreenHandler;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
@@ -117,7 +117,7 @@ public class PickupFromContainerTask extends AbstractDoToStorageContainerTask {
 
                 if (bestPotential.isPresent()) {
                     // Just pick it up, it's now ours.
-                    mod.getSlotHandler().clickSlot(bestPotential.get(), 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(bestPotential.get(), 0, ClickType.PICKUP);
                     return null;
                 }
                 setDebugState("SHOULD NOT HAPPEN! No valid items detected.");
@@ -128,7 +128,7 @@ public class PickupFromContainerTask extends AbstractDoToStorageContainerTask {
         setDebugState("Done");
         if (mod.getPlayer().currentScreenHandler instanceof SmokerScreenHandler || mod.getPlayer().currentScreenHandler
                 instanceof FurnaceScreenHandler) {
-            mod.getSlotHandler().clickSlot(FurnaceSlot.INPUT_SLOT_MATERIALS, 0, SlotActionType.PICKUP);
+            mod.getSlotHandler().clickSlot(FurnaceSlot.INPUT_SLOT_MATERIALS, 0, ClickType.PICKUP);
             return null;
         }
         return null;

@@ -6,7 +6,7 @@ import adris.altoclef.tasks.construction.compound.ConstructNetherPortalObsidianT
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

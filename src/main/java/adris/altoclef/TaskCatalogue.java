@@ -11,12 +11,12 @@ import adris.altoclef.tasks.squashed.CataloguedResourceTask;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.DyeColor;
 
 import java.util.*;

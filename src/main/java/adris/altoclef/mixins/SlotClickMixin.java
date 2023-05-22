@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,9 +20,9 @@ public class SlotClickMixin {
 
     @Redirect(
             method = "internalOnSlotClick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;internalOnSlotClick(IILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;internalOnSlotClick(IILnet/minecraft/screen/slot/ClickType;Lnet/minecraft/entity/player/PlayerEntity;)V")
     )
-    private void slotClick(ScreenHandler self, int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+    private void slotClick(ScreenHandler self, int slotIndex, int button, ClickType actionType, PlayerEntity player) {
         // TODO: "self" is misleading, reread Mixin docs to understand the implications here.
 
         // This calculation is already done, BUT we also want a "before&after" type beat.

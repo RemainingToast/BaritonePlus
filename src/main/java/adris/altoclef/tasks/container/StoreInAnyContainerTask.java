@@ -12,8 +12,8 @@ import adris.altoclef.util.helpers.ItemHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;

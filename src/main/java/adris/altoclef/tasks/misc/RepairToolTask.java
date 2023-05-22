@@ -13,7 +13,7 @@ import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.slots.PlayerSlot;
 import adris.altoclef.util.helpers.ItemHelper;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import baritone.api.utils.input.Input;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.ExperienceOrbEntity;

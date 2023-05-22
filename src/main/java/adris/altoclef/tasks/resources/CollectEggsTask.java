@@ -9,7 +9,7 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 public class CollectEggsTask extends ResourceTask {
 

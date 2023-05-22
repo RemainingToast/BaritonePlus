@@ -6,8 +6,8 @@ import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

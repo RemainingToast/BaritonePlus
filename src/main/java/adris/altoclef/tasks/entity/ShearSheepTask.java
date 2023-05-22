@@ -5,7 +5,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.tasksystem.Task;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.Hand;
 
 import java.util.Optional;

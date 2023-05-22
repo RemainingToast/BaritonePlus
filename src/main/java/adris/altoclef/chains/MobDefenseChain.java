@@ -30,9 +30,9 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.item.SwordItem;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -87,7 +87,7 @@ public class MobDefenseChain extends SingleTaskChain {
                 if (!spaceSlots.isEmpty()) {
                     for (ItemStack spaceSlot : spaceSlots) {
                         if (spaceSlot.isEmpty()) {
-                            mod.getSlotHandler().clickSlot(PlayerSlot.getEquipSlot(), 0, SlotActionType.QUICK_MOVE);
+                            mod.getSlotHandler().clickSlot(PlayerSlot.getEquipSlot(), 0, ClickType.QUICK_MOVE);
                             return;
                         }
                     }
@@ -105,7 +105,7 @@ public class MobDefenseChain extends SingleTaskChain {
                 Optional<Slot> toMoveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursor, false).or(() -> StorageHelper.getGarbageSlot(mod));
                 if (toMoveTo.isPresent()) {
                     Slot garbageSlot = toMoveTo.get();
-                    mod.getSlotHandler().clickSlot(garbageSlot, 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(garbageSlot, 0, ClickType.PICKUP);
                 }
             }
             mod.getInputControls().release(Input.SNEAK);

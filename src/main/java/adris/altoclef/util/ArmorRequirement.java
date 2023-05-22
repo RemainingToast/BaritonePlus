@@ -1,7 +1,7 @@
 package adris.altoclef.util;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 @Deprecated
 public enum ArmorRequirement {

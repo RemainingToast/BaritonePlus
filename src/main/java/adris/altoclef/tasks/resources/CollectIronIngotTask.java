@@ -8,8 +8,8 @@ import adris.altoclef.tasks.container.SmeltInFurnaceTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.SmeltTarget;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

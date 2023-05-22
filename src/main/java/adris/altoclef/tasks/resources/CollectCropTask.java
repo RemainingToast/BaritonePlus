@@ -12,7 +12,7 @@ import adris.altoclef.util.helpers.StlHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;

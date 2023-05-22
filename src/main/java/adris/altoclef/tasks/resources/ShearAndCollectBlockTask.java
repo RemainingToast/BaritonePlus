@@ -8,7 +8,7 @@ import adris.altoclef.util.MiningRequirement;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 public class ShearAndCollectBlockTask extends MineAndCollectTask {
 

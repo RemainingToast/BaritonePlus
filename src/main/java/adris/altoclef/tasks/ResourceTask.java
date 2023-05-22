@@ -23,7 +23,7 @@ import adris.altoclef.util.slots.Slot;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -103,20 +103,20 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
             setDebugState("Moving from cursor");
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(StorageHelper.getItemStackInCursorSlot(), false);
             if (moveTo.isPresent()) {
-                mod.getSlotHandler().clickSlot(moveTo.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(moveTo.get(), 0, ClickType.PICKUP);
                 return null;
             }
             if (ItemHelper.canThrowAwayStack(mod, StorageHelper.getItemStackInCursorSlot())) {
-                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                 return null;
             }
             Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
             // Try throwing away cursor slot if it's garbage
             if (garbage.isPresent()) {
-                mod.getSlotHandler().clickSlot(garbage.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(garbage.get(), 0, ClickType.PICKUP);
                 return null;
             }
-            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
             return null;
         }
 

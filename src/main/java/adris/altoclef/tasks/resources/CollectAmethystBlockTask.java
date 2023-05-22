@@ -7,9 +7,9 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 public class CollectAmethystBlockTask extends ResourceTask {
 

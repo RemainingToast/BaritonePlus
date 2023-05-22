@@ -12,7 +12,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.registry.tag.DamageTypeTags;
 
 /**

@@ -18,7 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

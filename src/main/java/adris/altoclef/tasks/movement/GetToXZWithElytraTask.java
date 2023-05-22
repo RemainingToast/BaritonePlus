@@ -19,7 +19,7 @@ import adris.altoclef.util.slots.Slot;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.input.Input;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.Vec3d;
 import java.util.List;
 

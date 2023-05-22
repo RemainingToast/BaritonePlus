@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 
 import java.util.Optional;
 
@@ -121,20 +121,20 @@ public class PlayerInteractionFixChain extends TaskChain {
         if (_lastHandStack != null && _stackHeldTimeout.elapsed()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(_lastHandStack, false);
             if (moveTo.isPresent()) {
-                mod.getSlotHandler().clickSlot(moveTo.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(moveTo.get(), 0, ClickType.PICKUP);
                 return Float.NEGATIVE_INFINITY;
             }
             if (ItemHelper.canThrowAwayStack(mod, StorageHelper.getItemStackInCursorSlot())) {
-                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                 return Float.NEGATIVE_INFINITY;
             }
             Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
             // Try throwing away cursor slot if it's garbage
             if (garbage.isPresent()) {
-                mod.getSlotHandler().clickSlot(garbage.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(garbage.get(), 0, ClickType.PICKUP);
                 return Float.NEGATIVE_INFINITY;
             }
-            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
             return Float.NEGATIVE_INFINITY;
         }
 
@@ -144,20 +144,20 @@ public class PlayerInteractionFixChain extends TaskChain {
             if (!cursorStack.isEmpty()) {
                 Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
                 if (moveTo.isPresent()) {
-                    mod.getSlotHandler().clickSlot(moveTo.get(), 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(moveTo.get(), 0, ClickType.PICKUP);
                     return Float.NEGATIVE_INFINITY;
                 }
                 if (ItemHelper.canThrowAwayStack(mod, cursorStack)) {
-                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     return Float.NEGATIVE_INFINITY;
                 }
                 Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
                 // Try throwing away cursor slot if it's garbage
                 if (garbage.isPresent()) {
-                    mod.getSlotHandler().clickSlot(garbage.get(), 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(garbage.get(), 0, ClickType.PICKUP);
                     return Float.NEGATIVE_INFINITY;
                 }
-                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
             } else {
                 StorageHelper.closeScreen();
             }

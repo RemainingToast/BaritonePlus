@@ -10,7 +10,7 @@ import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.DyeColor;
 
 import java.util.Arrays;

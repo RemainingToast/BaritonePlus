@@ -14,8 +14,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Streams;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
@@ -303,23 +304,23 @@ public class Settings implements IFailableConfigFile {
     @JsonDeserialize(using = ItemDeserializer.class)
     private List<Item> throwawayItems = Arrays.asList(
             // Overworld junk
-            Items.DRIPSTONE_BLOCK,
-            Items.ROOTED_DIRT,
-            Items.GRAVEL,
-            Items.SAND,
-            Items.DIORITE,
-            Items.ANDESITE,
-            Items.GRANITE,
-            Items.TUFF,
-            Items.COBBLESTONE,
-            Items.DIRT,
-            Items.COBBLED_DEEPSLATE,
-            Items.ACACIA_LEAVES,
-            Items.BIRCH_LEAVES,
-            Items.DARK_OAK_LEAVES,
-            Items.OAK_LEAVES,
-            Items.JUNGLE_LEAVES,
-            Items.SPRUCE_LEAVES,
+            Blocks.DRIPSTONE_BLOCK,
+            Blocks.ROOTED_DIRT,
+            Blocks.GRAVEL,
+            Blocks.SAND,
+            Blocks.DIORITE,
+            Blocks.ANDESITE,
+            Blocks.GRANITE,
+            Blocks.TUFF,
+            Blocks.COBBLESTONE,
+            Blocks.DIRT,
+            Blocks.COBBLED_DEEPSLATE,
+            Blocks.ACACIA_LEAVES,
+            Blocks.BIRCH_LEAVES,
+            Blocks.DARK_OAK_LEAVES,
+            Blocks.LEAVES,
+            Blocks.JUNGLE_LEAVES,
+            Blocks.SPRUCE_LEAVES,
             // Nether junk, to be fair it's mostly tuned for the "beat game" task
             Items.NETHERRACK,
             Items.MAGMA_BLOCK,

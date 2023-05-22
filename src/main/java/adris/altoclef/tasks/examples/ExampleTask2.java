@@ -5,7 +5,7 @@ import adris.altoclef.tasks.movement.GetToBlockTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasksystem.Task;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

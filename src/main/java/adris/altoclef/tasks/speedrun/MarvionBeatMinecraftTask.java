@@ -25,7 +25,7 @@ import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.CreditsScreen;
@@ -36,10 +36,10 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.biome.BiomeKeys;
@@ -637,9 +637,9 @@ public class MarvionBeatMinecraftTask extends Task {
                         if (!mod.getControllerExtras().isBreakingBlock()) {
                             LookHelper.randomOrientation(mod);
                         }
-                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     } else {
-                        mod.getSlotHandler().clickSlot(shear, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(shear, 0, ClickType.PICKUP);
                     }
                 }
             }
@@ -650,9 +650,9 @@ public class MarvionBeatMinecraftTask extends Task {
                         if (!mod.getControllerExtras().isBreakingBlock()) {
                             LookHelper.randomOrientation(mod);
                         }
-                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     } else {
-                        mod.getSlotHandler().clickSlot(furnace, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(furnace, 0, ClickType.PICKUP);
                     }
                 }
             }
@@ -662,9 +662,9 @@ public class MarvionBeatMinecraftTask extends Task {
                         if (!mod.getControllerExtras().isBreakingBlock()) {
                             LookHelper.randomOrientation(mod);
                         }
-                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     } else {
-                        mod.getSlotHandler().clickSlot(sand, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(sand, 0, ClickType.PICKUP);
                     }
                 }
             }
@@ -675,9 +675,9 @@ public class MarvionBeatMinecraftTask extends Task {
                             if (!mod.getControllerExtras().isBreakingBlock()) {
                                 LookHelper.randomOrientation(mod);
                             }
-                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                         } else {
-                            mod.getSlotHandler().clickSlot(gravel, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(gravel, 0, ClickType.PICKUP);
                         }
                     }
                 }
@@ -688,9 +688,9 @@ public class MarvionBeatMinecraftTask extends Task {
                         if (!mod.getControllerExtras().isBreakingBlock()) {
                             LookHelper.randomOrientation(mod);
                         }
-                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     } else {
-                        mod.getSlotHandler().clickSlot(torch, 0, SlotActionType.PICKUP);
+                        mod.getSlotHandler().clickSlot(torch, 0, ClickType.PICKUP);
                     }
                 }
             }
@@ -701,9 +701,9 @@ public class MarvionBeatMinecraftTask extends Task {
                             if (!mod.getControllerExtras().isBreakingBlock()) {
                                 LookHelper.randomOrientation(mod);
                             }
-                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                         } else {
-                            mod.getSlotHandler().clickSlot(excessWaterBucket, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(excessWaterBucket, 0, ClickType.PICKUP);
                         }
                     }
                 }
@@ -715,9 +715,9 @@ public class MarvionBeatMinecraftTask extends Task {
                             if (!mod.getControllerExtras().isBreakingBlock()) {
                                 LookHelper.randomOrientation(mod);
                             }
-                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                         } else {
-                            mod.getSlotHandler().clickSlot(excessLighter, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(excessLighter, 0, ClickType.PICKUP);
                         }
                     }
                 }
@@ -730,9 +730,9 @@ public class MarvionBeatMinecraftTask extends Task {
                             if (!mod.getControllerExtras().isBreakingBlock()) {
                                 LookHelper.randomOrientation(mod);
                             }
-                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                         } else {
-                            mod.getSlotHandler().clickSlot(bed, 0, SlotActionType.PICKUP);
+                            mod.getSlotHandler().clickSlot(bed, 0, ClickType.PICKUP);
                         }
                     }
                 }
@@ -1003,9 +1003,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                     if (!mod.getControllerExtras().isBreakingBlock()) {
                                         LookHelper.randomOrientation(mod);
                                     }
-                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                                 } else {
-                                    mod.getSlotHandler().clickSlot(throwGear, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(throwGear, 0, ClickType.PICKUP);
                                 }
                             }
                         }
@@ -1015,9 +1015,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                     if (!mod.getControllerExtras().isBreakingBlock()) {
                                         LookHelper.randomOrientation(mod);
                                     }
-                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                                 } else {
-                                    mod.getSlotHandler().clickSlot(ironArmor, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(ironArmor, 0, ClickType.PICKUP);
                                 }
                             }
                         }
@@ -1117,9 +1117,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                 if (!mod.getControllerExtras().isBreakingBlock()) {
                                     LookHelper.randomOrientation(mod);
                                 }
-                                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                             } else {
-                                mod.getSlotHandler().clickSlot(throwGear, 0, SlotActionType.PICKUP);
+                                mod.getSlotHandler().clickSlot(throwGear, 0, ClickType.PICKUP);
                             }
                         }
                     }
@@ -1129,9 +1129,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                 if (!mod.getControllerExtras().isBreakingBlock()) {
                                     LookHelper.randomOrientation(mod);
                                 }
-                                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                             } else {
-                                mod.getSlotHandler().clickSlot(ironArmor, 0, SlotActionType.PICKUP);
+                                mod.getSlotHandler().clickSlot(ironArmor, 0, ClickType.PICKUP);
                             }
                         }
                     }
@@ -1569,9 +1569,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                     if (!mod.getControllerExtras().isBreakingBlock()) {
                                         LookHelper.randomOrientation(mod);
                                     }
-                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                                 } else {
-                                    mod.getSlotHandler().clickSlot(throwGear, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(throwGear, 0, ClickType.PICKUP);
                                 }
                             }
                         }
@@ -1581,9 +1581,9 @@ public class MarvionBeatMinecraftTask extends Task {
                                     if (!mod.getControllerExtras().isBreakingBlock()) {
                                         LookHelper.randomOrientation(mod);
                                     }
-                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                                 } else {
-                                    mod.getSlotHandler().clickSlot(ironArmor, 0, SlotActionType.PICKUP);
+                                    mod.getSlotHandler().clickSlot(ironArmor, 0, ClickType.PICKUP);
                                 }
                             }
                         }

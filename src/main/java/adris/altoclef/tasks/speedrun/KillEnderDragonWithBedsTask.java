@@ -10,7 +10,7 @@ import adris.altoclef.util.helpers.ItemHelper;
 import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import baritone.api.utils.input.Input;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.Phase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;

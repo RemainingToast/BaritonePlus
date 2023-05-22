@@ -17,9 +17,9 @@ import baritone.api.utils.Rotation;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 

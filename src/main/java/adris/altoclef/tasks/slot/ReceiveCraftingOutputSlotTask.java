@@ -9,7 +9,7 @@ import adris.altoclef.util.slots.CraftingTableSlot;
 import adris.altoclef.util.slots.PlayerSlot;
 import adris.altoclef.util.slots.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 
 public class ReceiveCraftingOutputSlotTask extends Task implements ITaskUsesCraftingGrid {
 
@@ -59,11 +59,11 @@ public class ReceiveCraftingOutputSlotTask extends Task implements ITaskUsesCraf
         boolean takeAll = weWantToAddToInventory >= craftCount;
         if (takeAll && mod.getItemStorage().getSlotThatCanFitInPlayerInventory(inOutput, true).isPresent()) {
             setDebugState("Quick moving output");
-            mod.getSlotHandler().clickSlot(_slot, 0, SlotActionType.QUICK_MOVE);
+            mod.getSlotHandler().clickSlot(_slot, 0, ClickType.QUICK_MOVE);
             return null;
         }
         setDebugState("Picking up output");
-        mod.getSlotHandler().clickSlot(_slot, 0, SlotActionType.PICKUP);
+        mod.getSlotHandler().clickSlot(_slot, 0, ClickType.PICKUP);
         return null;
     }
 

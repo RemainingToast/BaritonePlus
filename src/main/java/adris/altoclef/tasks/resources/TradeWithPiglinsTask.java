@@ -15,7 +15,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HoglinEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.Hand;
 
 import java.util.HashSet;

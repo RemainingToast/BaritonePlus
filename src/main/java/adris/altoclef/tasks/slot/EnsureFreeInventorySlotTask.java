@@ -6,7 +6,7 @@ import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.slots.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 
 import java.util.Optional;
 
@@ -22,13 +22,13 @@ public class EnsureFreeInventorySlotTask extends Task {
         Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
         if (cursorStack.isEmpty()) {
             if (garbage.isPresent()) {
-                mod.getSlotHandler().clickSlot(garbage.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(garbage.get(), 0, ClickType.PICKUP);
                 return null;
             }
         }
         if (!cursorStack.isEmpty()) {
             LookHelper.randomOrientation(mod);
-            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+            mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
             return null;
         }
         setDebugState("All items are protected.");

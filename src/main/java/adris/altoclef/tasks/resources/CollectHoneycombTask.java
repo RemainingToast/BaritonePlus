@@ -10,8 +10,8 @@ import adris.altoclef.tasks.squashed.CataloguedResourceTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.WorldHelper;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 

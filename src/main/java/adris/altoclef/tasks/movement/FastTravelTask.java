@@ -12,7 +12,7 @@ import adris.altoclef.util.time.TimerGame;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.NotImplementedException;
 

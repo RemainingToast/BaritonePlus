@@ -9,8 +9,8 @@ import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.MiningRequirement;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 
 public class CollectQuartzTask extends ResourceTask {
 

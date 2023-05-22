@@ -8,7 +8,7 @@ import adris.altoclef.tasks.entity.AbstractDoToEntityTask;
 import adris.altoclef.tasksystem.Task;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.Hand;
 
 import java.util.Optional;

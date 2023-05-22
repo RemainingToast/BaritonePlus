@@ -25,7 +25,7 @@ import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
@@ -358,20 +358,20 @@ public class InteractWithBlockTask extends Task {
             if (!cursorStack.isEmpty()) {
                 Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
                 if (moveTo.isPresent()) {
-                    mod.getSlotHandler().clickSlot(moveTo.get(), 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(moveTo.get(), 0, ClickType.PICKUP);
                     return ClickResponse.WAIT_FOR_CLICK;
                 }
                 if (ItemHelper.canThrowAwayStack(mod, cursorStack)) {
-                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                     return ClickResponse.WAIT_FOR_CLICK;
                 }
                 Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
                 // Try throwing away cursor slot if it's garbage
                 if (garbage.isPresent()) {
-                    mod.getSlotHandler().clickSlot(garbage.get(), 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(garbage.get(), 0, ClickType.PICKUP);
                     return ClickResponse.WAIT_FOR_CLICK;
                 }
-                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
                 return ClickResponse.WAIT_FOR_CLICK;
             } else {
                 StorageHelper.closeScreen();

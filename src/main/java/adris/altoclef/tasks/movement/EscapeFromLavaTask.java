@@ -6,7 +6,7 @@ import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import baritone.api.pathing.goals.Goal;
 import baritone.api.utils.input.Input;
 import baritone.pathing.movement.MovementHelper;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 

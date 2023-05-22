@@ -1,41 +1,56 @@
-plugins {
-    id "maven-publish"
-    id "fabric-loom" version "1.1-SNAPSHOT"
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public' }
+        maven { url = "https://plugins.gradle.org/m2/" }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
+        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+    }
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'eclipse'
 
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+
+minecraft {
+    mappings channel: 'stable', version: '39-1.12'
+
+    runs {
+        client {
+            workingDirectory project.file('forge')
+
+            property 'fml.coreMods.load', 'baritone.mixin.BaritonePlusTweaker'
+            property 'mixin.env.disableRefMap', 'true'
+        }
+    }
+}
+
 repositories {
-    mavenCentral()
     maven {
         name = "MarvionKiritoRepo"
         url = "https://marvionkirito.github.io/maven/"
     }
+
     maven {
         url 'https://jitpack.io'
     }
-    flatDir {
-        dirs '../baritone/dist'
-    }
+
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'org.projectlombok:lombok:1.18.22'
-
-    //to change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.minecraft_version}")
-    mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+    minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2854"
 
     // Jackson JSON
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0-rc2'
@@ -44,40 +59,40 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
-    shadow('com.fasterxml.jackson.core:jackson-core:2.15.0-rc2')
-    shadow('com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2')
-    shadow('com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2')
+//    shadow('com.fasterxml.jackson.core:jackson-core:2.15.0-rc2')
+//    shadow('com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2')
+//    shadow('com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2')
 
     // Baritone
-    modImplementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
-    include "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
+//    modImplementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
+    implementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
 
     // Baritone Plus
     implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
     implementation 'org.reflections:reflections:0.9.12'
     implementation 'com.github.umjammer:jlayer:1.0.2'
 }
-shadowJar {
-    configurations = [project.configurations.shadow]
-}
 
-remapJar {
-    dependsOn(":shadowJar")
-    input.set(shadowJar.archiveFile)
+shadowJar {
+
 }
 
 processResources {
+    // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft_version
 
+    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version
-        duplicatesStrategy DuplicatesStrategy.EXCLUDE
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft_version
     }
 
+    // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        duplicatesStrategy DuplicatesStrategy.EXCLUDE
-        exclude "fabric.mod.json"
+        exclude 'mcmod.info'
     }
 }
 
@@ -100,23 +115,47 @@ jar {
     from "LICENSE"
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
+jar {
+    manifest {
+        attributes(
+                'MixinConfigs': 'mixins.baritone-plus.json',
+                'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakOrder': 0,
+                'FMLCorePluginContainsFMLMod': 'true',
+                'FMLCorePlugin': 'baritone.launch.BaritonePlusTweaker',
+                'ForceLoadAsMod': 'true'
+        )
     }
 
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+    from {
+        configurations.shadow.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 }
+
+mixin {
+    defaultObfuscationEnv 'searge'
+    add sourceSets.main, 'mixins.baritone-plus.refmap.json'
+}
+
+// configure the maven publication
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            // add all the jars that should be included when publishing to maven
+//            artifact(remapJar) {
+//                builtBy remapJar
+//            }
+//            artifact(sourcesJar) {
+//                builtBy remapSourcesJar
+//            }
+//        }
+//    }
+//
+//    // select the repositories you want to publish to
+//    repositories {
+//        // uncomment to publish to the local maven
+//        // mavenLocal()
+//    }
+//}

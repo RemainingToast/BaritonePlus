@@ -27,7 +27,7 @@ import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.SmokerScreenHandler;
 import net.minecraft.util.math.BlockPos;

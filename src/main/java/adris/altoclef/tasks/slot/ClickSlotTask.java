@@ -3,32 +3,32 @@ package adris.altoclef.tasks.slot;
 import adris.altoclef.AltoClef;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.slots.Slot;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.slot.ClickType;
 
 public class ClickSlotTask extends Task {
 
     private final Slot _slot;
     private final int _mouseButton;
-    private final SlotActionType _type;
+    private final ClickType _type;
 
     private boolean _clicked = false;
 
-    public ClickSlotTask(Slot slot, int mouseButton, SlotActionType type) {
+    public ClickSlotTask(Slot slot, int mouseButton, ClickType type) {
         _slot = slot;
         _mouseButton = mouseButton;
         _type = type;
     }
 
-    public ClickSlotTask(Slot slot, SlotActionType type) {
+    public ClickSlotTask(Slot slot, ClickType type) {
         this(slot, 0, type);
     }
 
     public ClickSlotTask(Slot slot, int mouseButton) {
-        this(slot, mouseButton, SlotActionType.PICKUP);
+        this(slot, mouseButton, ClickType.PICKUP);
     }
 
     public ClickSlotTask(Slot slot) {
-        this(slot, SlotActionType.PICKUP);
+        this(slot, ClickType.PICKUP);
     }
 
     @Override

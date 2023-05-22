@@ -5,7 +5,7 @@ import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.MiningRequirement;
 import adris.altoclef.util.helpers.StorageHelper;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 /**
  * Make sure we have a tool at or above a mining level.

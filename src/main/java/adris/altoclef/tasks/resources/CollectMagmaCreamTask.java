@@ -9,7 +9,7 @@ import adris.altoclef.util.Dimension;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.entity.mob.MagmaCubeEntity;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 
 public class CollectMagmaCreamTask extends ResourceTask {
     private final int _count;

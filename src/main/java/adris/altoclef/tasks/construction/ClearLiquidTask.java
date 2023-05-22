@@ -4,7 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.tasks.InteractWithBlockTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
-import net.minecraft.item.Items;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.RaycastContext;
 

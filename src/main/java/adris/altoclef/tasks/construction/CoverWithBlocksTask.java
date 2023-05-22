@@ -14,7 +14,7 @@ import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.item.BlockItem;
