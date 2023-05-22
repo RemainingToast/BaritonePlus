@@ -313,7 +313,13 @@ public class Playground {
                     }
                     fw.flush();
                     fw.close();
-                    Debug.logMessage(unobtainable + " / " + total + " unobtainable items. Wrote a list of items to \"" + f.getAbsolutePath() + "\".");
+                    var percent = (int) Math.round((double) unobtainable / total * 100) + "%";
+                    Debug.logMessage("%s / %s (%s) unobtainable items. Wrote a list of items to:",
+                            unobtainable,
+                            total,
+                            percent
+                    );
+                    Debug.logMessage(f.getAbsolutePath());
                 } catch (IOException e) {
                     Debug.logWarning(e.toString());
                 }

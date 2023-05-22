@@ -15,6 +15,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
@@ -388,8 +389,28 @@ public class ItemHelper {
         return getFuelTimeMap().containsKey(item);
     }
 
-    public boolean isRawFood(Item item) {
+    public static boolean isRawFood(Item item) {
         return _cookableFoodMap.containsKey(item);
+    }
+
+    public static boolean isCreativeOnly(Item item) {
+        var creativeItems = new ArrayList<>(List.of(new Item[]{
+                Items.BARRIER,
+                Items.COMMAND_BLOCK,
+                Items.COMMAND_BLOCK_MINECART,
+                Items.CHAIN_COMMAND_BLOCK,
+                Items.REPEATING_COMMAND_BLOCK,
+                Items.SPAWNER,
+                Items.STRUCTURE_BLOCK,
+                Items.STRUCTURE_VOID,
+                Items.PLAYER_HEAD
+        }));
+        for (Identifier id : Registries.ITEM.getIds()) {
+            if (id.getPath().replace("_", " ").contains("spawn egg")) {
+                creativeItems.add(Registries.ITEM.get(id));
+            }
+        }
+        return creativeItems.contains(item);
     }
 
     public static class ColorfulItems {

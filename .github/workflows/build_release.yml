@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    paths:
+      - '**.java'
+      - '**.gradle'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build -Pmod_version="$(git describe --always --tags | cut -c2-)"
+
+      - name: Checkout Baritone repository
+        uses: actions/checkout@v3
+        with:
+          repository: AltoClef-B/aritone
+          path: baritone
+
+      - name: Grant execute permission for Baritone gradlew
+        run: chmod +x baritone/gradlew
+
+      - name: Build Baritone with Gradle
+        working-directory: ./baritone
+        run: ./gradlew build
+
+      - name: Copy Baritone JAR to root project
+        run: cp baritone/dist/baritone-unoptimized-fabric-*.jar ./build/libs/
+
+      - name: Publish Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: 'v1.20-beta'
+          prerelease: true
+          title: "AltoClef v1.20-beta"
+          files: |
+            build/libs/altoclef-1.20-beta.jar
+            build/libs/baritone-unoptimized-fabric-*.jar

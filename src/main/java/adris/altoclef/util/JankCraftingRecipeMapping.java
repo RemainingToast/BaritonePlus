@@ -20,9 +20,10 @@ public class JankCraftingRecipeMapping {
     private static void reloadRecipeMapping() {
         if (MinecraftClient.getInstance().getNetworkHandler() != null) {
             RecipeManager recipes = MinecraftClient.getInstance().getNetworkHandler().getRecipeManager();
+            DynamicRegistryManager registry = MinecraftClient.getInstance().getNetworkHandler().getRegistryManager();
             if (recipes != null) {
                 for (Recipe<?> recipe : recipes.values()) {
-                    Item output = recipe.getOutput(DynamicRegistryManager.EMPTY).getItem();
+                    Item output = recipe.getOutput(registry).getItem();
                     if (!_recipeMapping.containsKey(output)) {
                         _recipeMapping.put(output, new ArrayList<>());
                     }
