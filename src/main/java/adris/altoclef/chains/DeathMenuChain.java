@@ -91,7 +91,9 @@ public class DeathMenuChain extends TaskChain {
                         while (MinecraftClient.getInstance().player.isAlive()) {
                             if (!command.equals("")){
                                 if (command.startsWith(prefix)) {
-                                    AltoClef.getCommandExecutor().execute(command, () -> {}, Throwable::printStackTrace);
+                                    /*AltoClef.getCommandExecutor().execute(command, () -> {
+
+                                    }, Throwable::printStackTrace);*/
                                 } else if (command.startsWith("/")) {
                                     MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command.substring(1));
                                 } else {
@@ -132,8 +134,10 @@ public class DeathMenuChain extends TaskChain {
                 }
             }
         }
-        if (screen != null)
+        if (screen != null) {
+            System.out.println(screen.getClass());
             _prevScreen = screen.getClass();
+        }
         return Float.NEGATIVE_INFINITY;
     }
 

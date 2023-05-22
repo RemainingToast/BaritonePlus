@@ -1,6 +1,7 @@
 package adris.altoclef.tasksystem;
 
 import adris.altoclef.AltoClef;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +9,17 @@ import java.util.List;
 public abstract class TaskChain {
 
     private final List<Task> _cachedTaskChain = new ArrayList<>();
+    @Getter
+    private boolean paused = false;
 
     public TaskChain(TaskRunner runner) {
         runner.addTaskChain(this);
     }
 
     public void tick(AltoClef mod) {
+        if (paused) {
+            return; // return if paused
+        }
         _cachedTaskChain.clear();
         onTick(mod);
     }
@@ -21,6 +27,15 @@ public abstract class TaskChain {
     public void stop(AltoClef mod) {
         _cachedTaskChain.clear();
         onStop(mod);
+    }
+
+    // TODO - onPause/onUnpause I guess
+    public void pause() {
+        paused = true;
+    }
+
+    public void unpause() {
+        paused = false;
     }
 
     protected abstract void onStop(AltoClef mod);

@@ -1,19 +1,24 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.*;
+import adris.altoclef.commands.datatypes.ForItemOptionalMeta;
+import adris.altoclef.commands.datatypes.ItemById;
+import adris.altoclef.commands.datatypes.ItemList;
 import adris.altoclef.tasks.container.StoreInAnyContainerTask;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.slots.PlayerSlot;
+import baritone.api.command.argument.IArgConsumer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class DepositCommand extends Command {
-    public DepositCommand() throws CommandException {
-        super("deposit", "Deposit ALL of our items", new Arg(ItemList.class, "items (empty for ALL non gear items)", null, 0, false));
+import java.util.stream.Stream;
+
+public class DepositCommand extends PlusCommand {
+    public DepositCommand() {
+        super(new String[]{"deposit"}, "Deposit ALL of our items"/*, new Arg(ItemList.class, "items (empty for ALL non gear items)", null, 0, false)*/);
     }
 
     public static ItemTarget[] getAllNonEquippedOrToolItemsAsTarget(AltoClef mod) {
@@ -32,15 +37,29 @@ public class DepositCommand extends Command {
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
-        ItemList itemList = parser.get(ItemList.class);
-        ItemTarget[] items;
-        if (itemList == null) {
-            items = getAllNonEquippedOrToolItemsAsTarget(mod);
-        } else {
-            items = itemList.items;
-        }
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
+        try {
+            ItemList itemList = null;
+            ItemTarget[] items;
 
-        mod.runUserTask(new StoreInAnyContainerTask(false, items), this::finish);
+            if (args.hasAny()) {
+                itemList = args.getDatatypeFor(ForItemOptionalMeta.INSTANCE);
+            }
+
+            if (itemList == null) {
+                items = getAllNonEquippedOrToolItemsAsTarget(mod);
+            } else {
+                items = itemList.items;
+            }
+
+            mod.runUserTask(new StoreInAnyContainerTask(false, items));
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Stream<String> tabComplete(String s, IArgConsumer args) {
+        return args.tabCompleteDatatype(ItemById.INSTANCE);
     }
 }

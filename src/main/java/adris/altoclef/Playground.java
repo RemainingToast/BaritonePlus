@@ -183,6 +183,7 @@ public class Playground {
                     FileReader reader = new FileReader(file);
                     mod.runUserTask(new BeeMovieTask("bruh", mod.getPlayer().getBlockPos(), reader));
                 } catch (FileNotFoundException e) {
+                    Debug.logMessage(e.getMessage());
                     e.printStackTrace();
                 }
                 break;

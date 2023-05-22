@@ -1,6 +1,11 @@
-package adris.altoclef.commandsystem;
+package adris.altoclef.commands.datatypes;
 
+import adris.altoclef.commands.PlusCommand;
 import adris.altoclef.util.Dimension;
+import baritone.api.command.ICommand;
+import baritone.api.command.argument.ICommandArgument;
+import baritone.api.command.exception.CommandErrorMessageException;
+import baritone.api.command.exception.CommandException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +38,7 @@ public class GotoTarget {
                 int num = Integer.parseInt(part);
                 numbers.add(num);
             } catch (NumberFormatException e) {
-                dimension = (Dimension) Arg.parseEnum(part, Dimension.class);
+                dimension = (Dimension) PlusCommand.parseEnum(part, Dimension.class);
                 break;
             }
         }
@@ -56,8 +61,12 @@ public class GotoTarget {
                 z = numbers.get(2);
                 coordType = GotoTargetCoordType.XYZ;
             }
-            default ->
-                    throw new CommandException("Unexpected number of integers passed to coordinate: " + numbers.size());
+            default -> throw new CommandErrorMessageException("Unexpected number of integers passed to coordinate: " + numbers.size()) {
+                @Override
+                public void handle(ICommand command, List<ICommandArgument> args) {
+                    super.handle(command, args);
+                }
+            };
         }
         return new GotoTarget(x, y, z, dimension, coordType);
     }

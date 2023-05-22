@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Settings implements IFailableConfigFile {
 
-    public static final String SETTINGS_PATH = "altoclef_settings.json";
+    public static final String SETTINGS_PATH = "settings.json";
 
     // Internal only.
     // If settings failed to load, this will be set to warn the user.
@@ -77,7 +77,7 @@ public class Settings implements IFailableConfigFile {
     /**
      * The delay between moving items for crafting/furnace/any kind of inventory movement.
      */
-    private float containerItemMoveDelay = 0.2f;
+    private float containerItemMoveDelay = 0.5f;
 
     /**
      * If true, use Minecraft's crafting recipe book to place items into
@@ -314,7 +314,12 @@ public class Settings implements IFailableConfigFile {
             Items.COBBLESTONE,
             Items.DIRT,
             Items.COBBLED_DEEPSLATE,
-            Items.ACACIA_LEAVES, Items.BIRCH_LEAVES, Items.DARK_OAK_LEAVES, Items.OAK_LEAVES, Items.JUNGLE_LEAVES, Items.SPRUCE_LEAVES,
+            Items.ACACIA_LEAVES,
+            Items.BIRCH_LEAVES,
+            Items.DARK_OAK_LEAVES,
+            Items.OAK_LEAVES,
+            Items.JUNGLE_LEAVES,
+            Items.SPRUCE_LEAVES,
             // Nether junk, to be fair it's mostly tuned for the "beat game" task
             Items.NETHERRACK,
             Items.MAGMA_BLOCK,
@@ -372,6 +377,7 @@ public class Settings implements IFailableConfigFile {
             Stream.of(ItemHelper.DIAMOND_TOOLS),
             Stream.of(ItemHelper.NETHERITE_TOOLS),
             // Don't throw away shulker boxes that would be pretty bad lol
+            // TODO - need to use shulker boxes doe
             Stream.of(ItemHelper.SHULKER_BOXES)
     ).toList();
 

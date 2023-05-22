@@ -1,18 +1,16 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
-import adris.altoclef.commandsystem.CommandException;
 import adris.altoclef.tasks.construction.CoverWithSandTask;
+import baritone.api.command.argument.IArgConsumer;
 
-public class CoverWithSandCommand extends Command {
+public class CoverWithSandCommand extends PlusCommand {
     public CoverWithSandCommand() {
-        super("coverwithsand", "Cover nether lava with sand.");
+        super(new String[]{"coverwithsand", "nethersand"}, "Cover nether lava with sand.");
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
         mod.runUserTask(new CoverWithSandTask(), this::finish);
     }
 }

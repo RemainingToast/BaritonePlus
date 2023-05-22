@@ -1,17 +1,16 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
 import adris.altoclef.tasks.movement.IdleTask;
+import baritone.api.command.argument.IArgConsumer;
 
-public class IdleCommand extends Command {
+public class IdleCommand extends PlusCommand {
     public IdleCommand() {
-        super("idle", "Stand still");
+        super(new String[]{"idle"}, "Stand still");
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) {
-        mod.runUserTask(new IdleTask(), this::finish);
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
+        mod.runUserTask(new IdleTask());
     }
 }

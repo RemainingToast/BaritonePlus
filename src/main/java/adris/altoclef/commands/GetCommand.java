@@ -2,16 +2,19 @@ package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.commandsystem.*;
+import adris.altoclef.commands.datatypes.ForItemOptionalMeta;
+import adris.altoclef.commands.datatypes.ItemList;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.ui.MessagePriority;
 import adris.altoclef.util.ItemTarget;
+import baritone.api.command.argument.IArgConsumer;
+import baritone.api.command.exception.CommandInvalidTypeException;
+import baritone.api.command.exception.CommandNotEnoughArgumentsException;
 
-public class GetCommand extends Command {
+public class GetCommand extends PlusCommand {
 
-    public GetCommand() throws CommandException {
-        super("get", "Get an item/resource",
-                new Arg(ItemList.class, "items"));
+    public GetCommand() {
+        super(new String[]{"get", "collect"}, "Get an item/resource"/*, new Arg(ItemList.class, "items")*/);
     }
 
     private static void OnResourceDoesNotExist(AltoClef mod, String resource) {
@@ -23,7 +26,7 @@ public class GetCommand extends Command {
         Task targetTask;
         if (items == null || items.length == 0) {
             mod.log("You must specify at least one item!");
-            finish();
+//            finish();
             return;
         }
         if (items.length == 1) {
@@ -32,15 +35,15 @@ public class GetCommand extends Command {
             targetTask = TaskCatalogue.getSquashedItemTask(items);
         }
         if (targetTask != null) {
-            mod.runUserTask(targetTask, this::finish);
+            mod.runUserTask(targetTask);
         } else {
-            finish();
+//            finish();
         }
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
-        ItemList items = parser.get(ItemList.class);
+    protected void call(AltoClef mod, String label, IArgConsumer args) throws CommandInvalidTypeException, CommandNotEnoughArgumentsException {
+        ItemList items = args.getDatatypeFor(ForItemOptionalMeta.INSTANCE);
         GetItems(mod, items.items);
     }
 }

@@ -1,17 +1,17 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
 import adris.altoclef.tasks.anarchy.EscapeSpawnTask;
+import baritone.api.command.argument.IArgConsumer;
 
-public class AnarchyCommand extends Command {
+public class AnarchyCommand extends PlusCommand {
+
     public AnarchyCommand() {
-        super("anarchy", "Gears up and escapes spawn.");
+        super(new String[]{"spawn"}, "Gears up and escapes spawn.");
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) {
+    public void call(AltoClef mod, String s, IArgConsumer args) {
         mod.runUserTask(new EscapeSpawnTask(), this::finish);
     }
 }

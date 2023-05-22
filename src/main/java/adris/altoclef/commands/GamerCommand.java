@@ -1,17 +1,16 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
 import adris.altoclef.tasks.speedrun.BeatMinecraft2Task;
+import baritone.api.command.argument.IArgConsumer;
 
-public class GamerCommand extends Command {
+public class GamerCommand extends PlusCommand {
     public GamerCommand() {
-        super("gamer", "Beats the game");
+        super(new String[]{"oldspeedrun","gamer"}, "Beats the game, old style (Single player only)");
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) {
-        mod.runUserTask(new BeatMinecraft2Task(), this::finish);
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
+        mod.runUserTask(new BeatMinecraft2Task());
     }
 }

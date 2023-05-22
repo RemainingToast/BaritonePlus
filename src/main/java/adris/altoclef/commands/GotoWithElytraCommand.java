@@ -1,24 +1,24 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.Arg;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
-import adris.altoclef.commandsystem.CommandException;
 import adris.altoclef.tasks.movement.GetToXZWithElytraTask;
+import baritone.api.command.argument.IArgConsumer;
+import baritone.api.command.datatypes.RelativeGoalXZ;
+import baritone.api.command.exception.CommandInvalidTypeException;
+import baritone.api.command.exception.CommandNotEnoughArgumentsException;
+import baritone.api.pathing.goals.GoalXZ;
 
-public class GotoWithElytraCommand extends Command {
-    public GotoWithElytraCommand() throws CommandException {
-        super("elytra", "Tell bot to travel to a set of coordinates using Elytra",
+public class GotoWithElytraCommand extends PlusCommand {
+    public GotoWithElytraCommand() {
+        super(new String[]{"elytra", "e+"}, "Tell bot to travel to a set of coordinates using Elytra"/*,
                 new Arg(Integer.class, "x"),
-                new Arg(Integer.class, "z")
+                new Arg(Integer.class, "z")*/
         );
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
-        int x = parser.get(Integer.class);
-        int z = parser.get(Integer.class);
-        mod.runUserTask(new GetToXZWithElytraTask(x,z), this::finish);
+    protected void call(AltoClef mod, String label, IArgConsumer args) throws CommandInvalidTypeException, CommandNotEnoughArgumentsException {
+        GoalXZ goal = args.getDatatypePost(RelativeGoalXZ.INSTANCE, this.baritone.getPlayerContext().playerFeet());
+        mod.runUserTask(new GetToXZWithElytraTask(goal.getX(), goal.getZ()));
     }
 }

@@ -1,7 +1,8 @@
 package adris.altoclef;
 
+import baritone.Baritone;
+import baritone.api.utils.Helper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 
 // TODO: Debug library or use Minecraft's built in debugger
 public class Debug {
@@ -9,40 +10,20 @@ public class Debug {
     public static AltoClef jankModInstance;
 
     public static void logInternal(String message) {
-        System.out.println("ALTO CLEF: " + message);
+        // TODO Use a logger
+        System.out.println("BaritonePlus: " + message);
     }
 
     public static void logInternal(String format, Object... args) {
         logInternal(String.format(format, args));
     }
 
-    private static String getLogPrefix() {
-        if (jankModInstance != null) {
-            return jankModInstance.getModSettings().getChatLogPrefix();
-        }
-        return "[AltoClef] ";
-    }
-
-    public static void logMessage(String message, boolean ifPrefix, boolean baritoneBrain) {
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            if (ifPrefix) {
-                var prefix = baritoneBrain ? "[BaritoneBrain] " : getLogPrefix();
-                message = "\u00A72\u00A7l\u00A7o" + prefix + "\u00A7r" + message;
-            }
-            logInternal(message);
-            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
-            //MinecraftClient.getInstance().player.sendChatMessage(msg);
-        } else {
-            logInternal(message);
-        }
-    }
-
     public static void logMessage(String message) {
-        logMessage(message, true, false);
-    }
+        logInternal(message);
 
-    public static void logMessageBrain(String message) {
-        logMessage(message, true, true);
+        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+            Helper.HELPER.logDirect(message);
+        }
     }
 
     public static void logMessage(String format, Object... args) {
@@ -53,9 +34,7 @@ public class Debug {
         logInternal("WARNING: " + message);
         if (jankModInstance != null && !jankModInstance.getModSettings().shouldHideAllWarningLogs()) {
             if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-                String msg = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7c" + message + "\u00A7r";
-                MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
-                //MinecraftClient.getInstance().player.sendChatMessage(msg);
+                Helper.HELPER.logDirect("[WARN] " + message);
             }
         }
     }
@@ -70,8 +49,7 @@ public class Debug {
         System.err.println("at:");
         System.err.println(stacktrace);
         if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            String msg = "\u00A72\u00A7l\u00A7c" + getLogPrefix() + "[ERROR] " + message + "\nat:\n" + stacktrace + "\u00A7r";
-            MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
+            Helper.HELPER.logDirect("[ERROR] " + message);
         }
     }
 

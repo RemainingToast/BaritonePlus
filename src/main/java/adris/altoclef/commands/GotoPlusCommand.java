@@ -1,29 +1,32 @@
 package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.*;
+import adris.altoclef.commands.datatypes.GotoTargetDataType;
+import adris.altoclef.commands.datatypes.GotoTarget;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
 import adris.altoclef.tasks.movement.GetToBlockTask;
 import adris.altoclef.tasks.movement.GetToXZTask;
 import adris.altoclef.tasks.movement.GetToYTask;
 import adris.altoclef.tasksystem.Task;
+import baritone.api.command.argument.IArgConsumer;
+import baritone.api.command.exception.CommandInvalidTypeException;
+import baritone.api.command.exception.CommandNotEnoughArgumentsException;
+import baritone.api.command.exception.CommandTooManyArgumentsException;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Out of all the commands, this one probably demonstrates
  * why we need a better arg parsing system. Please.
  */
-public class GotoCommand extends Command {
+public class GotoPlusCommand extends PlusCommand {
 
-    public GotoCommand() throws CommandException {
+    public GotoPlusCommand() {
         // x z
         // x y z
         // x y z dimension
         // (dimension)
         // (x z dimension)
-        super("goto", "Tell bot to travel to a set of coordinates.",
-                new Arg(GotoTarget.class, "[x y z dimension]/[x z dimension]/[y dimension]/[dimension]/[x y z]/[x z]/[y]")
-        );
+        super(new String[]{"goto+", "go+"}, "Tell bot to travel to a set of coordinates."/*, new Arg(GotoTarget.class, "[x y z dimension]/[x z dimension]/[y dimension]/[dimension]/[x y z]/[x z]/[y]")*/);
     }
 
     public static Task getMovementTaskFor(GotoTarget target) {
@@ -37,8 +40,9 @@ public class GotoCommand extends Command {
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
-        GotoTarget target = parser.get(GotoTarget.class);
-        mod.runUserTask(getMovementTaskFor(target), this::finish);
+    protected void call(AltoClef mod, String label, IArgConsumer args) throws CommandTooManyArgumentsException, CommandInvalidTypeException, CommandNotEnoughArgumentsException {
+        args.requireMax(4);
+        GotoTarget gotoTarget = args.getDatatypeFor(GotoTargetDataType.INSTANCE);
+        mod.runUserTask(getMovementTaskFor(gotoTarget));
     }
 }

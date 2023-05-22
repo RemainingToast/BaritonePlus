@@ -1,8 +1,6 @@
 package adris.altoclef.brainWIP.utils;
 
-import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.commandsystem.Command;
 import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -54,7 +52,7 @@ public class ChatGPT {
         // Generate natural language task with ChatGPT as before...
         String task = generateTaskNaturalLanguage(worldState);
 
-        Debug.logMessageBrain(task);
+        Debug.logMessage(task);
 
         // Create user message asking to convert task to command
         ChatMessage userMessage = new ChatMessage(
@@ -63,10 +61,10 @@ public class ChatGPT {
         );
 
         StringBuilder lines = new StringBuilder();
-        for (Command c : AltoClef.getCommandExecutor().allCommands()) {
+        /*for (PlusCommand c : AltoClef.getCommandExecutor().allCommands()) {
             lines.append("@").append(c.getHelpRepresentation()).append(" | ").append(c.getDescription());
             lines.append("\n");
-        }
+        }*/
 
         // Create system message
         ChatMessage systemMessage = new ChatMessage(

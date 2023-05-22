@@ -1,7 +1,8 @@
-package adris.altoclef.commandsystem;
+package adris.altoclef.commands.datatypes;
 
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.util.ItemTarget;
+import baritone.api.command.exception.CommandException;
 
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public class ItemList {
                 String[] itemQuantityPair = part.split(" ");
                 if (itemQuantityPair.length > 2 || itemQuantityPair.length <= 0) {
                     // Must be either "item count" or "item"
-                    throw new CommandException("Resource array element must be either \"item count\" or \"item\", but \"" + part + "\"" + " has " + itemQuantityPair.length + " parts.");
+                    throw new CommandException("Resource array element must be either \"item count\" or \"item\", but \"" + part + "\"" + " has " + itemQuantityPair.length + " parts.") {};
                 }
                 String item = itemQuantityPair[0];
                 int count = 1;
@@ -31,13 +32,13 @@ public class ItemList {
                     try {
                         count = Integer.parseInt(itemQuantityPair[1]);
                     } catch (Exception iex) {
-                        throw new CommandException("Failed to parse count for array element \"" + part + "\".");
+                        throw new CommandException("Failed to parse count for array element \"" + part + "\".") {};
                     }
                 }
                 if (TaskCatalogue.taskExists(item)) {
                     items.put(item, items.getOrDefault(item, 0) + count);
                 } else {
-                    throw new CommandException("Item not catalogued: " + item);
+                    throw new CommandException("Item not catalogued: " + item) {};
                 }
             }
             if (items.size() != 0) {
@@ -49,17 +50,17 @@ public class ItemList {
             if (items.length >= 1) {
                 String name = items[0];
                 if (!TaskCatalogue.taskExists(name)) {
-                    throw new CommandException("Item not catalogued: " + name);
+                    throw new CommandException("Item not catalogued: " + name) {};
                 }
                 int count = 1;
                 if (items.length == 2) {
                     try {
                         count = Integer.parseInt(items[1]);
                     } catch (NumberFormatException e) {
-                        throw new CommandException("Failed to parse the following argument into type " + Integer.class + ": " + items[1] + ".");
+                        throw new CommandException("Failed to parse the following argument into type " + Integer.class + ": " + items[1] + ".") {};
                     }
                 } else if (items.length > 2) {
-                    throw new CommandException("Invalid item argument structure: Must be of form `<item>` or `<item> <count>`");
+                    throw new CommandException("Invalid item argument structure: Must be of form `<item>` or `<item> <count>`") {};
                 }
                 return new ItemList(new ItemTarget[]{new ItemTarget(name, count)});
             }

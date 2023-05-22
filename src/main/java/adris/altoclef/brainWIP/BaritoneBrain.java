@@ -78,7 +78,7 @@ public class BaritoneBrain {
 
                     task.setDebugState(nextTask);
 
-                    Debug.logMessageBrain(nextTask);
+                    Debug.logMessage(nextTask);
 
                     var chat = mod.mc().getNetworkHandler();
                     if (nextTask.startsWith("@") && chat != null) {

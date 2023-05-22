@@ -2,25 +2,23 @@ package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.commandsystem.Arg;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
-import adris.altoclef.commandsystem.CommandException;
+import adris.altoclef.commands.datatypes.ItemById;
 import adris.altoclef.ui.MessagePriority;
 import adris.altoclef.util.helpers.ItemHelper;
+import baritone.api.command.argument.IArgConsumer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
 
-public class InventoryCommand extends Command {
-    public InventoryCommand() throws CommandException {
-        super("inventory", "Prints the bot's inventory OR returns how many of an item the bot has", new Arg(String.class, "item", null, 1));
+public class InventoryCommand extends PlusCommand {
+    public InventoryCommand() {
+        super(new String[]{"inventory", "inv"}, "Prints the bot's inventory OR returns how many of an item the bot has"/*, new Arg(String.class, "item", null, 1)*/);
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
-        String item = parser.get(String.class);
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
+        Item item = args.getDatatypeForOrNull(ItemById.INSTANCE);
         if (item == null) {
             // Print inventory
             // Get item counts
@@ -41,10 +39,10 @@ public class InventoryCommand extends Command {
             mod.log("(inventory list sent) ", MessagePriority.OPTIONAL);
         } else {
             // Print item quantity
-            Item[] matches = TaskCatalogue.getItemMatches(item);
+            Item[] matches = TaskCatalogue.getItemMatches(item.toString());
             if (matches == null || matches.length == 0) {
                 mod.logWarning("Item \"" + item + "\" is not catalogued/recognized.");
-                finish();
+//                finish();
                 return;
             }
             int count = mod.getItemStorage().getItemCount(matches);
@@ -54,6 +52,6 @@ public class InventoryCommand extends Command {
                 mod.log(item + " COUNT: " + count);
             }
         }
-        finish();
+//        finish();
     }
 }

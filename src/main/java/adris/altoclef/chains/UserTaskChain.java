@@ -125,7 +125,7 @@ public class UserTaskChain extends SingleTaskChain {
                 EventBus.publish(new TaskFinishedEvent(seconds, oldTask));
             }
             if (shouldIdle) {
-                AltoClef.getCommandExecutor().executeWithPrefix(mod.getModSettings().getIdleCommand());
+//                AltoClef.getCommandExecutor().executeWithPrefix(mod.getModSettings().getIdleCommand());
                 signalNextTaskToBeIdleTask();
                 _runningIdleTask = true;
             }

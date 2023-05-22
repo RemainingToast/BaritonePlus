@@ -13,8 +13,8 @@ import net.minecraft.client.MinecraftClient;
  * <p>
  * This effectively makes the bot function as a servant, or butler.
  * <p>
- * Authorization is defined in "altoclef_butler_whitelist.txt" and "altoclef_butler_blacklist.txt"
- * and depends on the "useButlerWhitelist" and "useButlerBlacklist" settings in "altoclef_settings.json"
+ * Authorization is defined in "butler_whitelist.txt" and "butler_blacklist.txt"
+ * and depends on the "useButlerWhitelist" and "useButlerBlacklist" settings in "settings.json"
  */
 public class Butler {
 
@@ -125,7 +125,8 @@ public class Butler {
         _currentUser = username;
         sendWhisper("Command Executing: " + message, MessagePriority.TIMELY);
         String prefix = ButlerConfig.getInstance().requirePrefixMsg ? _mod.getModSettings().getCommandPrefix() : "";
-        AltoClef.getCommandExecutor().execute(prefix + message, () -> {
+        // TODO
+        /*AltoClef.getCommandExecutor().execute(prefix + message, () -> {
             // On finish
             sendWhisper("Command Finished: " + message, MessagePriority.TIMELY);
             if (!_commandInstantRan) {
@@ -137,7 +138,7 @@ public class Butler {
             e.printStackTrace();
             _currentUser = null;
             _commandInstantRan = false;
-        });
+        });*/
         _commandInstantRan = false;
         // Only set the current user if we're still running.
         if (_commandFinished) {

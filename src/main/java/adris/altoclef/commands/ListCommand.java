@@ -2,20 +2,18 @@ package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.commandsystem.ArgParser;
-import adris.altoclef.commandsystem.Command;
-import adris.altoclef.commandsystem.CommandException;
 import adris.altoclef.ui.MessagePriority;
+import baritone.api.command.argument.IArgConsumer;
 
 import java.util.Arrays;
 
-public class ListCommand extends Command {
+public class ListCommand extends PlusCommand {
     public ListCommand() {
-        super("list", "List all obtainable items");
+        super(new String[]{"list", "obtainable"}, "List all obtainable items");
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser) throws CommandException {
+    protected void call(AltoClef mod, String label, IArgConsumer args) {
         mod.log("#### LIST OF ALL OBTAINABLE ITEMS ####", MessagePriority.OPTIONAL);
         mod.log(Arrays.toString(TaskCatalogue.resourceNames().toArray()), MessagePriority.OPTIONAL);
         mod.log("############# END LIST ###############", MessagePriority.OPTIONAL);

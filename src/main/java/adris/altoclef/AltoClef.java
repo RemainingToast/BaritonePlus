@@ -3,14 +3,12 @@ package adris.altoclef;
 import adris.altoclef.brainWIP.BaritoneBrain;
 import adris.altoclef.butler.Butler;
 import adris.altoclef.chains.*;
-import adris.altoclef.commandsystem.CommandExecutor;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
 import adris.altoclef.control.SlotHandler;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.ClientRenderEvent;
 import adris.altoclef.eventbus.events.ClientTickEvent;
-import adris.altoclef.eventbus.events.SendChatEvent;
 import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
@@ -47,11 +45,13 @@ import java.util.function.Consumer;
  */
 public class AltoClef implements ModInitializer {
 
+    public static AltoClef INSTANCE;
+
     // Static access to altoclef
     private static final Queue<Consumer<AltoClef>> _postInitQueue = new ArrayDeque<>();
 
     // Central Managers
-    private static CommandExecutor _commandExecutor;
+//    private static CommandExecutor _commandExecutor;
     private TaskRunner _taskRunner;
     private TrackerManager _trackerManager;
     private BotBehaviour _botBehaviour;
@@ -89,12 +89,13 @@ public class AltoClef implements ModInitializer {
     /**
      * Executes commands (ex. `@get`/`@gamer`)
      */
-    public static CommandExecutor getCommandExecutor() {
-        return _commandExecutor;
-    }
+//    public static CommandExecutor getCommandExecutor() {
+//        return _commandExecutor;
+//    }
 
     @Override
     public void onInitialize() {
+        INSTANCE = this;
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
@@ -108,7 +109,7 @@ public class AltoClef implements ModInitializer {
         initializeBaritoneSettings();
 
         // Central Managers
-        _commandExecutor = new CommandExecutor(this);
+//        _commandExecutor = new CommandExecutor(this);
         _taskRunner = new TaskRunner(this);
         _trackerManager = new TrackerManager(this);
         _botBehaviour = new BotBehaviour(this);
@@ -154,7 +155,7 @@ public class AltoClef implements ModInitializer {
             // If we should run an idle command...
             if ((!getUserTaskChain().isActive() || getUserTaskChain().isRunningIdleTask()) && getModSettings().shouldRunIdleCommandWhenNotActive()) {
                 getUserTaskChain().signalNextTaskToBeIdleTask();
-                getCommandExecutor().executeWithPrefix(getModSettings().getIdleCommand());
+//                getCommandExecutor().executeWithPrefix(getModSettings().getIdleCommand());
             }
             // Don't break blocks or place blocks where we are explicitly protected.
             getExtraBaritoneSettings().avoidBlockBreak(blockPos -> _settings.isPositionExplicitlyProtected(blockPos));
@@ -162,13 +163,13 @@ public class AltoClef implements ModInitializer {
         });
 
         // Receive + cancel chat
-        EventBus.subscribe(SendChatEvent.class, evt -> {
-            String line = evt.message;
-            if (getCommandExecutor().isClientCommand(line)) {
-                evt.cancel();
-                getCommandExecutor().execute(line);
-            }
-        });
+//        EventBus.subscribe(SendChatEvent.class, evt -> {
+//            String line = evt.message;
+//            if (getCommandExecutor().isClientCommand(line)) {
+//                evt.cancel();
+//                getCommandExecutor().execute(line);
+//            }
+//        });
 
         // Debug jank/hookup
         Debug.jankModInstance = this;

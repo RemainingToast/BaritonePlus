@@ -339,7 +339,7 @@ public class MarvionBeatMinecraftTask extends Task {
         _timer3.reset();
         mod.getBehaviour().push();
         // Add a warning to make sure the user at least knows to change the settings.
-        String settingsWarningTail = "in \".minecraft/altoclef_settings.json\". @gamer may break if you don't add this! (sorry!)";
+        String settingsWarningTail = "in \".minecraft/settings.json\". @gamer may break if you don't add this! (sorry!)";
         if (!ArrayUtils.contains(mod.getModSettings().getThrowawayItems(mod), Items.END_STONE)) {
             Debug.logWarning("\"end_stone\" is not part of your \"throwawayItems\" list " + settingsWarningTail);
         }
