@@ -17,7 +17,9 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -654,7 +656,7 @@ public class TaskCatalogue {
     }
 
     public static boolean isObtainable(Item item) {
-        return _resourcesObtainable.contains(item);
+        return _resourcesObtainable.contains(item) && !ItemHelper.isCreativeOnly(item);
     }
 
     public static ItemTarget getItemTarget(String name, int count) {
