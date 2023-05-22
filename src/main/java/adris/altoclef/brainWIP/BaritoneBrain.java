@@ -1,32 +1,22 @@
-package adris.altoclef.baritone.brain;
+package adris.altoclef.brainWIP;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.baritone.brain.gui.BrainTTS;
-import adris.altoclef.baritone.brain.tasks.BrainTask;
-import adris.altoclef.baritone.brain.utils.ChatGPT;
-import adris.altoclef.baritone.brain.utils.WorldState;
+import adris.altoclef.brainWIP.gui.BrainTTS;
+import adris.altoclef.brainWIP.tasks.BrainTask;
+import adris.altoclef.brainWIP.utils.ChatGPT;
+import adris.altoclef.brainWIP.utils.WorldState;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.tasks.movement.IdleTask;
-import adris.altoclef.tasks.movement.TimeoutWanderTask;
-import adris.altoclef.tasks.stupid.BeeMovieTask;
 import adris.altoclef.tasksystem.Task;
-import lombok.Getter;
-import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BaritoneBrain {
 
