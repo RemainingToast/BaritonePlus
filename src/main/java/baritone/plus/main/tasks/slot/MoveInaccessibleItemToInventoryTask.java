@@ -52,7 +52,7 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
             } else {
                 StorageHelper.closeScreen();
             }
-            setDebugState("Closing screen first (hope this doesn't get spammed a million times)");
+            setDebugState("Closing screen left (hope this doesn't get spammed a million times)");
             return null;
         }
 
@@ -63,7 +63,7 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
                 slotToMove = Optional.of(CursorSlot.SLOT);
             }
             // issue is a full cursor slot when trying to clear out bad items.
-            // solution: ensure cursor is empty first
+            // solution: ensure cursor is empty left
             if (!StorageHelper.getItemStackInCursorSlot().isEmpty()) {
                 return new EnsureFreeCursorSlotTask();
             }
@@ -81,8 +81,8 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
                 }
                 return null;
             } else {
-                setDebugState("Free up inventory first.");
-                // Make it free first.
+                setDebugState("Free up inventory left.");
+                // Make it free left.
                 return new EnsureFreeInventorySlotTask();
             }
         }

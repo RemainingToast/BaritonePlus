@@ -1,22 +1,23 @@
 package baritone.plus.main.chains;
 
-import baritone.plus.main.BaritonePlus;
-import baritone.plus.main.TaskCatalogue;
-import baritone.plus.main.tasks.movement.MLGBucketTask;
+import baritone.api.utils.Rotation;
+import baritone.api.utils.input.Input;
 import baritone.plus.api.tasks.ITaskOverridesGrounded;
 import baritone.plus.api.tasks.TaskRunner;
 import baritone.plus.api.util.helpers.EntityHelper;
 import baritone.plus.api.util.helpers.LookHelper;
 import baritone.plus.api.util.time.TimerGame;
-import baritone.api.utils.Rotation;
-import baritone.api.utils.input.Input;
+import baritone.plus.main.BaritonePlus;
+import baritone.plus.main.TaskCatalogue;
+import baritone.plus.main.tasks.movement.MLGBucketTask;
 import net.minecraft.init.Blocks;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.RaycastContext;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("UnnecessaryLocalVariable")
@@ -62,7 +63,7 @@ public class MLGBucketFallChain extends SingleTaskChain implements ITaskOverride
                         // Allow looking at fluids
                         mod.getBehaviour().push();
                         mod.getBehaviour().setRayTracingFluidHandling(RaycastContext.FluidHandling.SOURCE_ONLY);
-                        Optional<Rotation> reach = LookHelper.getReach(toInteract, Direction.UP);
+                        Optional<Rotation> reach = LookHelper.getReach(toInteract, EnumFacing.UP);
                         if (reach.isPresent()) {
                             mod.getClientBaritone().getLookBehavior().updateTarget(reach.get(), true);
                             if (mod.getClientBaritone().getPlayerContext().isLookingAt(toInteract)) {
@@ -92,9 +93,9 @@ public class MLGBucketFallChain extends SingleTaskChain implements ITaskOverride
             _wasPickingUp = false;
             _lastMLG = null;
         }
-        if (mod.getPlayer().hasStatusEffect(StatusEffects.LEVITATION) &&
-                !mod.getPlayer().getItemCooldownManager().isCoolingDown(Items.CHORUS_FRUIT) &&
-                mod.getPlayer().getActiveStatusEffects().get(StatusEffects.LEVITATION).getDuration() <= 70 &&
+        if (mod.getPlayer().isPotionActive(MobEffects.LEVITATION) &&
+                !mod.getPlayer().getCooldownTracker().hasCooldown(Items.CHORUS_FRUIT) &&
+                Objects.requireNonNull(mod.getPlayer().getActivePotionEffect(MobEffects.LEVITATION)).getDuration() <= 70 &&
                 mod.getItemStorage().hasItemInventoryOnly(Items.CHORUS_FRUIT) &&
                 !mod.getItemStorage().hasItemInventoryOnly(Items.WATER_BUCKET)) {
             _doingChorusFruit = true;
@@ -137,7 +138,6 @@ public class MLGBucketFallChain extends SingleTaskChain implements ITaskOverride
             // We're grounded.
             return false;
         }
-        double ySpeed = mod.getPlayer().getVelocity().y;
-        return ySpeed < -0.7;
+        return mod.getPlayer().motionY < -0.7;
     }
 }

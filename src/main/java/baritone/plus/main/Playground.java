@@ -29,13 +29,12 @@ import baritone.plus.main.tasks.stupid.SCP173Task;
 import baritone.plus.main.tasks.stupid.TerminatorTask;
 import com.google.gson.Gson;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.Item;
 import net.minecraft.init.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.EmptyChunk;
@@ -157,7 +156,7 @@ public class Playground {
                 mod.runUserTask(new PlaceSignTask(new BlockPos(10, 3, 10), "Hello there!"));
                 break;
             case "pickup":
-                mod.runUserTask(new PickupDroppedItemTask(new ItemTarget(Items.IRON_ORE, 3), true));
+                mod.runUserTask(new PickupDroppedItemTask(new ItemTarget(Item.getItemFromBlock(Blocks.IRON_ORE), 3), true));
                 break;
             case "chunk": {
                 // We may have missed a chunk that's far away...
@@ -171,7 +170,7 @@ public class Playground {
             case "place": {
                 //BlockPos targetPos = new BlockPos(0, 6, 0);
                 //mod.runUserTask(new PlaceSignTask(targetPos, "Hello"));
-                //Direction direction = Direction.WEST;
+                //EnumFacing direction = EnumFacing.WEST;
                 //mod.runUserTask(new InteractItemWithBlockTask(TaskCatalogue.getItemTarget("lava_bucket", 1), direction, targetPos, false));
                 mod.runUserTask(new PlaceBlockNearbyTask(Blocks.CRAFTING_TABLE, Blocks.FURNACE));
                 //mod.runUserTask(new PlaceStructureBlockTask(new BlockPos(472, 24, -324)));
@@ -181,7 +180,7 @@ public class Playground {
                 File file = new File("test.txt");
                 try {
                     FileReader reader = new FileReader(file);
-                    mod.runUserTask(new BeeMovieTask("bruh", mod.getPlayer().getBlockPos(), reader));
+                    mod.runUserTask(new BeeMovieTask("bruh", mod.getPlayer().getPosition(), reader));
                 } catch (FileNotFoundException e) {
                     Debug.logMessage(e.getMessage());
                     e.printStackTrace();
@@ -241,11 +240,11 @@ public class Playground {
                 mod.runUserTask(new EnterNetherPortalTask(new ConstructNetherPortalObsidianTask(), WorldHelper.getCurrentDimension() == Dimension.OVERWORLD ? Dimension.NETHER : Dimension.OVERWORLD));
                 break;
             case "kill":
-                List<ZombieEntity> zombs = mod.getEntityTracker().getTrackedEntities(ZombieEntity.class);
+                List<EntityZombie> zombs = mod.getEntityTracker().getTrackedEntities(EntityZombie.class);
                 if (zombs.size() == 0) {
                     Debug.logWarning("No zombs found.");
                 } else {
-                    LivingEntity entity = zombs.get(0);
+                    EntityLiving entity = zombs.get(0);
                     mod.runUserTask(new KillEntityTask(entity));
                 }
                 break;
@@ -257,7 +256,7 @@ public class Playground {
                         sleepSec(1);
                     }
 
-                    Item[] c = new Item[]{Items.COBBLESTONE};
+                    Item[] c = new Item[]{Item.getItemFromBlock(Blocks.COBBLESTONE)};
                     Item[] s = new Item[]{Items.STICK};
                     CraftingRecipe recipe = CraftingRecipe.newShapedRecipe("test pickaxe", new Item[][]{c, c, c, null, s, null, null, s, null}, 1);
 
@@ -307,9 +306,9 @@ public class Playground {
                     int total = 0;
                     File f = new File(fname);
                     FileWriter fw = new FileWriter(f);
-                    for (Identifier id : Registries.ITEM.getIds()) {
-                        Item item = Registries.ITEM.get(id);
-                        if (!TaskCatalogue.isObtainable(item)) {
+                    for (ResourceLocation id : Item.REGISTRY.getKeys()) {
+                        Item item = Item.getByNameOrId(id.getPath());
+                        if (item != null && !TaskCatalogue.isObtainable(item)) {
                             ++unobtainable;
                             fw.write(item.getTranslationKey() + "\n");
                         }
@@ -329,13 +328,13 @@ public class Playground {
                 mod.runUserTask(new GoToStrongholdPortalTask(12));
                 break;
             case "terminate":
-                mod.runUserTask(new TerminatorTask(mod.getPlayer().getBlockPos(), 900));
+                mod.runUserTask(new TerminatorTask(mod.getPlayer().getPosition(), 900));
                 break;
             case "replace":
                 // Creates a mini valley of crafting tables.
-                BlockPos from = mod.getPlayer().getBlockPos().add(new Vec3i(-100, -20, -100));
-                BlockPos to = mod.getPlayer().getBlockPos().add(new Vec3i(100, 255, 100));
-                Block[] toFind = new Block[]{Blocks.GRASS_BLOCK};// Blocks.COBBLESTONE};
+                BlockPos from = mod.getPlayer().getPosition().add(new Vec3i(-100, -20, -100));
+                BlockPos to = mod.getPlayer().getPosition().add(new Vec3i(100, 255, 100));
+                Block[] toFind = new Block[]{Blocks.GRASS};// Blocks.COBBLESTONE};
                 ItemTarget toReplace = new ItemTarget("crafting_table");//"stone");
                 mod.runUserTask(new ReplaceBlocksTask(toReplace, from, to, toFind));
                 break;

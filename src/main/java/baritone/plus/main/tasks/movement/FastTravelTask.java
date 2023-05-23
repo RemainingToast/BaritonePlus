@@ -9,7 +9,7 @@ import baritone.plus.api.util.Dimension;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.time.TimerGame;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.item.Item;
 import net.minecraft.init.Items;
@@ -76,7 +76,7 @@ public class FastTravelTask extends Task {
         boolean canLightPortal = mod.getItemStorage().hasItem(Items.FLINT_AND_STEEL, Items.FIRE_CHARGE);
 
         // EDGE CASE: We die in the nether, stop force walking, we want to start over.
-        if (MinecraftClient.getInstance().currentScreen instanceof DeathScreen) {
+        if (Minecraft.getMinecraft().currentScreen instanceof DeathScreen) {
             _forceOverworldWalking = false;
         }
 
@@ -119,7 +119,7 @@ public class FastTravelTask extends Task {
                 if (_goToOverworldTask.isActive() && !_goToOverworldTask.isFinished(mod)) {
                     setDebugState("Going back to overworld");
                     if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                        MinecraftClient.getInstance().options.getViewDistance().setValue(32);
+                        Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(32);
                     }
                     return _goToOverworldTask;
                 }

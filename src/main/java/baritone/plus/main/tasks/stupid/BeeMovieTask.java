@@ -13,9 +13,9 @@ import baritone.plus.api.util.MiningRequirement;
 import baritone.plus.api.util.helpers.ItemHelper;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
@@ -127,21 +127,21 @@ public class BeeMovieTask extends Task {
         // NOTE: This only checks for the EXISTANCE of signs, NOT that they have the proper text.
         BlockPos currentSignPos = _start;
         while (true) {
-            assert MinecraftClient.getInstance().world != null;
+            assert Minecraft.getMinecraft().world != null;
 
 
             boolean loaded = mod.getChunkTracker().isChunkLoaded(currentSignPos);
 
             // Clear above
-            BlockState above = MinecraftClient.getInstance().world.getBlockState(currentSignPos.up());
+            IBlockState above = Minecraft.getMinecraft().world.getBlockState(currentSignPos.up());
             if (loaded && !above.isAir() && above.getBlock() != Blocks.WATER) {
                 setDebugState("Clearing block above to prevent hanging...");
                 return new DestroyBlockTask(currentSignPos.up());
             }
 
             // Fortify below
-            //BlockState below = MinecraftClient.getInstance().world.getBlockState(currentSignPos.down());
-            boolean canPlace = WorldHelper.isSolid(mod, currentSignPos.down());//isSideSolidFullSquare(MinecraftClient.getInstance().world, currentSignPos.down(), Direction.UP);
+            //IBlockState below = Minecraft.getMinecraft().world.getBlockState(currentSignPos.down());
+            boolean canPlace = WorldHelper.isSolid(mod, currentSignPos.down());//isSideSolidFullSquare(Minecraft.getMinecraft().world, currentSignPos.down(), EnumFacing.UP);
             if (loaded && !canPlace) {
                 setDebugState("Placing block below for sign placement...");
                 return new PlaceStructureBlockTask(currentSignPos.down());
@@ -161,7 +161,7 @@ public class BeeMovieTask extends Task {
             }
 
 
-            BlockState blockAt = MinecraftClient.getInstance().world.getBlockState(currentSignPos);
+            IBlockState blockAt = Minecraft.getMinecraft().world.getBlockState(currentSignPos);
 
 
             if (loaded && !isSign(blockAt.getBlock())) {
@@ -252,7 +252,7 @@ public class BeeMovieTask extends Task {
 
                 // Can be a special delimiter for a new sign.
 
-                if (c == '\n' || MinecraftClient.getInstance().textRenderer.getWidth(line.toString()) > SIGN_TEXT_MAX_WIDTH) {
+                if (c == '\n' || Minecraft.getMinecraft().textRenderer.getWidth(line.toString()) > SIGN_TEXT_MAX_WIDTH) {
                     line.delete(0, line.length());
                     line.append(c);
                     lineCount++;

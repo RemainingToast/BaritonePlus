@@ -45,7 +45,7 @@ public class PlusCommands {
         );
     }
 
-    public void registerNewCommand(PlusCommand... plusCommands) {
+    protected void registerNewCommand(PlusCommand... plusCommands) {
         for (PlusCommand plusCommand : plusCommands) {
             if (_commandSheet.containsKey(plusCommand.getName())) {
                 Debug.logInternal("Command with name " + plusCommand.getName() + " already exists! Can't register that name twice.");

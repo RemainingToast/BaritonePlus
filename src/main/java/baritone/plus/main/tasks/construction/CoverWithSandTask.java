@@ -9,7 +9,7 @@ import baritone.plus.api.util.Dimension;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

@@ -1,14 +1,6 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.PlayerCollidedWithEntityEvent;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
+/*
 @Mixin(PlayerEntity.class)
 public class PlayerCollidesWithEntityMixin {
 
@@ -27,3 +19,4 @@ public class PlayerCollidesWithEntityMixin {
         self.onPlayerCollision(player);
     }
 }
+*/

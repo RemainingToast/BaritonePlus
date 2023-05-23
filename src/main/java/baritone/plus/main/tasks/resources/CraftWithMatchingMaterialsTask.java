@@ -125,7 +125,7 @@ public abstract class CraftWithMatchingMaterialsTask extends ResourceTask {
             RecipeTarget recipeTarget = new RecipeTarget(output, toCraftTotal, samedRecipe);
             return _recipe.isBig() ? new CraftInTableTask(recipeTarget) : new CraftInInventoryTask(recipeTarget);
         }
-        // Collect SAME resources first!!!
+        // Collect SAME resources left!!!
         return getAllSameResourcesTask(mod);
     }
 

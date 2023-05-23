@@ -11,13 +11,13 @@ import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.StlHelper;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -105,7 +105,7 @@ public class CollectCropTask extends ResourceTask {
             _emptyCropland.removeIf(blockPos -> !isEmptyCrop(mod, blockPos));
             assert !_emptyCropland.isEmpty();
             return new DoToClosestBlockTask(
-                    blockPos -> new InteractWithBlockTask(new ItemTarget(_cropSeed, 1), Direction.UP, blockPos.down(), true),
+                    blockPos -> new InteractWithBlockTask(new ItemTarget(_cropSeed, 1), EnumFacing.UP, blockPos.down(), true),
                     pos -> _emptyCropland.stream().min(StlHelper.compareValues(block -> block.getSquaredDistance(pos))),
                     _emptyCropland::contains,
                     Blocks.FARMLAND); // Blocks.FARMLAND is useless to be put here
@@ -187,7 +187,7 @@ public class CollectCropTask extends ResourceTask {
             return _wasFullyGrown.contains(blockPos);
         }
         // Prune if we're not mature/fully grown wheat.
-        BlockState s = mod.getWorld().getBlockState(blockPos);
+        IBlockState s = mod.getWorld().getBlockState(blockPos);
         if (s.getBlock() instanceof CropBlock crop) {
             boolean mature = crop.isMature(s);
             if (_wasFullyGrown.contains(blockPos)) {

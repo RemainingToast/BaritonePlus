@@ -11,7 +11,6 @@ import baritone.plus.api.event.Subscription;
 import baritone.plus.api.event.events.ChatMessageEvent;
 import baritone.plus.main.tasks.movement.IdleTask;
 import baritone.plus.api.tasks.Task;
-import net.fabricmc.loader.api.FabricLoader;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -38,9 +37,9 @@ public class BaritoneBrain {
         this.memory = new ArrayList<>();
         this.chatGPT = ChatGPT.build();
 
-        var args = List.of(FabricLoader.getInstance().getLaunchArguments(true));
+        /*var args = List.of(FabricLoader.getInstance().getLaunchArguments(true));*/
 
-        if (args.contains("--tts")) {
+        if (/*args.contains("--tts")*/ false) {
             SwingUtilities.invokeLater(() -> {
                 this.brainTTS = new BrainTTS(mod);
                 Debug.logInternal("TTS Enabled.");
@@ -80,7 +79,7 @@ public class BaritoneBrain {
 
                     Debug.logMessage(nextTask);
 
-                    var chat = mod.mc().getNetworkHandler();
+                    /*var chat = mod.mc().getNetworkHandler();
                     if (nextTask.startsWith("@") && chat != null) {
                         chat.sendChatMessage(nextTask);
                     } else {
@@ -88,7 +87,7 @@ public class BaritoneBrain {
                             taskInProgress = false;
                             mod.runUserTask(task);
                         });
-                    }
+                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                     task.setDebugState(e.getMessage());

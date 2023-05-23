@@ -9,11 +9,13 @@ buildscript {
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:5.1.56"
         classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+        classpath "io.freefair.gradle:lombok-plugin:8.0.1"
     }
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'io.freefair.lombok'
 apply plugin: 'eclipse'
 
 version = project.mod_version

@@ -10,14 +10,14 @@ import baritone.plus.api.util.helpers.ItemHelper;
 import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.slots.Slot;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ingame.SignEditScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 
 import java.util.Optional;
 
@@ -66,19 +66,19 @@ public class PlaceSignTask extends Task {
             return new PlaceBlockNearbyTask(ItemHelper.WOOD_SIGNS_ALL);
         } else {
 
-            assert MinecraftClient.getInstance().world != null;
-            BlockState b = MinecraftClient.getInstance().world.getBlockState(_target);
+            assert Minecraft.getMinecraft().world != null;
+            IBlockState b = Minecraft.getMinecraft().world.getBlockState(_target);
 
             if (!isSign(b.getBlock()) && !b.isAir() && b.getBlock() != Blocks.WATER && b.getBlock() != Blocks.LAVA) {
                 return new DestroyBlockTask(_target);
             }
 
-            return new InteractWithBlockTask(new ItemTarget("sign", 1), Direction.UP, _target.down(), true);
+            return new InteractWithBlockTask(new ItemTarget("sign", 1), EnumFacing.UP, _target.down(), true);
         }
     }
 
     private Task editSign(BaritonePlus mod) {
-        SignEditScreen screen = (SignEditScreen) MinecraftClient.getInstance().currentScreen;
+        SignEditScreen screen = (SignEditScreen) Minecraft.getMinecraft().currentScreen;
         assert screen != null;
 
         StringBuilder currentLine = new StringBuilder();
@@ -90,7 +90,7 @@ public class PlaceSignTask extends Task {
         for (char c : _message.toCharArray()) {
             currentLine.append(c);
 
-            if (c == '\n' || MinecraftClient.getInstance().textRenderer.getWidth(currentLine.toString()) > SIGN_TEXT_MAX_WIDTH) {
+            if (c == '\n' || Minecraft.getMinecraft().textRenderer.getWidth(currentLine.toString()) > SIGN_TEXT_MAX_WIDTH) {
                 currentLine.delete(0, currentLine.length());
                 if (c != '\n') {
                     currentLine.append(c);
@@ -165,6 +165,6 @@ public class PlaceSignTask extends Task {
     }
 
     private boolean editingSign() {
-        return MinecraftClient.getInstance().currentScreen instanceof SignEditScreen;
+        return Minecraft.getMinecraft().currentScreen instanceof SignEditScreen;
     }
 }

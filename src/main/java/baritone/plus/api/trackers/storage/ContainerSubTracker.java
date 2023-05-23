@@ -1,20 +1,24 @@
 package baritone.plus.api.trackers.storage;
 
-import baritone.plus.main.Debug;
 import baritone.plus.api.event.EventBus;
 import baritone.plus.api.event.events.BlockInteractEvent;
 import baritone.plus.api.event.events.ScreenOpenEvent;
 import baritone.plus.api.trackers.Tracker;
 import baritone.plus.api.trackers.TrackerManager;
 import baritone.plus.api.util.Dimension;
+import baritone.plus.api.util.Pair;
 import baritone.plus.api.util.helpers.WorldHelper;
+import baritone.plus.main.Debug;
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiHopper;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiFurnace;
+import net.minecraft.client.gui.inventory.GuiShulkerBox;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -42,8 +46,8 @@ public class ContainerSubTracker extends Tracker {
 
         // Listen for when we interact with a block
         EventBus.subscribe(BlockInteractEvent.class, evt -> {
-            BlockPos blockPos = evt.hitResult.getBlockPos();
-            BlockState bs = _mod.getWorld().getBlockState(blockPos);
+            BlockPos blockPos = evt.hitResult.getPosition();
+            IBlockState bs = _mod.getWorld().getBlockState(blockPos);
             onBlockInteract(blockPos, bs.getBlock());
         });
         EventBus.subscribe(ScreenOpenEvent.class, evt -> {
@@ -57,25 +61,25 @@ public class ContainerSubTracker extends Tracker {
     }
 
     private void onBlockInteract(BlockPos pos, Block block) {
-        if (block instanceof AbstractFurnaceBlock ||
-                block instanceof ChestBlock ||
-                block.equals(Blocks.ENDER_CHEST) ||
-                block instanceof HopperBlock ||
-                block instanceof ShulkerBoxBlock ||
-                block instanceof DispenserBlock ||
-                block instanceof BarrelBlock) {
+        if (block instanceof BlockFurnace ||
+                block instanceof BlockChest ||
+                block instanceof BlockEnderChest ||
+                block instanceof BlockHopper ||
+                block instanceof BlockShulkerBox ||
+                block instanceof BlockDispenser
+                /*|| block instanceof BarrelBlock*/) {
             _lastBlockPosInteraction = pos;
             _lastBlockInteraction = block;
         }
     }
 
-    private void onScreenOpenFirstTick(final Screen screen) {
-        _containerOpen = screen instanceof FurnaceScreen
-                || screen instanceof GenericContainerScreen
-                || screen instanceof SmokerScreen
-                || screen instanceof BlastFurnaceScreen
-                || screen instanceof HopperScreen
-                || screen instanceof ShulkerBoxScreen;
+    private void onScreenOpenFirstTick(final GuiScreen screen) {
+        _containerOpen = screen instanceof GuiFurnace
+//                || screen instanceof GuiContainer
+//                || screen instanceof SmokerScreen
+//                || screen instanceof BlastFurnaceScreen
+                || screen instanceof GuiHopper
+                || screen instanceof GuiShulkerBox;
     }
 
     private void onScreenClose() {
@@ -86,19 +90,19 @@ public class ContainerSubTracker extends Tracker {
     }
 
     public void onServerTick() {
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getMinecraft().player == null)
             return;
         // If we haven't registered interacting with a block, try the currently "looking at" block
         if (_containerOpen && _lastBlockPosInteraction == null && _lastBlockInteraction == null) {
-            if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult bhit) {
+            if (Minecraft.getMinecraft().crosshairTarget instanceof BlockHitResult bhit) {
                 Debug.logWarning("Screen open but no block interaction detected, using the block we're currently looking at.");
-                _lastBlockPosInteraction = bhit.getBlockPos();
+                _lastBlockPosInteraction = bhit.getPosition();
                 _lastBlockInteraction = _mod.getWorld().getBlockState(_lastBlockPosInteraction).getBlock();
             }
         }
         if (_containerOpen && _lastBlockPosInteraction != null && _lastBlockInteraction != null) {
             BlockPos containerPos = _lastBlockPosInteraction;
-            ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
+            ScreenHandler handler = Minecraft.getMinecraft().player.currentScreenHandler;
             if (handler == null)
                 return;
 
@@ -137,7 +141,7 @@ public class ContainerSubTracker extends Tracker {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isContainerCacheValid(Dimension dimension, ContainerCache cache) {
-        BlockPos pos = cache.getBlockPos();
+        BlockPos pos = cache.getPosition();
         if (WorldHelper.getCurrentDimension() == dimension && _mod.getChunkTracker().isChunkLoaded(pos)) {
             ContainerType actualType = ContainerType.getFromBlock(_mod.getWorld().getBlockState(pos).getBlock());
             if (actualType == ContainerType.EMPTY) {
@@ -172,7 +176,7 @@ public class ContainerSubTracker extends Tracker {
             HashMap<BlockPos, ContainerCache> map = _containerCaches.get(dim);
             for (ContainerCache cache : map.values()) {
                 if (!isContainerCacheValid(dim, cache)) {
-                    toRemove.add(new Pair<>(dim, cache.getBlockPos()));
+                    toRemove.add(new Pair<>(dim, cache.getPosition()));
                     continue;
                 }
                 if (accept.test(cache))
@@ -180,7 +184,7 @@ public class ContainerSubTracker extends Tracker {
             }
         }
         for (Pair<Dimension, BlockPos> remove : toRemove) {
-            _containerCaches.get(remove.getLeft()).remove(remove.getRight());
+            _containerCaches.get(remove.left()).remove(remove.right());
         }
         return result;
     }
@@ -199,10 +203,10 @@ public class ContainerSubTracker extends Tracker {
         ContainerCache bestCache = null;
         for (ContainerCache cache : _containerCaches.get(dim).values()) {
             if (!isContainerCacheValid(dim, cache)) {
-                toRemove.add(cache.getBlockPos());
+                toRemove.add(cache.getPosition());
                 continue;
             }
-            double dist = cache.getBlockPos().getSquaredDistance(pos);
+            double dist = cache.getPosition().getSquaredDistance(pos);
             if (dist < bestDist) {
                 if (accept.test(cache)) {
                     bestDist = dist;

@@ -14,7 +14,7 @@ import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.time.TimerGame;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
@@ -106,7 +106,7 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
 
     // This happens all the time in mineshafts and swamps/jungles
     private BlockPos stuckInBlock(BaritonePlus mod) {
-        BlockPos p = mod.getPlayer().getBlockPos();
+        BlockPos p = mod.getPlayer().getPosition();
         if (isAnnoying(mod, p)) return p;
         if (isAnnoying(mod, p.up())) return p.up();
         BlockPos[] toCheck = generateSides(p);
@@ -205,8 +205,8 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
             case END -> {
                 if (_timer.getDuration() >= 30) {
                     if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                        MinecraftClient.getInstance().options.getViewDistance().setValue(12);
-                        MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(1.0);
+                        Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(12);
+                        Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(1.0);
                     }
                     _timer.reset();
                 }
@@ -214,14 +214,14 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
             case OVERWORLD, NETHER -> {
                 if (_timer.getDuration() >= 30) {
                     if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                        MinecraftClient.getInstance().options.getViewDistance().setValue(12);
-                        MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(1.0);
+                        Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(12);
+                        Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(1.0);
                     }
                 }
                 if (_timer.elapsed()) {
                     if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                        MinecraftClient.getInstance().options.getViewDistance().setValue(32);
-                        MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(5.0);
+                        Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(32);
+                        Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(5.0);
                     }
                     _timer.reset();
                 }
@@ -265,7 +265,7 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
 
         if (mod.getPlayer() != null && mod.getPlayer().getPos() != null && (mod.getPlayer().isOnGround() ||
                 mod.getPlayer().isTouchingWater())) {
-            double sqDist = mod.getPlayer().getPos().squaredDistanceTo(_origin);
+            double sqDist = mod.getPlayer().getPos().getDistanceSq(_origin);
             double toWander = _distanceToWander + _wanderDistanceExtension;
             return sqDist > toWander * toWander;
         } else {

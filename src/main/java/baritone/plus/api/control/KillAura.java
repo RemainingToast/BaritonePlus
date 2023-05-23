@@ -1,30 +1,32 @@
 package baritone.plus.api.control;
 
-import baritone.plus.main.BaritonePlus;
+import baritone.api.utils.input.Input;
 import baritone.plus.api.util.helpers.LookHelper;
 import baritone.plus.api.util.helpers.StlHelper;
 import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.slots.PlayerSlot;
 import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.time.TimerGame;
-import baritone.api.utils.input.Input;
+import baritone.plus.main.BaritonePlus;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.mob.*;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntityShulkerBullet;
 import net.minecraft.init.Items;
-import net.minecraft.item.SwordItem;
-import net.minecraft.screen.slot.ClickType;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Controls and applies killaura
+ * Controls and applies kill aura
  */
 public class KillAura {
     // Smart aura data
@@ -39,11 +41,11 @@ public class KillAura {
         if (!invStacks.isEmpty()) {
             float handDamage = Float.NEGATIVE_INFINITY;
             for (ItemStack invStack : invStacks) {
-                if (invStack.getItem() instanceof SwordItem item) {
-                    float itemDamage = item.getMaterial().getAttackDamage();
+                if (invStack.getItem() instanceof ItemSword item) {
+                    float itemDamage = item.getAttackDamage();
                     Item handItem = StorageHelper.getItemStackInSlot(PlayerSlot.getEquipSlot()).getItem();
-                    if (handItem instanceof SwordItem handToolItem) {
-                        handDamage = handToolItem.getMaterial().getAttackDamage();
+                    if (handItem instanceof ItemSword handToolItem) {
+                        handDamage = handToolItem.getAttackDamage();
                     }
                     if (itemDamage > handDamage) {
                         mod.getSlotHandler().forceEquipItem(item);
@@ -62,8 +64,10 @@ public class KillAura {
 
     public void applyAura(Entity entity) {
         _targets.add(entity);
-        // Always hit ghast balls.
-        if (entity instanceof FireballEntity) _forceHit = entity;
+        // Always hit ghast balls and shulker bullets.
+        if (entity instanceof EntityFireball || entity instanceof EntityShulkerBullet) {
+            _forceHit = entity;
+        }
     }
 
     public void setRange(double range) {
@@ -73,19 +77,19 @@ public class KillAura {
     public void tickEnd(BaritonePlus mod) {
         PlayerSlot offhandSlot = PlayerSlot.OFFHAND_SLOT;
         Item offhandItem = StorageHelper.getItemStackInSlot(offhandSlot).getItem();
-        Optional<Entity> entities = _targets.stream().min(StlHelper.compareValues(entity -> entity.squaredDistanceTo(mod.getPlayer())));
+        Optional<Entity> entities = _targets.stream().min(StlHelper.compareValues(entity -> entity.getDistanceSq(mod.getPlayer())));
         if (entities.isPresent() && mod.getPlayer().getHealth() >= 10 &&
-                !mod.getEntityTracker().entityFound(PotionEntity.class) && !mod.getFoodChain().needsToEat() &&
+                !mod.getEntityTracker().entityFound(EntityPotion.class) && !mod.getFoodChain().needsToEat() &&
                 (mod.getItemStorage().hasItem(Items.SHIELD) || mod.getItemStorage().hasItemInOffhand(Items.SHIELD)) &&
-                (Double.isInfinite(_forceFieldRange) || entities.get().squaredDistanceTo(mod.getPlayer()) < _forceFieldRange * _forceFieldRange ||
-                        entities.get().squaredDistanceTo(mod.getPlayer()) < 40) &&
+                (Double.isInfinite(_forceFieldRange) || entities.get().getDistanceSq(mod.getPlayer()) < _forceFieldRange * _forceFieldRange ||
+                        entities.get().getDistanceSq(mod.getPlayer()) < 40) &&
                 !mod.getMLGBucketChain().isFallingOhNo(mod) && mod.getMLGBucketChain().doneMLG() &&
                 !mod.getMLGBucketChain().isChorusFruiting() &&
-                !mod.getPlayer().getItemCooldownManager().isCoolingDown(offhandItem)) {
-            if (entities.get().getClass() != CreeperEntity.class && entities.get().getClass() != HoglinEntity.class &&
-                    entities.get().getClass() != ZoglinEntity.class && entities.get().getClass() != WardenEntity.class &&
-                    entities.get().getClass() != WitherEntity.class) {
-                LookHelper.lookAt(mod, entities.get().getEyePos());
+                !mod.getPlayer().getCooldownTracker().hasCooldown(offhandItem)) {
+            if (entities.get().getClass() != EntityCreeper.class /*&& entities.get().getClass() != HoglinEntity.class*/ &&
+                    entities.get().getClass() != EntityPigZombie.class /*&& entities.get().getClass() != WardenEntity.class*/ &&
+                    entities.get().getClass() != EntityWither.class) {
+                LookHelper.lookAt(mod, entities.get().getPositionEyes(1.0F));
                 ItemStack shieldSlot = StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT);
                 if (shieldSlot.getItem() != Items.SHIELD) {
                     mod.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
@@ -104,12 +108,12 @@ public class KillAura {
                 performFastestAttack(mod);
                 break;
             case SMART:
-                if (_targets.size() <= 2 || _targets.stream().allMatch(entity -> entity instanceof SkeletonEntity) ||
-                        _targets.stream().allMatch(entity -> entity instanceof WitchEntity) ||
-                        _targets.stream().allMatch(entity -> entity instanceof PillagerEntity) ||
-                        _targets.stream().allMatch(entity -> entity instanceof PiglinEntity) ||
-                        _targets.stream().allMatch(entity -> entity instanceof StrayEntity) ||
-                        _targets.stream().allMatch(entity -> entity instanceof BlazeEntity)) {
+                if (_targets.size() <= 2 || _targets.stream().allMatch(entity -> entity instanceof EntitySkeleton) ||
+                        _targets.stream().allMatch(entity -> entity instanceof EntityWitch) ||
+//                        _targets.stream().allMatch(entity -> entity instanceof PillagerEntity) ||
+                        _targets.stream().allMatch(entity -> entity instanceof EntityPigZombie) ||
+                        _targets.stream().allMatch(entity -> entity instanceof EntityStray) ||
+                        _targets.stream().allMatch(entity -> entity instanceof EntityBlaze)) {
                     performDelayedAttack(mod);
                 } else {
                     if (!mod.getFoodChain().needsToEat() && !mod.getMLGBucketChain().isFallingOhNo(mod) &&
@@ -121,7 +125,7 @@ public class KillAura {
                         if (_hitDelay.elapsed()) {
                             _hitDelay.reset();
 
-                            Optional<Entity> toHit = _targets.stream().min(StlHelper.compareValues(entity -> entity.squaredDistanceTo(mod.getPlayer())));
+                            Optional<Entity> toHit = _targets.stream().min(StlHelper.compareValues(entity -> entity.getDistanceSq(mod.getPlayer())));
 
                             toHit.ifPresent(entity -> attack(mod, entity, true));
                         }
@@ -147,9 +151,9 @@ public class KillAura {
                 return;
             }
 
-            Optional<Entity> toHit = _targets.stream().min(StlHelper.compareValues(entity -> entity.squaredDistanceTo(mod.getPlayer())));
+            Optional<Entity> toHit = _targets.stream().min(StlHelper.compareValues(entity -> entity.getDistanceSq(mod.getPlayer())));
 
-            if (mod.getPlayer() == null || mod.getPlayer().getAttackCooldownProgress(0) < 1) {
+            if (mod.getPlayer() == null || mod.getPlayer().getCooldownPeriod() < 1) {
                 return;
             }
 
@@ -173,12 +177,12 @@ public class KillAura {
 
     private void attack(BaritonePlus mod, Entity entity, boolean equipSword) {
         if (entity == null) return;
-        if (!(entity instanceof FireballEntity)) {
-            LookHelper.lookAt(mod, entity.getEyePos());
+        if (!(entity instanceof EntityFireball)) {
+            LookHelper.lookAt(mod, entity.getPositionEyes(1.0F));
         }
-        if (Double.isInfinite(_forceFieldRange) || entity.squaredDistanceTo(mod.getPlayer()) < _forceFieldRange * _forceFieldRange ||
-                entity.squaredDistanceTo(mod.getPlayer()) < 40) {
-            if (entity instanceof FireballEntity) {
+        if (Double.isInfinite(_forceFieldRange) || entity.getDistanceSq(mod.getPlayer()) < _forceFieldRange * _forceFieldRange ||
+                entity.getDistanceSq(mod.getPlayer()) < 40) {
+            if (entity instanceof EntityFireball) {
                 mod.getControllerExtras().attack(entity);
             }
             boolean canAttack;
@@ -190,7 +194,7 @@ public class KillAura {
                 canAttack = mod.getSlotHandler().forceDeequipHitTool();
             }
             if (canAttack) {
-                if (mod.getPlayer().isOnGround() || mod.getPlayer().getVelocity().getY() < 0 || mod.getPlayer().isTouchingWater()) {
+                if (mod.getPlayer().onGround || mod.getPlayer().motionY < 0 || mod.getPlayer().isInWater()) {
                     mod.getControllerExtras().attack(entity);
                 }
             }
@@ -203,9 +207,9 @@ public class KillAura {
         mod.getInputControls().hold(Input.CLICK_RIGHT);
         mod.getClientBaritone().getPathingBehavior().softCancelIfSafe();
         mod.getExtraBaritoneSettings().setInteractionPaused(true);
-        if (!mod.getPlayer().isBlocking()) {
+        if (!mod.getPlayer().isActiveItemStackBlocking()) {
             ItemStack handItem = StorageHelper.getItemStackInSlot(PlayerSlot.getEquipSlot());
-            if (handItem.isFood()) {
+            if (handItem.getItem() instanceof ItemFood) {
                 List<ItemStack> spaceSlots = mod.getItemStorage().getItemStacksPlayerInventory(false);
                 if (!spaceSlots.isEmpty()) {
                     for (ItemStack spaceSlot : spaceSlots) {
@@ -224,7 +228,7 @@ public class KillAura {
     public void stopShielding(BaritonePlus mod) {
         if (_shielding) {
             ItemStack cursor = StorageHelper.getItemStackInCursorSlot();
-            if (cursor.isFood()) {
+            if (cursor.getItem() instanceof ItemFood) {
                 Optional<Slot> toMoveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursor, false).or(() -> StorageHelper.getGarbageSlot(mod));
                 if (toMoveTo.isPresent()) {
                     Slot garbageSlot = toMoveTo.get();

@@ -20,7 +20,7 @@ public class GoInDirectionXZTask extends CustomBaritoneGoalTask {
     }
 
     private static boolean closeEnough(Vec3d a, Vec3d b) {
-        return a.squaredDistanceTo(b) < 0.001;
+        return a.getDistanceSq(b) < 0.001;
     }
 
     @Override

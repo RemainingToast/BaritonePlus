@@ -16,13 +16,13 @@ import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.progresscheck.MovementProgressChecker;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.HashSet;
@@ -127,8 +127,8 @@ public class ConstructNetherPortalBucketTask extends Task {
     @Override
     protected Task onTick(BaritonePlus mod) {
         if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-            MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-            MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+            Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(2);
+            Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(0.5);
         }
         if (_portalOrigin != null) {
             if (mod.getWorld().getBlockState(_portalOrigin.up()).getBlock() == Blocks.NETHER_PORTAL) {
@@ -216,10 +216,10 @@ public class ConstructNetherPortalBucketTask extends Task {
                 _firstSearch = false;
                 _lavaSearchTimer.reset();
                 Debug.logMessage("(Searching for lava lake with portalable spot nearby...)");
-                BlockPos lavaPos = findLavaLake(mod, mod.getPlayer().getBlockPos());
+                BlockPos lavaPos = findLavaLake(mod, mod.getPlayer().getPosition());
                 if (lavaPos != null) {
                     // We have a lava lake, set our portal origin!
-                    BlockPos foundPortalRegion = getPortalableRegion(mod, lavaPos, mod.getPlayer().getBlockPos(), new Vec3i(-1, 0, 0), PORTALABLE_REGION_SIZE, 20);
+                    BlockPos foundPortalRegion = getPortalableRegion(mod, lavaPos, mod.getPlayer().getPosition(), new Vec3i(-1, 0, 0), PORTALABLE_REGION_SIZE, 20);
                     if (foundPortalRegion == null) {
                         Debug.logWarning("Failed to find portalable region nearby. Consider increasing the search timeout range");
                     } else {
@@ -268,8 +268,8 @@ public class ConstructNetherPortalBucketTask extends Task {
         // Now, clear the inside.
         for (Vec3i offs : PORTAL_INTERIOR) {
             BlockPos p = _portalOrigin.add(offs);
-            assert MinecraftClient.getInstance().world != null;
-            if (!MinecraftClient.getInstance().world.getBlockState(p).isAir()) {
+            assert Minecraft.getMinecraft().world != null;
+            if (!Minecraft.getMinecraft().world.getBlockState(p).isAir()) {
                 setDebugState("Clearing inside of portal");
                 _currentDestroyTarget = p;
                 return null;
@@ -279,7 +279,7 @@ public class ConstructNetherPortalBucketTask extends Task {
 
         setDebugState("Flinting and Steeling");
         // Flint and steel it baby
-        return new InteractWithBlockTask(new ItemTarget(new Item[]{Items.FLINT_AND_STEEL, Items.FIRE_CHARGE}, 1), Direction.UP, _portalOrigin.down(), true);
+        return new InteractWithBlockTask(new ItemTarget(new Item[]{Items.FLINT_AND_STEEL, Items.FIRE_CHARGE}, 1), EnumFacing.UP, _portalOrigin.down(), true);
     }
 
     @Override
@@ -329,8 +329,8 @@ public class ConstructNetherPortalBucketTask extends Task {
         alreadyExplored.add(origin);
 
         // Base case: We hit a non-full lava block.
-        assert MinecraftClient.getInstance().world != null;
-        BlockState s = MinecraftClient.getInstance().world.getBlockState(origin);
+        assert Minecraft.getMinecraft().world != null;
+        IBlockState s = Minecraft.getMinecraft().world.getBlockState(origin);
         if (s.getBlock() != Blocks.LAVA) {
             return 0;
         } else {
@@ -376,8 +376,8 @@ public class ConstructNetherPortalBucketTask extends Task {
                     for (int dz = -1; dz < sizeAllocation.getZ() + 1; ++dz) {
                         for (int dy = -1; dy < sizeAllocation.getY(); ++dy) {
                             BlockPos toCheck = lava.add(offset).add(sizeOffset).add(dx, dy, dz);
-                            assert MinecraftClient.getInstance().world != null;
-                            BlockState state = MinecraftClient.getInstance().world.getBlockState(toCheck);
+                            assert Minecraft.getMinecraft().world != null;
+                            IBlockState state = Minecraft.getMinecraft().world.getBlockState(toCheck);
                             if (state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.WATER || state.getBlock() == Blocks.BEDROCK) {
                                 found = false;
                                 break moveAlongLine;

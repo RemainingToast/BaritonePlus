@@ -6,7 +6,7 @@ import baritone.plus.main.tasks.ResourceTask;
 import baritone.plus.main.tasks.construction.DestroyBlockTask;
 import baritone.plus.main.tasks.movement.SearchWithinBiomeTask;
 import baritone.plus.api.tasks.Task;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.init.Items;
@@ -43,7 +43,7 @@ public class CollectCocoaBeansTask extends ResourceTask {
                 return _wasFullyGrown.contains(blockPos);
             }
 
-            BlockState s = mod.getWorld().getBlockState(blockPos);
+            IBlockState s = mod.getWorld().getBlockState(blockPos);
             boolean mature = s.get(CocoaBlock.AGE) == 2;
             if (_wasFullyGrown.contains(blockPos)) {
                 if (!mature) _wasFullyGrown.remove(blockPos);

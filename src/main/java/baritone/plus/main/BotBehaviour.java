@@ -1,17 +1,18 @@
 package baritone.plus.main;
 
-import baritone.plus.api.util.slots.Slot;
 import baritone.altoclef.AltoClefSettings;
 import baritone.api.Settings;
 import baritone.api.utils.RayTraceUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import baritone.plus.api.util.Pair;
+import baritone.plus.api.util.slots.Slot;
+import net.minecraft.block.state.BlockStateBase;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.RaycastContext;
+import net.minecraft.util.math.RayTraceResult;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -130,12 +131,12 @@ public class BotBehaviour {
     }
 
 
-    public void forceUseTool(BiPredicate<BlockState, ItemStack> pred) {
+    public void forceUseTool(BiPredicate<IBlockState, ItemStack> pred) {
         current().forceUseTools.add(pred);
         current().applyState();
     }
 
-    public void setRayTracingFluidHandling(RaycastContext.FluidHandling fluidHandling) {
+    public void setRayTracingFluidHandling(RayTraceResult.FluidHandling fluidHandling) {
         current().rayFluidHandling = fluidHandling;
         //Debug.logMessage("OOF: " + fluidHandling);
         current().applyState();
@@ -292,7 +293,7 @@ public class BotBehaviour {
         public List<Predicate<BlockPos>> toAvoidPlacing = new ArrayList<>();
         public List<Predicate<BlockPos>> allowWalking = new ArrayList<>();
         public List<Predicate<BlockPos>> avoidWalkingThrough = new ArrayList<>();
-        public List<BiPredicate<BlockState, ItemStack>> forceUseTools = new ArrayList<>();
+        public List<BiPredicate<IBlockState, ItemStack>> forceUseTools = new ArrayList<>();
         public List<BiFunction<Double, BlockPos, Double>> globalHeuristics = new ArrayList<>();
         public boolean _allowWalkThroughFlowingWater = false;
 
@@ -372,7 +373,7 @@ public class BotBehaviour {
         }
 
         private void readMinecraftState() {
-            pauseOnLostFocus = MinecraftClient.getInstance().options.pauseOnLostFocus;
+            pauseOnLostFocus = Minecraft.getMinecraft().gameSettings.pauseOnLostFocus;
         }
 
         /**
@@ -422,7 +423,7 @@ public class BotBehaviour {
             RayTraceUtils.fluidHandling = rayFluidHandling;
 
             // Minecraft
-            MinecraftClient.getInstance().options.pauseOnLostFocus = pauseOnLostFocus;
+            Minecraft.getMinecraft().gameSettings.pauseOnLostFocus = pauseOnLostFocus;
         }
     }
 }

@@ -1,25 +1,26 @@
 package baritone.plus.api.util.helpers;
 
 import baritone.plus.main.BaritonePlus;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.util.DamageSource;
 
 /**
  * Helper functions to interpret entity state
  */
 public class EntityHelper {
-    public static final double ENTITY_GRAVITY = 0.08; // per second
+    public static final double ENTITY_GRAVITY = 0.08; // per right
 
     public static boolean isAngryAtPlayer(BaritonePlus mod, Entity mob) {
         boolean hostile = isGenerallyHostileToPlayer(mod, mob);
@@ -31,7 +32,7 @@ public class EntityHelper {
 
     public static boolean isGenerallyHostileToPlayer(BaritonePlus mod, Entity hostile) {
         // This is only temporary.
-        if (hostile instanceof MobEntity entity) {
+        if (hostile instanceof EntityMob entity) {
             if (entity instanceof HostileEntity entity1) {
                 return entity1.isAttacking() || !(entity1 instanceof EndermanEntity || entity1 instanceof PiglinEntity ||
                         entity1 instanceof SpiderEntity || entity1 instanceof ZombifiedPiglinEntity);
@@ -72,21 +73,21 @@ public class EntityHelper {
      * Calculate the resulting damage dealt to a player as a result of some damage.
      * If this player were to receive this damage, the player's health will be subtracted by the resulting value.
      */
-    public static double calculateResultingPlayerDamage(PlayerEntity player, DamageSource source, double damageAmount) {
+    public static double calculateResultingPlayerDamage(EntityPlayerSP player, DamageSource source, double damageAmount) {
         // Copied logic from `PlayerEntity.applyDamage`
 
         if (player.isInvulnerableTo(source))
             return 0;
 
         // Armor Base
-        if (!source.isIn(DamageTypeTags.BYPASSES_ARMOR)) {
+        if (!source.isUnblockable(/*DamageTypeTags.BYPASSES_ARMOR*/)) {
             damageAmount = DamageUtil.getDamageLeft((float) damageAmount, (float) player.getArmor(), (float) player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
         }
 
         // Enchantments & Potions
         if (!source.isIn(DamageTypeTags.BYPASSES_SHIELD)) {
             int k;
-            if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source.isOf(DamageTypes.OUT_OF_WORLD)) {
+            if (player.isPotionActive(MobEffects.RESISTANCE) && source.isOf(DamageTypes.OUT_OF_WORLD)) {
                 //noinspection ConstantConditions
                 k = (player.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
                 int j = 25 - k;

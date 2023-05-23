@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 public class BaritoneHelper {
 
     /**
-     * Use whenever accessing Minecraft data (from ClientWorld or ClientPlayerEntity) in baritone
+     * Use whenever accessing Minecraft data (from WorldClient or ClientPlayerEntity) in baritone
      */
     public static final Object MINECRAFT_LOCK = new Object();
 

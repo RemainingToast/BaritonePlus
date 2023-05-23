@@ -11,13 +11,16 @@ import baritone.plus.main.tasks.resources.*;
 import baritone.plus.main.tasks.resources.wood.*;
 import baritone.plus.main.tasks.squashed.CataloguedResourceTask;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.init.Blocks;
-import net.minecraft.block.MapColor;
-import net.minecraft.entity.mob.*;
-import net.minecraft.entity.passive.*;
-import net.minecraft.item.Item;
 import net.minecraft.init.Items;
-import net.minecraft.util.DyeColor;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -49,29 +52,29 @@ public class TaskCatalogue {
             /// RAW RESOURCES
             mine("log", MiningRequirement.HAND, ItemHelper.LOG, ItemHelper.LOG).anyDimension();
             woodTasks("log", wood -> wood.log, (wood, count) -> new MineAndCollectTask(wood.log, count, new Block[]{Block.getBlockFromItem(wood.log)}, MiningRequirement.HAND), true);
-            mine("dirt", MiningRequirement.HAND, new Block[]{Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.DIRT_PATH}, Items.DIRT);
-            simple("cobblestone", Items.COBBLESTONE, CollectCobblestoneTask::new).dontMineIfPresent();
-            simple("cobbled_deepslate", Items.COBBLED_DEEPSLATE, CollectCobbledDeepslateTask::new).dontMineIfPresent();
+            mine("dirt", MiningRequirement.HAND, new Block[]{Blocks.DIRT, Blocks.GRASS, Blocks.GRASS_PATH}, Item.getItemFromBlock(Blocks.DIRT));
+            simple("cobblestone", Item.getItemFromBlock(Blocks.COBBLESTONE), CollectCobblestoneTask::new).dontMineIfPresent();
+//            simple("cobbled_deepslate", Items.COBBLED_DEEPSLATE, CollectCobbledDeepslateTask::new).dontMineIfPresent();
             mine("andesite", MiningRequirement.WOOD, Blocks.ANDESITE, Items.ANDESITE);
             mine("granite", MiningRequirement.WOOD, Blocks.GRANITE, Items.GRANITE);
             mine("diorite", MiningRequirement.WOOD, Blocks.DIORITE, Items.DIORITE);
             mine("calcite", MiningRequirement.WOOD, Blocks.CALCITE, Items.CALCITE);
             mine("tuff", MiningRequirement.WOOD, Blocks.TUFF, Items.TUFF);
-            mine("netherrack", MiningRequirement.WOOD, Blocks.NETHERRACK, Items.NETHERRACK).forceDimension(Dimension.NETHER);
+            mine("netherrack", MiningRequirement.WOOD, Blocks.NETHERRACK, Item.getItemFromBlock(Blocks.NETHERRACK)).forceDimension(Dimension.NETHER);
             mine("magma_block", MiningRequirement.WOOD, Blocks.MAGMA_BLOCK, Items.MAGMA_BLOCK).forceDimension(Dimension.NETHER);
             mine("blackstone", MiningRequirement.WOOD, Blocks.BLACKSTONE, Items.BLACKSTONE).forceDimension(Dimension.NETHER);
             mine("basalt", MiningRequirement.WOOD, Blocks.BASALT, Items.BASALT).forceDimension(Dimension.NETHER);
-            mine("soul_sand", Items.SOUL_SAND).forceDimension(Dimension.NETHER);
-            mine("soul_soil", Items.SOUL_SOIL).forceDimension(Dimension.NETHER);
+            mine("soul_sand", Item.getItemFromBlock(Blocks.SOUL_SAND)).forceDimension(Dimension.NETHER);
+//            mine("soul_soil", Items.SOUL_SOIL).forceDimension(Dimension.NETHER);
             mine("glowstone_dust", Blocks.GLOWSTONE, Items.GLOWSTONE_DUST).forceDimension(Dimension.NETHER);
-            mine("coal", MiningRequirement.WOOD, new Block[]{Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE}, Items.COAL);
-            mine("raw_iron", MiningRequirement.STONE, new Block[]{Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE}, Items.RAW_IRON);
-            mine("raw_gold", MiningRequirement.IRON, new Block[]{Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE}, Items.RAW_GOLD);
-            mine("raw_copper", MiningRequirement.STONE, new Block[]{Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE}, Items.RAW_COPPER);
+            mine("coal", MiningRequirement.WOOD, new Block[]{Blocks.COAL_ORE/*, Blocks.DEEPSLATE_COAL_ORE*/}, Items.COAL);
+            mine("raw_iron", MiningRequirement.STONE, new Block[]{Blocks.IRON_ORE/*, Blocks.DEEPSLATE_IRON_ORE*/}, Item.getItemFromBlock(Blocks.IRON_ORE));
+            mine("raw_gold", MiningRequirement.IRON, new Block[]{Blocks.GOLD_ORE/*, Blocks.DEEPSLATE_GOLD_ORE*/}, Item.getItemFromBlock(Blocks.GOLD_ORE));
+//            mine("raw_copper", MiningRequirement.STONE, new Block[]{Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE}, Items.RAW_COPPER);
             mine("diamond", MiningRequirement.IRON, new Block[]{Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE}, Items.DIAMOND);
             mine("emerald", MiningRequirement.IRON, new Block[]{Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE}, Items.EMERALD);
             mine("redstone", MiningRequirement.IRON, new Block[]{Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE}, Items.REDSTONE);
-            mine("lapis_lazuli", MiningRequirement.IRON, new Block[]{Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE}, Items.LAPIS_LAZULI);
+            mine("lapis_lazuli", MiningRequirement.IRON, new Block[]{Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE}, Item.getItemFromBlock(Blocks.LAPIS_ORE));
             alias("lapis", "lapis_lazuli");
             mine("amethyst_shard", MiningRequirement.WOOD, Blocks.AMETHYST_CLUSTER, Items.AMETHYST_SHARD);
             mine("pointed_dripstone", MiningRequirement.WOOD, Blocks.POINTED_DRIPSTONE, Items.POINTED_DRIPSTONE);
@@ -98,19 +101,19 @@ public class TaskCatalogue {
             simple("obsidian", Items.OBSIDIAN, CollectObsidianTask::new).dontMineIfPresent();
             simple("wool", ItemHelper.WOOL, CollectWoolTask::new);
             simple("egg", Items.EGG, CollectEggsTask::new);
-            mob("bone", Items.BONE, SkeletonEntity.class);
-            mob("gunpowder", Items.GUNPOWDER, CreeperEntity.class);
-            mob("ender_pearl", Items.ENDER_PEARL, EndermanEntity.class).anyDimension();
-            mob("spider_eye", Items.SPIDER_EYE, SpiderEntity.class);
-            mob("leather", Items.LEATHER, CowEntity.class);
-            mob("feather", Items.FEATHER, ChickenEntity.class);
-            mob("rotten_flesh", Items.ROTTEN_FLESH, ZombieEntity.class);
-            mob("rabbit_foot", Items.RABBIT_FOOT, RabbitEntity.class);
-            mob("rabbit_hide", Items.RABBIT_HIDE, RabbitEntity.class);
-            mob("slime_ball", Items.SLIME_BALL, SlimeEntity.class);
-            mob("wither_skeleton_skull", Items.WITHER_SKELETON_SKULL, WitherSkeletonEntity.class).forceDimension(Dimension.NETHER);
-            mob("ink_sac", Items.INK_SAC, SquidEntity.class); // Warning, this probably won't work.
-            mob("glow_ink_sac", Items.GLOW_INK_SAC, GlowSquidEntity.class); // Warning, this probably won't work.
+            mob("bone", Items.BONE, EntitySkeleton.class);
+            mob("gunpowder", Items.GUNPOWDER, EntityCreeper.class);
+            mob("ender_pearl", Items.ENDER_PEARL, EntityEnderman.class).anyDimension();
+            mob("spider_eye", Items.SPIDER_EYE, EntitySpider.class);
+            mob("leather", Items.LEATHER, EntityCow.class);
+            mob("feather", Items.FEATHER, EntityChicken.class);
+            mob("rotten_flesh", Items.ROTTEN_FLESH, EntityZombie.class);
+            mob("rabbit_foot", Items.RABBIT_FOOT, EntityRabbit.class);
+            mob("rabbit_hide", Items.RABBIT_HIDE, EntityRabbit.class);
+            mob("slime_ball", Items.SLIME_BALL, EntitySlime.class);
+            mob("wither_skeleton_skull", Items.WITHER_SKELETON_SKULL, EntityWitherSkeleton.class).forceDimension(Dimension.NETHER);
+            mob("ink_sac", Items.INK_SAC, EntitySquid.class); // Warning, this probably won't work.
+//            mob("glow_ink_sac", Items.GLOW_INK_SAC, GlowSquidEntity.class); // Warning, this probably won't work.
             mob("string", Items.STRING, SpiderEntity.class); // Warning, this probably won't work.
             mine("sugar_cane", Items.SUGAR_CANE);
             mine("brown_mushroom", MiningRequirement.HAND, new Block[]{Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK}, Items.BROWN_MUSHROOM);
@@ -218,45 +221,45 @@ public class TaskCatalogue {
             smelt("nether_brick", Items.NETHER_BRICK, "netherrack");
             smelt("green_dye", Items.GREEN_DYE, "cactus");
             simple("gold_ingot", Items.GOLD_INGOT, CollectGoldIngotTask::new).anyDimension(); // accounts for nether too
-            shapedRecipe3x3Block("iron_block", Items.IRON_BLOCK, "iron_ingot");
-            shapedRecipe3x3Block("gold_block", Items.GOLD_BLOCK, "gold_ingot");
-            shapedRecipe3x3Block("copper_block", Items.COPPER_BLOCK, "copper_ingot");
-            shapedRecipe3x3Block("raw_iron_block", Items.RAW_IRON_BLOCK, "raw_iron");
-            shapedRecipe3x3Block("raw_gold_block", Items.RAW_GOLD_BLOCK, "raw_gold");
-            shapedRecipe3x3Block("raw_copper_block", Items.RAW_COPPER_BLOCK, "raw_copper");
-            shapedRecipe3x3Block("diamond_block", Items.DIAMOND_BLOCK, "diamond");
-            shapedRecipe3x3Block("redstone_block", Items.REDSTONE_BLOCK, "redstone");
-            shapedRecipe3x3Block("coal_block", Items.COAL_BLOCK, "coal");
-            shapedRecipe3x3Block("emerald_block", Items.EMERALD_BLOCK, "emerald");
-            shapedRecipe3x3Block("lapis_block", Items.LAPIS_BLOCK, "lapis_lazuli");
-            shapedRecipe3x3Block("slime_block", Items.SLIME_BLOCK, "slime_ball");
+            shapedRecipe3x3Block("iron_block", Item.getItemFromBlock(Blocks.IRON_BLOCK), "iron_ingot");
+            shapedRecipe3x3Block("gold_block", Item.getItemFromBlock(Blocks.GOLD_BLOCK), "gold_ingot");
+//            shapedRecipe3x3Block("copper_block", Items.COPPER_BLOCK, "copper_ingot");
+//            shapedRecipe3x3Block("raw_iron_block", Items.RAW_IRON_BLOCK, "raw_iron");
+//            shapedRecipe3x3Block("raw_gold_block", Items.RAW_GOLD_BLOCK, "raw_gold");
+//            shapedRecipe3x3Block("raw_copper_block", Items.RAW_COPPER_BLOCK, "raw_copper");
+            shapedRecipe3x3Block("diamond_block", Item.getItemFromBlock(Blocks.DIAMOND_BLOCK), "diamond");
+            shapedRecipe3x3Block("redstone_block", Item.getItemFromBlock(Blocks.REDSTONE_BLOCK), "redstone");
+            shapedRecipe3x3Block("coal_block", Item.getItemFromBlock(Blocks.COAL_BLOCK), "coal");
+            shapedRecipe3x3Block("emerald_block", Item.getItemFromBlock(Blocks.EMERALD_BLOCK), "emerald");
+            shapedRecipe3x3Block("lapis_block", Item.getItemFromBlock(Blocks.LAPIS_BLOCK), "lapis_lazuli");
+            shapedRecipe3x3Block("slime_block", Item.getItemFromBlock(Blocks.SLIME_BLOCK), "slime_ball");
             shapedRecipe3x3Block("melon", Items.MELON, "melon_slice").dontMineIfPresent();
-            shapedRecipe2x2Block("glowstone", Items.GLOWSTONE, "glowstone_dust").dontMineIfPresent();
-            shapedRecipe2x2Block("clay", Items.CLAY, "clay_ball").dontMineIfPresent();
-            smelt("netherite_scrap", Items.NETHERITE_SCRAP, "ancient_debris");
-            shapedRecipe3x3("netherite_ingot", Items.NETHERITE_INGOT, 1, "netherite_scrap", "netherite_scrap", "netherite_scrap", "netherite_scrap", "gold_ingot", "gold_ingot", "gold_ingot", "gold_ingot", o);
+            shapedRecipe2x2Block("glowstone", Item.getItemFromBlock(Blocks.GLOWSTONE), "glowstone_dust").dontMineIfPresent();
+            shapedRecipe2x2Block("clay", Item.getItemFromBlock(Blocks.CLAY), "clay_ball").dontMineIfPresent();
+//            smelt("netherite_scrap", Items.NETHERITE_SCRAP, "ancient_debris");
+//            shapedRecipe3x3("netherite_ingot", Items.NETHERITE_INGOT, 1, "netherite_scrap", "netherite_scrap", "netherite_scrap", "netherite_scrap", "gold_ingot", "gold_ingot", "gold_ingot", "gold_ingot", o);
             simple("gold_nugget", Items.GOLD_NUGGET, CollectGoldNuggetsTask::new);
             {
                 String g = "gold_nugget";
-                shapedRecipe3x3("glistering_melon_slice", Items.GLISTERING_MELON_SLICE, 1, g, g, g, g, "melon_slice", g, g, g, g);
+                shapedRecipe3x3("glistering_melon_slice", Items.SPECKLED_MELON, 1, g, g, g, g, "melon_slice", g, g, g, g);
             }
             shapedRecipe2x2("sugar", Items.SUGAR, 1, "sugar_cane", o, o, o);
             shapedRecipe2x2("bone_meal", Items.BONE_MEAL, 3, "bone", o, o, o);
             shapedRecipe2x2("melon_seeds", Items.MELON_SEEDS, 1, "melon_slice", o, o, o);
-            simple("hay_block", Items.HAY_BLOCK, CollectHayBlockTask::new).dontMineIfPresent();
+            simple("hay_block", Item.getItemFromBlock(Blocks.HAY_BLOCK), CollectHayBlockTask::new).dontMineIfPresent();
             shapedRecipe2x2Block("polished_andesite", Items.POLISHED_ANDESITE, 4, "andesite");
             shapedRecipe2x2Block("polished_diorite", Items.POLISHED_DIORITE, 4, "diorite");
             shapedRecipe2x2Block("polished_granite", Items.POLISHED_GRANITE, 4, "granite");
-            shapedRecipe2x2Block("quartz_block", Items.QUARTZ_BLOCK, "quartz");
-            shapedRecipe2x2Block("polished_blackstone", Items.POLISHED_BLACKSTONE, 4, "blackstone");
-            shapedRecipe2x2Block("polished_blackstone_bricks", Items.POLISHED_BLACKSTONE_BRICKS, 4, "polished_blackstone");
-            shapedRecipe2x2Block("polished_basalt", Items.POLISHED_BASALT, 4, "basalt");
-            shapedRecipe2x2Block("polished_deepslate", Items.POLISHED_DEEPSLATE, 4, "cobbled_deepslate");
-            shapedRecipe2x2Block("deepslate_bricks", Items.DEEPSLATE_BRICKS, 4, "polished_deepslate");
-            shapedRecipe2x2Block("deepslate_tiles", Items.DEEPSLATE_TILES, 4, "deepslate_bricks");
-            shapedRecipe2x2Block("cut_copper", Items.CUT_COPPER, 4, "copper_block");
-            shapedRecipe2x2Block("cut_sandstone", Items.CUT_SANDSTONE, 4, "sandstone");
-            shapedRecipe2x2Block("cut_red_sandstone", Items.CUT_RED_SANDSTONE, 4, "red_sandstone");
+            shapedRecipe2x2Block("quartz_block", Item.getItemFromBlock(Blocks.QUARTZ_BLOCK), "quartz");
+//            shapedRecipe2x2Block("polished_blackstone", Items.POLISHED_BLACKSTONE, 4, "blackstone");
+//            shapedRecipe2x2Block("polished_blackstone_bricks", Items.POLISHED_BLACKSTONE_BRICKS, 4, "polished_blackstone");
+//            shapedRecipe2x2Block("polished_basalt", Items.POLISHED_BASALT, 4, "basalt");
+//            shapedRecipe2x2Block("polished_deepslate", Items.POLISHED_DEEPSLATE, 4, "cobbled_deepslate");
+//            shapedRecipe2x2Block("deepslate_bricks", Items.DEEPSLATE_BRICKS, 4, "polished_deepslate");
+//            shapedRecipe2x2Block("deepslate_tiles", Items.DEEPSLATE_TILES, 4, "deepslate_bricks");
+//            shapedRecipe2x2Block("cut_copper", Items.CUT_COPPER, 4, "copper_block");
+//            shapedRecipe2x2Block("cut_sandstone", Items.CUT_SANDSTONE, 4, "sandstone");
+//            shapedRecipe2x2Block("cut_red_sandstone", Items.CUT_RED_SANDSTONE, 4, "red_sandstone");
             shapedRecipe2x2Block("quartz_bricks", Items.QUARTZ_BRICKS, 4, "quartz_block");
             shapedRecipe2x2("quartz_pillar", Items.QUARTZ_PILLAR, 4, "quartz_block", o, "quartz_block", o);
             shapedRecipe2x2Block("stone_bricks", Items.STONE_BRICKS, 4, "stone");
@@ -826,8 +829,8 @@ public class TaskCatalogue {
     }
 
     private static void colorfulTasks(String baseName, Function<ItemHelper.ColorfulItems, Item> getMatch, BiFunction<ItemHelper.ColorfulItems, Integer, ResourceTask> getTask) {
-        for (DyeColor dCol : DyeColor.values()) {
-            MapColor mCol = dCol.getMapColor();
+        for (EnumDyeColor dCol : EnumDyeColor.values()) {
+            MapColor mCol = MapColor.getBlockColor(dCol);
             ItemHelper.ColorfulItems color = ItemHelper.getColorfulItems(mCol);
             String prefix = color.colorName;
             put(prefix + "_" + baseName, new Item[]{getMatch.apply(color)}, count -> getTask.apply(color, count));

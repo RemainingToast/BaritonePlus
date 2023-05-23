@@ -1,6 +1,7 @@
 package baritone.plus.main.chains;
 
-import baritone.plus.main.BaritonePlus;
+import baritone.api.utils.Rotation;
+import baritone.api.utils.input.Input;
 import baritone.plus.api.tasks.TaskChain;
 import baritone.plus.api.tasks.TaskRunner;
 import baritone.plus.api.util.helpers.ItemHelper;
@@ -9,17 +10,17 @@ import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.slots.PlayerSlot;
 import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.time.TimerGame;
-import baritone.api.utils.Rotation;
-import baritone.api.utils.input.Input;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import baritone.plus.main.BaritonePlus;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.ClickType;
 
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class PlayerInteractionFixChain extends TaskChain {
     private final TimerGame _mouseMovingButScreenOpenTimeout = new TimerGame(1);
     private ItemStack _lastHandStack = null;
 
-    private Screen _lastScreen;
+    private GuiScreen _lastScreen;
     private Rotation _lastLookRotation;
 
     public PlayerInteractionFixChain(TaskRunner runner) {
@@ -61,7 +62,7 @@ public class PlayerInteractionFixChain extends TaskChain {
             // Equip the right tool for the job if we're not using one.
             _betterToolTimer.reset();
             if (mod.getControllerExtras().isBreakingBlock()) {
-                BlockState state = mod.getWorld().getBlockState(mod.getControllerExtras().getBreakingBlockPos());
+                IBlockState state = mod.getWorld().getBlockState(mod.getControllerExtras().getBreakingBlockPos());
                 Optional<Slot> bestToolSlot = StorageHelper.getBestToolSlot(mod, state);
                 Slot currentEquipped = PlayerSlot.getEquipSlot();
 
@@ -106,7 +107,7 @@ public class PlayerInteractionFixChain extends TaskChain {
 
         if (currentStack != null && !currentStack.isEmpty()) {
             //noinspection PointlessNullCheck
-            if (_lastHandStack == null || !ItemStack.areEqual(currentStack, _lastHandStack)) {
+            if (_lastHandStack == null || !ItemStack.areItemsEqual(currentStack, _lastHandStack)) {
                 // We're holding a new item in our stack!
                 _stackHeldTimeout.reset();
                 _lastHandStack = currentStack.copy();
@@ -170,7 +171,7 @@ public class PlayerInteractionFixChain extends TaskChain {
         if (!mod.getModSettings().shouldCloseScreenWhenLookingOrMining())
             return false;
         // Only check look if we've had the same screen open for a while
-        Screen openScreen = MinecraftClient.getInstance().currentScreen;
+        Screen openScreen = Minecraft.getMinecraft().currentScreen;
         if (openScreen != _lastScreen) {
             _mouseMovingButScreenOpenTimeout.reset();
         }

@@ -5,7 +5,7 @@ import baritone.plus.main.TaskCatalogue;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.MiningRequirement;
 import baritone.plus.api.util.helpers.StorageHelper;
-import net.minecraft.item.Items;
+
 
 /**
  * Make sure we have a tool at or above a mining level.

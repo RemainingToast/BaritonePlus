@@ -3,8 +3,7 @@ package baritone.plus.main.ui;
 import baritone.plus.main.Debug;
 import baritone.plus.api.util.time.BaseTimer;
 import baritone.plus.api.util.time.TimerReal;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -72,11 +71,11 @@ public class MessageSender {
     }
 
     private void sendChatInstant(String message) {
-        if (MinecraftClient.getInstance().player == null) {
+        if (Minecraft.getMinecraft().player == null) {
             Debug.logError("Failed to send chat message as no client loaded.");
             return;
         }
-        MinecraftClient.getInstance().player.sendMessage(Text.of(message));
+        Minecraft.getMinecraft().player.sendMessage(Text.of(message));
     }
 
     private static abstract class BaseMessage {

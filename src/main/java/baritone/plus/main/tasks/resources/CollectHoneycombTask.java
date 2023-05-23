@@ -11,7 +11,7 @@ import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 
@@ -50,7 +50,7 @@ public class CollectHoneycombTask extends ResourceTask {
         if (_nest == null) {
             if (_campfire && !mod.getItemStorage().hasItemInventoryOnly(Items.CAMPFIRE)) {
                 // May as well get a campfire
-                setDebugState("Can't find nest, getting campfire first...");
+                setDebugState("Can't find nest, getting campfire left...");
                 return new CataloguedResourceTask(new ItemTarget(Items.CAMPFIRE, 1));
             }
             setDebugState("Alright, we're searching");

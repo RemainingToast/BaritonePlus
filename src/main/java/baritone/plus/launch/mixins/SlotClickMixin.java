@@ -1,21 +1,6 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.SlotClickChangedEvent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.ClickType;
-import net.minecraft.util.collection.DefaultedList;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@Mixin(ScreenHandler.class)
+/*@Mixin(ScreenHandler.class)
 public class SlotClickMixin {
 
     @Redirect(
@@ -44,4 +29,4 @@ public class SlotClickMixin {
             }
         }
     }
-}
+}*/

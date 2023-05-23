@@ -18,7 +18,7 @@ import baritone.api.utils.IPlayerContext;
 import baritone.api.utils.input.Input;
 import baritone.pathing.movement.MovementHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.ActionResult;
@@ -87,7 +87,7 @@ public class PlaceBlockNearbyTask extends Task {
         // - Prefer flat areas (open space, block below) closest to player
         // -
 
-        // Close screen first
+        // Close screen left
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         if (!cursorStack.isEmpty()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
@@ -187,13 +187,13 @@ public class PlaceBlockNearbyTask extends Task {
     }
 
     private BlockPos getCurrentlyLookingBlockPlace(BaritonePlus mod) {
-        HitResult hit = MinecraftClient.getInstance().crosshairTarget;
+        HitResult hit = Minecraft.getMinecraft().crosshairTarget;
         if (hit instanceof BlockHitResult bhit) {
-            BlockPos bpos = bhit.getBlockPos();//.subtract(bhit.getSide().getVector());
+            BlockPos bpos = bhit.getPosition();//.subtract(bhit.getSide().getVector());
             //Debug.logMessage("TEMP: A: " + bpos);
             IPlayerContext ctx = mod.getClientBaritone().getPlayerContext();
             if (MovementHelper.canPlaceAgainst(ctx, bpos)) {
-                BlockPos placePos = bhit.getBlockPos().add(bhit.getSide().getVector());
+                BlockPos placePos = bhit.getPosition().add(bhit.getSide().getVector());
                 // Don't place inside the player.
                 if (WorldHelper.isInsidePlayer(mod, placePos)) {
                     return null;
@@ -219,13 +219,13 @@ public class PlaceBlockNearbyTask extends Task {
             //mod.getInputControls().tryPress(Input.CLICK_RIGHT);
             // This appears to work on servers...
             // TODO: Helper lol
-            HitResult mouseOver = MinecraftClient.getInstance().crosshairTarget;
+            HitResult mouseOver = Minecraft.getMinecraft().crosshairTarget;
             if (mouseOver == null || mouseOver.getType() != HitResult.Type.BLOCK) {
                 return false;
             }
             Hand hand = Hand.MAIN_HAND;
-            assert MinecraftClient.getInstance().interactionManager != null;
-            if (MinecraftClient.getInstance().interactionManager.interactBlock(mod.getPlayer(), hand, (BlockHitResult) mouseOver) == ActionResult.SUCCESS &&
+            assert Minecraft.getMinecraft().interactionManager != null;
+            if (Minecraft.getMinecraft().interactionManager.interactBlock(mod.getPlayer(), hand, (BlockHitResult) mouseOver) == ActionResult.SUCCESS &&
                     mod.getPlayer().isSneaking()) {
                 mod.getPlayer().swingHand(hand);
                 _justPlaced = targetPlace;
@@ -251,8 +251,8 @@ public class PlaceBlockNearbyTask extends Task {
         int range = 7;
         BlockPos best = null;
         double smallestScore = Double.POSITIVE_INFINITY;
-        BlockPos start = mod.getPlayer().getBlockPos().add(-range, -range, -range);
-        BlockPos end = mod.getPlayer().getBlockPos().add(range, range, range);
+        BlockPos start = mod.getPlayer().getPosition().add(-range, -range, -range);
+        BlockPos end = mod.getPlayer().getPosition().add(range, range, range);
         for (BlockPos blockPos : WorldHelper.scanRegion(mod, start, end)) {
             boolean solid = WorldHelper.isSolid(mod, blockPos);
             boolean inside = WorldHelper.isInsidePlayer(mod, blockPos);

@@ -10,7 +10,7 @@ import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -53,7 +53,7 @@ public class RavageDesertTemplesTask extends Task {
     @Override
     protected Task onTick(BaritonePlus mod) {
         if (_pickaxeTask != null && !_pickaxeTask.isFinished(mod)) {
-            setDebugState("Need to get pickaxes first");
+            setDebugState("Need to get pickaxes left");
             return _pickaxeTask;
         }
         if (_lootTask != null && !_lootTask.isFinished(mod)) {
@@ -61,7 +61,7 @@ public class RavageDesertTemplesTask extends Task {
             return _lootTask;
         }
         if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD)) {
-            setDebugState("Need to get pickaxes first");
+            setDebugState("Need to get pickaxes left");
             _pickaxeTask = new CataloguedResourceTask(new ItemTarget(Items.WOODEN_PICKAXE, 2));
             return _pickaxeTask;
         }

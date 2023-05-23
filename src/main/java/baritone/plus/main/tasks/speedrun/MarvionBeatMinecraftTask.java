@@ -24,10 +24,10 @@ import baritone.plus.api.util.helpers.*;
 import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.block.EndPortalFrameBlock;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.CreditsScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -49,7 +49,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static net.minecraft.client.MinecraftClient.getInstance;
+import static net.minecraft.client.Minecraft.getInstance;
 
 @SuppressWarnings("ALL")
 public class MarvionBeatMinecraftTask extends Task {
@@ -205,7 +205,7 @@ public class MarvionBeatMinecraftTask extends Task {
     private static boolean isEndPortalFrameFilled(BaritonePlus mod, BlockPos pos) {
         if (!mod.getChunkTracker().isChunkLoaded(pos))
             return false;
-        BlockState state = mod.getWorld().getBlockState(pos);
+        IBlockState state = mod.getWorld().getBlockState(pos);
         if (state.getBlock() != Blocks.END_PORTAL_FRAME) {
             Debug.logWarning("BLOCK POS " + pos + " DOES NOT CONTAIN END PORTAL FRAME! This is probably due to a bug/incorrect assumption.");
             return false;
@@ -329,7 +329,7 @@ public class MarvionBeatMinecraftTask extends Task {
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
             return Optional.empty();
         }
-        return mod.getBlockTracker().getNearestTracking(blockPos -> !_notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(mod, blockPos) && mod.getPlayer().getBlockPos().isWithinDistance(blockPos, 150) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
+        return mod.getBlockTracker().getNearestTracking(blockPos -> !_notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(mod, blockPos) && mod.getPlayer().getPosition().isWithinDistance(blockPos, 150) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
     }
 
     @Override
@@ -397,9 +397,9 @@ public class MarvionBeatMinecraftTask extends Task {
                     }
                 }
                 if (!mod.getBlockTracker().unreachable(craftingTable)) {
-                    BlockState craftingTablePosUp = mod.getWorld().getBlockState(craftingTable.up(2));
-                    if (mod.getEntityTracker().entityFound(WitchEntity.class)) {
-                        Optional<Entity> witch = mod.getEntityTracker().getClosestEntity(WitchEntity.class);
+                    IBlockState craftingTablePosUp = mod.getWorld().getBlockState(craftingTable.up(2));
+                    if (mod.getEntityTracker().entityFound(EntityWitch.class)) {
+                        Optional<Entity> witch = mod.getEntityTracker().getClosestEntity(EntityWitch.class);
                         if (witch.isPresent()) {
                             if (craftingTable.isWithinDistance(witch.get().getPos(), 15)) {
                                 Debug.logMessage("Blacklisting witch crafting table.");
@@ -481,7 +481,7 @@ public class MarvionBeatMinecraftTask extends Task {
                 for (Entity entity : entities) {
                     if (entity instanceof HostileEntity) {
                         if (!mod.getBlockTracker().unreachable(deepslateCoalOre.get())) {
-                            if (mod.getPlayer().squaredDistanceTo(entity.getPos()) < 150 &&
+                            if (mod.getPlayer().getDistanceSq(entity.getPos()) < 150 &&
                                     deepslateCoalOre.get().isWithinDistance(entity.getPos(), 30)) {
                                 if (!ironGearSatisfied && !eyeGearSatisfied) {
                                     Debug.logMessage("Blacklisting dangerous coal ore.");
@@ -500,7 +500,7 @@ public class MarvionBeatMinecraftTask extends Task {
                 for (Entity entity : entities) {
                     if (entity instanceof HostileEntity) {
                         if (!mod.getBlockTracker().unreachable(coalOrePos.get())) {
-                            if (mod.getPlayer().squaredDistanceTo(entity.getPos()) < 150 &&
+                            if (mod.getPlayer().getDistanceSq(entity.getPos()) < 150 &&
                                     coalOrePos.get().isWithinDistance(entity.getPos(), 30)) {
                                 if (!ironGearSatisfied && !eyeGearSatisfied) {
                                     Debug.logMessage("Blacklisting dangerous coal ore.");
@@ -519,7 +519,7 @@ public class MarvionBeatMinecraftTask extends Task {
                 for (Entity entity : entities) {
                     if (entity instanceof HostileEntity) {
                         if (!mod.getBlockTracker().unreachable(deepslateIronOrePos.get())) {
-                            if (mod.getPlayer().squaredDistanceTo(entity.getPos()) < 150 &&
+                            if (mod.getPlayer().getDistanceSq(entity.getPos()) < 150 &&
                                     deepslateIronOrePos.get().isWithinDistance(entity.getPos(), 30)) {
                                 if (!ironGearSatisfied && !eyeGearSatisfied) {
                                     Debug.logMessage("Blacklisting dangerous iron ore.");
@@ -538,7 +538,7 @@ public class MarvionBeatMinecraftTask extends Task {
                 for (Entity entity : entities) {
                     if (entity instanceof HostileEntity) {
                         if (!mod.getBlockTracker().unreachable(ironOrePos.get())) {
-                            if (mod.getPlayer().squaredDistanceTo(entity.getPos()) < 150 &&
+                            if (mod.getPlayer().getDistanceSq(entity.getPos()) < 150 &&
                                     ironOrePos.get().isWithinDistance(entity.getPos(), 30)) {
                                 if (!ironGearSatisfied && !eyeGearSatisfied) {
                                     Debug.logMessage("Blacklisting dangerous iron ore.");
@@ -742,7 +742,7 @@ public class MarvionBeatMinecraftTask extends Task {
         if in the overworld:
           if end portal found:
             if end portal opened:
-              @make sure we have iron gear and enough beds to kill the dragon first, considering whether that gear was dropped in the end
+              @make sure we have iron gear and enough beds to kill the dragon left, considering whether that gear was dropped in the end
               @enter end portal
             else if we have enough eyes of ender:
               @fill in the end portal
@@ -805,7 +805,7 @@ public class MarvionBeatMinecraftTask extends Task {
                 }
             }
             if (!mod.getEntityTracker().entityFound(EnderDragonEntity.class)) {
-                if (mod.getPlayer().getBlockPos().getX() == 0 && mod.getPlayer().getBlockPos().getZ() == 0) {
+                if (mod.getPlayer().getPosition().getX() == 0 && mod.getPlayer().getPosition().getZ() == 0) {
                     getInstance().player.setPitch(-90);
                 }
             }
@@ -1327,8 +1327,8 @@ public class MarvionBeatMinecraftTask extends Task {
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
                             if (_timer1.elapsed()) {
-                                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                                Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(2);
+                                Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(0.5);
                                 _timer1.reset();
                             }
                         }
@@ -1354,8 +1354,8 @@ public class MarvionBeatMinecraftTask extends Task {
                     setDebugState("Getting porkchop just for fun.");
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
-                            MinecraftClient.getInstance().options.getViewDistance().setValue(32);
-                            MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(5.0);
+                            Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(32);
+                            Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(5.0);
                         }
                     }
                     return _getPorkchopTask;
@@ -1378,8 +1378,8 @@ public class MarvionBeatMinecraftTask extends Task {
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
                             if (_timer1.elapsed()) {
-                                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                                Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(2);
+                                Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(0.5);
                                 _timer1.reset();
                             }
                         }
@@ -1468,8 +1468,8 @@ public class MarvionBeatMinecraftTask extends Task {
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
                             if (_timer1.elapsed()) {
-                                MinecraftClient.getInstance().options.getViewDistance().setValue(32);
-                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(5.0);
+                                Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(32);
+                                Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(5.0);
                                 _timer1.reset();
                             }
                         }

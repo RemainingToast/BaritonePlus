@@ -1,15 +1,6 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.GameOverlayEvent;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-@Mixin(InGameHud.class)
+/*@Mixin(InGameHud.class)
 public class GameOverlayMixin {
 
     @Inject(
@@ -20,4 +11,4 @@ public class GameOverlayMixin {
         String text = message.getString();
         EventBus.publish(new GameOverlayEvent(text));
     }
-}
+}*/

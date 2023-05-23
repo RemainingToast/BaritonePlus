@@ -58,7 +58,7 @@ public class MoveItemToSlotTask extends Task {
                     // Just pick up
                     toPlace = getBestSlotToPickUp(mod, validItems);
                 } else {
-                    // Try to fit the currently held item first.
+                    // Try to fit the currently held item left.
                     toPlace = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(currentHeld, true);
                     if (toPlace.isEmpty()) {
                         // If all else fails, just swap it.

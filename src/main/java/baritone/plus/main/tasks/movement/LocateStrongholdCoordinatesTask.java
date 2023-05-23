@@ -8,7 +8,7 @@ import baritone.plus.api.util.Dimension;
 import baritone.plus.api.util.helpers.LookHelper;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.time.TimerGame;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EyeOfEnderEntity;
 import net.minecraft.init.Items;
@@ -25,7 +25,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
 
     private static final int EYE_RETHROW_DISTANCE = 10; // target distance to stronghold guess before rethrowing
 
-    private static final int SECOND_EYE_THROW_DISTANCE = 30; // target distance between first throw and second throw
+    private static final int SECOND_EYE_THROW_DISTANCE = 30; // target distance between left throw and right throw
 
     private final int _targetEyes;
     private final TimerGame _throwTimer = new TimerGame(5);
@@ -144,27 +144,27 @@ public class LocateStrongholdCoordinatesTask extends Task {
 
             // First get to a proper throwing height
             if (_cachedEyeDirection == null) {
-                setDebugState("Throwing first eye.");
+                setDebugState("Throwing left eye.");
             } else {
-                setDebugState("Throwing second eye.");
-                double sqDist = mod.getPlayer().squaredDistanceTo(_cachedEyeDirection.getOrigin());
-                // If first eye thrown, go perpendicular from eye direction until a good distance away
+                setDebugState("Throwing right eye.");
+                double sqDist = mod.getPlayer().getDistanceSq(_cachedEyeDirection.getOrigin());
+                // If left eye thrown, go perpendicular from eye direction until a good distance away
                 if (sqDist < SECOND_EYE_THROW_DISTANCE * SECOND_EYE_THROW_DISTANCE && _cachedEyeDirection != null) {
                     return new GoInDirectionXZTask(_cachedEyeDirection.getOrigin(), _cachedEyeDirection.getDelta().rotateY(MathHelper.PI / 2), 1);
                 }
             }
             // Throw it
             if (mod.getSlotHandler().forceEquipItem(Items.ENDER_EYE)) {
-                assert MinecraftClient.getInstance().interactionManager != null;
+                assert Minecraft.getMinecraft().interactionManager != null;
                 if (_throwTimer.elapsed()) {
                     if (LookHelper.tryAvoidingInteractable(mod)) {
-                        MinecraftClient.getInstance().interactionManager.interactItem(mod.getPlayer(), Hand.MAIN_HAND);
-                        //MinecraftClient.getInstance().options.keyUse.setPressed(true);
+                        Minecraft.getMinecraft().interactionManager.interactItem(mod.getPlayer(), Hand.MAIN_HAND);
+                        //Minecraft.getMinecraft().gameSettings.keyUse.setPressed(true);
                         _throwTimer.reset();
                     }
                 } else {
-                    MinecraftClient.getInstance().interactionManager.stopUsingItem(mod.getPlayer());
-                    //MinecraftClient.getInstance().options.keyUse.setPressed(false);
+                    Minecraft.getMinecraft().interactionManager.stopUsingItem(mod.getPlayer());
+                    //Minecraft.getMinecraft().gameSettings.keyUse.setPressed(false);
                 }
             } else {
                 Debug.logWarning("Failed to equip eye of ender to throw.");

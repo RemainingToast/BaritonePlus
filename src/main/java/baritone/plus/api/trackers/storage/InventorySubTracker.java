@@ -8,7 +8,7 @@ import baritone.plus.api.util.slots.CraftingTableSlot;
 import baritone.plus.api.util.slots.CursorSlot;
 import baritone.plus.api.util.slots.PlayerSlot;
 import baritone.plus.api.util.slots.Slot;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -101,7 +101,7 @@ public class InventorySubTracker extends Tracker {
     }
 
     public List<ItemStack> getInventoryStacks(boolean includeCursor) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getMinecraft().player;
         if (player == null || player.getInventory() == null)
             return Collections.emptyList();
         PlayerInventory inv = player.getInventory();
@@ -133,8 +133,8 @@ public class InventorySubTracker extends Tracker {
             }
         }
         // Then add air slots that can insert our item
-        if (MinecraftClient.getInstance().player != null) {
-            ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
+        if (Minecraft.getMinecraft().player != null) {
+            ScreenHandler handler = Minecraft.getMinecraft().player.currentScreenHandler;
             for (Slot airSlot : list.getOrDefault(Items.AIR, Collections.emptyList())) {
                 // Ignore cursor slot
                 if (airSlot.equals(CursorSlot.SLOT))
@@ -188,15 +188,15 @@ public class InventorySubTracker extends Tracker {
 
     @Override
     protected void updateState() {
-        _prevScreenHandler = MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.currentScreenHandler : null;
+        _prevScreenHandler = Minecraft.getMinecraft().player != null ? Minecraft.getMinecraft().player.currentScreenHandler : null;
 
         _itemToSlotPlayer.clear();
         _itemToSlotContainer.clear();
         _itemCountsPlayer.clear();
         _itemCountsContainer.clear();
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getMinecraft().player == null)
             return;
-        ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
+        ScreenHandler handler = Minecraft.getMinecraft().player.currentScreenHandler;
         if (handler == null)
             return;
         for (Slot slot : Slot.getCurrentScreenSlots()) {
@@ -222,7 +222,7 @@ public class InventorySubTracker extends Tracker {
 
     @Override
     protected boolean isDirty() {
-        ScreenHandler handler = MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.currentScreenHandler : null;
+        ScreenHandler handler = Minecraft.getMinecraft().player != null ? Minecraft.getMinecraft().player.currentScreenHandler : null;
         return super.isDirty() || handler != _prevScreenHandler;
     }
 }

@@ -4,7 +4,7 @@ import baritone.plus.api.util.slots.ChestSlot;
 import baritone.plus.api.util.slots.FurnaceSlot;
 import baritone.plus.api.util.slots.Slot;
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.screen.*;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -58,8 +58,8 @@ public enum ContainerType {
     }
 
     public static boolean screenHandlerMatches(ContainerType type) {
-        if (MinecraftClient.getInstance().player != null) {
-            ScreenHandler h = MinecraftClient.getInstance().player.currentScreenHandler;
+        if (Minecraft.getMinecraft().player != null) {
+            ScreenHandler h = Minecraft.getMinecraft().player.currentScreenHandler;
             if (h != null)
                 return screenHandlerMatches(type, h);
         }

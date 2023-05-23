@@ -8,7 +8,7 @@ import baritone.plus.api.util.Dimension;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;

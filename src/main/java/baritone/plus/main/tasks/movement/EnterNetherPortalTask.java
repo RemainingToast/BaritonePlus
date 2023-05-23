@@ -64,7 +64,7 @@ public class EnterNetherPortalTask extends Task {
             return _wanderTask;
         }
 
-        if (mod.getWorld().getBlockState(mod.getPlayer().getBlockPos()).getBlock() == Blocks.NETHER_PORTAL) {
+        if (mod.getWorld().getBlockState(mod.getPlayer().getPosition()).getBlock() == Blocks.NETHER_PORTAL) {
 
             if (_portalTimeout.elapsed() && !_leftPortal) {
                 return _wanderTask;

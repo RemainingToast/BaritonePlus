@@ -10,7 +10,7 @@ import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.StorageHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;

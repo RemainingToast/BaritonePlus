@@ -1,6 +1,6 @@
 package baritone.plus.api.util.slots;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EquipmentSlot;
 
 import java.util.stream.IntStream;
@@ -41,8 +41,8 @@ public class PlayerSlot extends Slot {
     public static Slot getEquipSlot(EquipmentSlot equipSlot) {
         switch (equipSlot) {
             case MAINHAND:
-                assert MinecraftClient.getInstance().player != null;
-                return Slot.getFromCurrentScreenInventory(MinecraftClient.getInstance().player.getInventory().selectedSlot);
+                assert Minecraft.getMinecraft().player != null;
+                return Slot.getFromCurrentScreenInventory(Minecraft.getMinecraft().player.getInventory().selectedSlot);
             case OFFHAND:
                 return OFFHAND_SLOT;
             case FEET:

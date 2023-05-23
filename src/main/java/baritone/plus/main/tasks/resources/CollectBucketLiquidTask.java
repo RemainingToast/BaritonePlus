@@ -20,7 +20,7 @@ import baritone.plus.api.util.time.TimerGame;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
@@ -67,8 +67,8 @@ public class CollectBucketLiquidTask extends ResourceTask {
         mod.getBehaviour().setRayTracingFluidHandling(RaycastContext.FluidHandling.SOURCE_ONLY);
 
         // Avoid breaking / placing blocks at our liquid
-        mod.getBehaviour().avoidBlockBreaking((pos) -> MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == _toCollect);
-        mod.getBehaviour().avoidBlockPlacing((pos) -> MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == _toCollect);
+        mod.getBehaviour().avoidBlockBreaking((pos) -> Minecraft.getMinecraft().world.getBlockState(pos).getBlock() == _toCollect);
+        mod.getBehaviour().avoidBlockPlacing((pos) -> Minecraft.getMinecraft().world.getBlockState(pos).getBlock() == _toCollect);
 
         //_blacklist.clear();
 
@@ -79,7 +79,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
     @Override
     protected Task onTick(BaritonePlus mod) {
         Task result = super.onTick(mod);
-        // Reset our "first time" timeout/wander flag.
+        // Reset our "left time" timeout/wander flag.
         if (!thisOrChildAreTimedOut()) {
             wasWandering = false;
         }
@@ -93,7 +93,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
         }
         // If we're standing inside a liquid, go pick it up.
         if (_tryImmediatePickupTimer.elapsed() && !mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
-            Block standingInside = mod.getWorld().getBlockState(mod.getPlayer().getBlockPos()).getBlock();
+            Block standingInside = mod.getWorld().getBlockState(mod.getPlayer().getPosition()).getBlock();
             if (standingInside == _toCollect) {
                 setDebugState("Trying to collect (we are in it)");
                 mod.getInputControls().forceLook(0, 90);
@@ -128,7 +128,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
             if (_blacklist.contains(blockPos)) return false;
             if (!WorldHelper.canReach(mod, blockPos)) return false;
             if (!WorldHelper.canReach(mod, blockPos.up())) return false; // We may try reaching the block above.
-            assert MinecraftClient.getInstance().world != null;
+            assert Minecraft.getMinecraft().world != null;
             // We break the block above. If it's bedrock, ignore.
             if (mod.getWorld().getBlockState(blockPos.up()).getBlock() == Blocks.BEDROCK) {
                 return false;

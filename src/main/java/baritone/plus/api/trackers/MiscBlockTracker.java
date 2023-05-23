@@ -36,7 +36,7 @@ public class MiscBlockTracker {
         }
 
         if (BaritonePlus.inGame() && _newDimensionTriggered) {
-            for (BlockPos check : WorldHelper.scanRegion(_mod, _mod.getPlayer().getBlockPos().add(-1, -1, -1), _mod.getPlayer().getBlockPos().add(1, 1, 1))) {
+            for (BlockPos check : WorldHelper.scanRegion(_mod, _mod.getPlayer().getPosition().add(-1, -1, -1), _mod.getPlayer().getPosition().add(1, 1, 1))) {
                 Block currentBlock = _mod.getWorld().getBlockState(check).getBlock();
                 if (currentBlock == Blocks.NETHER_PORTAL) {
                     // Make sure we get the lowest nether portal, as we can only really enter from the bottom.

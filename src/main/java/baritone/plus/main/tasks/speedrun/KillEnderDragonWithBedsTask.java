@@ -15,7 +15,7 @@ import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.Phase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public class KillEnderDragonWithBedsTask extends Task {
                 if (perching) {
                     mod.getFoodChain().shouldStop(true);
                     BlockPos targetStandPosition = _endPortalTop.add(-1, -1, 0);
-                    BlockPos playerPosition = mod.getPlayer().getBlockPos();
+                    BlockPos playerPosition = mod.getPlayer().getPosition();
                     // If we're not positioned (above is OK), go there and make sure we're at the right height.
                     if (_positionTask != null && _positionTask.isActive() && !_positionTask.isFinished(mod)) {
                         setDebugState("Going to position for bed cycle...");
@@ -112,11 +112,11 @@ public class KillEnderDragonWithBedsTask extends Task {
                         // If no bed, place bed.
                         // Fire messes up our "reach" so we just assume we're good when we're above a height.
                         boolean canPlace = LookHelper.getCameraPos(mod).y > bedTargetPosition.getY();
-                        //Optional<Rotation> placeReach = LookHelper.getReach(bedTargetPosition.down(), Direction.UP);
+                        //Optional<Rotation> placeReach = LookHelper.getReach(bedTargetPosition.down(), EnumFacing.UP);
                         if (canPlace) {
                             // Look at and place!
                             if (mod.getSlotHandler().forceEquipItem(ItemHelper.BED, true)) {
-                                LookHelper.lookAt(mod, bedTargetPosition.down(), Direction.UP);
+                                LookHelper.lookAt(mod, bedTargetPosition.down(), EnumFacing.UP);
                                 //mod.getClientBaritone().getLookBehavior().updateTarget(placeReach.get(), true);
                                 //if (mod.getClientBaritone().getPlayerContext().isLookingAt(bedTargetPosition.down())) {
                                 // There could be fire so eh place right away

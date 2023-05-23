@@ -78,7 +78,7 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
     }
 
     private BlockPos stuckInBlock(BaritonePlus mod) {
-        BlockPos p = mod.getPlayer().getBlockPos();
+        BlockPos p = mod.getPlayer().getPosition();
         if (isAnnoying(mod, p)) return p;
         if (isAnnoying(mod, p.up())) return p.up();
         BlockPos[] toCheck = generateSides(p);
@@ -189,7 +189,7 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
         if (_cachedGoal == null) {
             _cachedGoal = newGoal(mod);
         }
-        return _cachedGoal != null && _cachedGoal.isInGoal(mod.getPlayer().getBlockPos());
+        return _cachedGoal != null && _cachedGoal.isInGoal(mod.getPlayer().getPosition());
     }
 
     @Override

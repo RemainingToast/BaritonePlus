@@ -50,7 +50,7 @@ public class GetToXZTask extends CustomBaritoneGoalTask {
 
     @Override
     public boolean isFinished(BaritonePlus mod) {
-        BlockPos cur = mod.getPlayer().getBlockPos();
+        BlockPos cur = mod.getPlayer().getPosition();
         return (cur.getX() == _x && cur.getZ() == _z && (_dimension == null || _dimension == WorldHelper.getCurrentDimension()));
     }
 

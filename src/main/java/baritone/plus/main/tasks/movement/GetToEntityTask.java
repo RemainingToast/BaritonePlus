@@ -72,7 +72,7 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
 
     // This happens all the time in mineshafts and swamps/jungles
     private BlockPos stuckInBlock(BaritonePlus mod) {
-        BlockPos p = mod.getPlayer().getBlockPos();
+        BlockPos p = mod.getPlayer().getPosition();
         if (isAnnoying(mod, p)) return p;
         if (isAnnoying(mod, p.up())) return p.up();
         BlockPos[] toCheck = generateSides(p);

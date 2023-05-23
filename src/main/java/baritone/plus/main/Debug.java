@@ -1,7 +1,7 @@
 package baritone.plus.main;
 
 import baritone.api.utils.Helper;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 // TODO: Debug library or use Minecraft's built in debugger
 public class Debug {
@@ -20,7 +20,7 @@ public class Debug {
     public static void logMessage(String message) {
         logInternal(message);
 
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+        if (Minecraft.getMinecraft().player != null) {
             Helper.HELPER.logDirect(message);
         }
     }
@@ -32,7 +32,7 @@ public class Debug {
     public static void logWarning(String message) {
         logInternal("WARNING: " + message);
         if (jankModInstance != null && !jankModInstance.getModSettings().shouldHideAllWarningLogs()) {
-            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+            if (Minecraft.getMinecraft().player != null) {
                 Helper.HELPER.logDirect("[WARN] " + message);
             }
         }
@@ -47,7 +47,7 @@ public class Debug {
         System.err.println(message);
         System.err.println("at:");
         System.err.println(stacktrace);
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+        if (Minecraft.getMinecraft().player != null) {
             Helper.HELPER.logDirect("[ERROR] " + message);
         }
     }

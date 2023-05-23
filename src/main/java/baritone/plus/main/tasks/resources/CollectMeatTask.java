@@ -14,7 +14,7 @@ import baritone.plus.api.util.helpers.ItemHelper;
 import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.slots.SmokerSlot;
 import baritone.plus.api.util.time.TimerGame;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -105,8 +105,8 @@ public class CollectMeatTask extends Task {
         if (_smeltTask != null && _smeltTask.isActive() && !_smeltTask.isFinished(mod)) {
             setDebugState("Cooking...");
             if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(2);
+                Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(0.5);
             }
             return _smeltTask;
         } else {
@@ -161,7 +161,7 @@ public class CollectMeatTask extends Task {
                     if (livingEntity.isBaby()) continue;
                 }
                 int hungerPerformance = cookable.getCookedUnits();
-                double sqDistance = nearest.get().squaredDistanceTo(mod.getPlayer());
+                double sqDistance = nearest.get().getDistanceSq(mod.getPlayer());
                 double score = (double) 100 * hungerPerformance / (sqDistance);
                 if (score > bestScore) {
                     bestScore = score;
@@ -204,7 +204,7 @@ public class CollectMeatTask extends Task {
             if (nearestDrop.get().isInRange(mod.getPlayer(), maxRange)) {
                 return new PickupDroppedItemTask(new ItemTarget(itemToGrab), true);
             }
-            //return new GetToBlockTask(nearestDrop.getBlockPos(), false);
+            //return new GetToBlockTask(nearestDrop.getPosition(), false);
         }
         return null;
     }

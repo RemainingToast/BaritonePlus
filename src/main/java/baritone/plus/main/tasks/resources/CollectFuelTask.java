@@ -6,7 +6,7 @@ import baritone.plus.main.tasks.movement.DefaultGoToDimensionTask;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.Dimension;
 import baritone.plus.api.util.helpers.WorldHelper;
-import net.minecraft.item.Items;
+
 
 // TODO: Make this collect more than just coal. It should smartly pick alternative sources if coal is too far away or if we simply cannot get a wooden pick.
 public class CollectFuelTask extends Task {

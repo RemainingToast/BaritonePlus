@@ -22,7 +22,7 @@ import baritone.api.utils.RotationUtils;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
@@ -151,7 +151,7 @@ public class KillEnderDragonTask extends Task {
                             mod.getControllerExtras().attack(toDestroy);
                         }
                         // Go next to the crystal, arbitrary where we just need to get close.
-                        return new GetToBlockTask(toDestroy.getBlockPos().add(1, 0, 0), false);
+                        return new GetToBlockTask(toDestroy.getPosition().add(1, 0, 0), false);
                     },
                     EndCrystalEntity.class
             );
@@ -247,7 +247,7 @@ public class KillEnderDragonTask extends Task {
 
         private void stopHitting(BaritonePlus mod) {
             if (_wasHitting) {
-                //MinecraftClient.getInstance().options.keyAttack.setPressed(false);
+                //Minecraft.getMinecraft().gameSettings.keyAttack.setPressed(false);
                 if (!_wasReleased) {
                     //mod.getControllerExtras().mouseClickOverride(0, false);
                     mod.getExtraBaritoneSettings().setInteractionPaused(false);
@@ -294,7 +294,7 @@ public class KillEnderDragonTask extends Task {
                                 Rotation targetRotation = RotationUtils.calcRotationFromVec3d(mod.getClientBaritone().getPlayerContext().playerHead(), targetLookPos, mod.getClientBaritone().getPlayerContext().playerRotations());
                                 mod.getClientBaritone().getLookBehavior().updateTarget(targetRotation, true);
                                 // Also look towards da dragon
-                                MinecraftClient.getInstance().options.getAutoJump().setValue(false);
+                                Minecraft.getMinecraft().gameSettings.getAutoJump().setValue(false);
                                 mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, true);
                                 hit(mod);
                             } else {

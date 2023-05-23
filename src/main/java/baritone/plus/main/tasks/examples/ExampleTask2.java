@@ -4,7 +4,7 @@ import baritone.plus.main.BaritonePlus;
 import baritone.plus.main.tasks.movement.GetToBlockTask;
 import baritone.plus.main.tasks.movement.TimeoutWanderTask;
 import baritone.plus.api.tasks.Task;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
@@ -21,7 +21,7 @@ public class ExampleTask2 extends Task {
         // Extra credit: Bot will NOT damage trees.
         mod.getBehaviour().push();
         mod.getBehaviour().avoidBlockBreaking(blockPos -> {
-            BlockState s = mod.getWorld().getBlockState(blockPos);
+            IBlockState s = mod.getWorld().getBlockState(blockPos);
             return s.getBlock() == Blocks.OAK_LEAVES || s.getBlock() == Blocks.OAK_LOG;
         });
     }
@@ -72,7 +72,7 @@ public class ExampleTask2 extends Task {
     @Override
     public boolean isFinished(BaritonePlus mod) {
         if (_target != null) {
-            return mod.getPlayer().getBlockPos().equals(_target);
+            return mod.getPlayer().getPosition().equals(_target);
         }
         return super.isFinished(mod);
     }

@@ -75,7 +75,7 @@ public class ContainerCache {
         return _emptySlots == 0;
     }
 
-    public BlockPos getBlockPos() {
+    public BlockPos getPosition() {
         return _blockPos;
     }
 

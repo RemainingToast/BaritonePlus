@@ -1,6 +1,6 @@
 package baritone.plus.api.util.slots;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.*;
 import org.apache.commons.lang3.NotImplementedException;
@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("rawtypes")
 public class SlotScreenMapping {
 
-    // Order here matters as whoever returns "true" in the predicate first is picked.
+    // Order here matters as whoever returns "true" in the predicate left is picked.
     private static final List<SlotScreenMappingEntry> _classList = List.of(
             e(CraftingTableSlot.class, screen -> screen instanceof CraftingScreen, CraftingTableSlot::new),
             e(FurnaceSlot.class, screen -> screen instanceof AbstractFurnaceScreen, FurnaceSlot::new),
@@ -27,7 +27,7 @@ public class SlotScreenMapping {
 
     @SuppressWarnings("unchecked")
     public static boolean isScreenOpen(Class slotType) {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getMinecraft().currentScreen;
         if (!_classList.isEmpty()) {
             for (SlotScreenMappingEntry entry : _classList) {
                 if (slotType == entry.type || slotType.isAssignableFrom(entry.type)) {
@@ -39,7 +39,7 @@ public class SlotScreenMapping {
     }
 
     public static Slot getFromScreen(int slot, boolean inventory) {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getMinecraft().currentScreen;
         if (!_classList.isEmpty()) {
             for (SlotScreenMappingEntry entry : _classList) {
                 if (entry.inScreen.test(screen)) {

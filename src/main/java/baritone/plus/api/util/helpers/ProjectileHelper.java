@@ -2,8 +2,10 @@ package baritone.plus.api.util.helpers;
 
 import baritone.plus.main.Debug;
 import baritone.plus.api.util.baritone.CachedProjectile;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.util.math.Vec3d;
@@ -16,8 +18,8 @@ public class ProjectileHelper {
     public static final double ARROW_GRAVITY_ACCEL = 0.05000000074505806;
     public static final double THROWN_ENTITY_GRAVITY_ACCEL = 0.03;
 
-    public static boolean hasGravity(ProjectileEntity entity) {
-        if (entity instanceof ExplosiveProjectileEntity) return false;
+    public static boolean hasGravity(EntityThrowable entity) {
+//        if (entity instanceof ExplosiveProjectileEntity) return false;
         return !entity.hasNoGravity();
     }
 
@@ -35,7 +37,7 @@ public class ProjectileHelper {
     }
 
     public static double getFlatDistanceSqr(double shootX, double shootZ, double velX, double velZ, double playerX, double playerZ) {
-        return getClosestPointOnFlatLine(shootX, shootZ, velX, velZ, playerX, playerZ).squaredDistanceTo(playerX, 0, playerZ);
+        return getClosestPointOnFlatLine(shootX, shootZ, velX, velZ, playerX, playerZ).getDistanceSq(playerX, 0, playerZ);
     }
 
     private static double getArrowHitHeight(double gravity, double horizontalVel, double verticalVel, double initialHeight, double distanceTraveled) {
@@ -65,8 +67,8 @@ public class ProjectileHelper {
         return calculateArrowClosestApproach(projectile.position, projectile.velocity, projectile.gravity, pos);
     }
 
-    public static Vec3d calculateArrowClosestApproach(CachedProjectile projectile, ClientPlayerEntity player) {
-        return calculateArrowClosestApproach(projectile, player.getPos());
+    public static Vec3d calculateArrowClosestApproach(CachedProjectile projectile, EntityPlayerSP player) {
+        return calculateArrowClosestApproach(projectile, player.getPositionVector());
     }
 
     public static double[] calculateAnglesForSimpleProjectileMotion(double launchHeight, double launchTargetDistance, double launchVelocity, double gravity) {

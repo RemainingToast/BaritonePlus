@@ -3,23 +3,23 @@ package baritone.plus.api.util.baritone;
 
 import baritone.api.pathing.goals.Goal;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class GoalBlockSide implements Goal {
 
     private final BlockPos _block;
-    private final Direction _direction;
+    private final EnumFacing _direction;
     private final double _buffer;
 
-    public GoalBlockSide(BlockPos block, Direction direction, double bufferDistance) {
+    public GoalBlockSide(BlockPos block, EnumFacing direction, double bufferDistance) {
         this._block = block;
         this._direction = direction;
         this._buffer = bufferDistance;
     }
 
-    public GoalBlockSide(BlockPos block, Direction direction) {
+    public GoalBlockSide(BlockPos block, EnumFacing direction) {
         this(block, direction, 1);
     }
 

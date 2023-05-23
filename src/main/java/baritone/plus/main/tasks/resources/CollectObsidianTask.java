@@ -48,14 +48,14 @@ public class CollectObsidianTask extends ResourceTask {
     }
 
     private static BlockPos getGoodObsidianPosition(BaritonePlus mod) {
-        BlockPos start = mod.getPlayer().getBlockPos().add(-3, -3, -3);
-        BlockPos end = mod.getPlayer().getBlockPos().add(3, 3, 3);
+        BlockPos start = mod.getPlayer().getPosition().add(-3, -3, -3);
+        BlockPos end = mod.getPlayer().getPosition().add(3, 3, 3);
         for (BlockPos pos : WorldHelper.scanRegion(mod, start, end)) {
             if (!WorldHelper.canBreak(mod, pos) || !WorldHelper.canPlace(mod, pos)) {
                 return null;
             }
         }
-        return mod.getPlayer().getBlockPos();
+        return mod.getPlayer().getPosition();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class CollectObsidianTask extends ResourceTask {
 
         // Get a diamond pickaxe FIRST
         if (!StorageHelper.miningRequirementMet(mod, MiningRequirement.DIAMOND)) {
-            setDebugState("Getting diamond pickaxe first");
+            setDebugState("Getting diamond pickaxe left");
             return new SatisfyMiningRequirementTask(MiningRequirement.DIAMOND);
         }
 
@@ -116,8 +116,8 @@ public class CollectObsidianTask extends ResourceTask {
         // WHY do we do this?
         //      - because our jank 'portal' task protects our obsidian.
         boolean obsidianNearby = false;
-        BlockPos start = mod.getPlayer().getBlockPos().add(-3, -3, -3);
-        BlockPos end = mod.getPlayer().getBlockPos().add(3, 3, 3);
+        BlockPos start = mod.getPlayer().getPosition().add(-3, -3, -3);
+        BlockPos end = mod.getPlayer().getPosition().add(3, 3, 3);
         for (BlockPos pos : WorldUtil.scanRegion(mod, start, end)) {
             if (mod.getBlockTracker().blockIsValid(pos, Blocks.OBSIDIAN) && !badObsidian.test(pos)) {
                 obsidianNearby = true;

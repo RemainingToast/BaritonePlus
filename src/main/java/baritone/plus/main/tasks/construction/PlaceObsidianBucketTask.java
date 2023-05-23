@@ -10,9 +10,9 @@ import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.progresscheck.MovementProgressChecker;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -122,7 +122,7 @@ public class PlaceObsidianBucketTask extends Task {
             // Don't place lava at our position!
             // Would lead to an embarrassing death.
             BlockPos targetPos = _pos.add(-1, 1, 0);
-            if (!mod.getPlayer().getBlockPos().equals(targetPos) && mod.getItemStorage().hasItem(Items.LAVA_BUCKET)) {
+            if (!mod.getPlayer().getPosition().equals(targetPos) && mod.getItemStorage().hasItem(Items.LAVA_BUCKET)) {
                 setDebugState("Positioning player before lava");
                 return new GetToBlockTask(targetPos, false);
             }
@@ -144,7 +144,7 @@ public class PlaceObsidianBucketTask extends Task {
                 return null;
             }
             setDebugState("Placing lava for cast");
-            return new InteractWithBlockTask(new ItemTarget(Items.LAVA_BUCKET, 1), Direction.WEST, _pos.add(1, 0, 0), false);
+            return new InteractWithBlockTask(new ItemTarget(Items.LAVA_BUCKET, 1), EnumFacing.WEST, _pos.add(1, 0, 0), false);
         }
         // Lava placed, Now, place water.
         BlockPos waterCheck = _pos.up();
@@ -152,7 +152,7 @@ public class PlaceObsidianBucketTask extends Task {
             setDebugState("Placing water for cast");
             // Get to position to avoid weird stuck scenario
             BlockPos targetPos = _pos.add(-1, 1, 0);
-            if (!mod.getPlayer().getBlockPos().equals(targetPos) && mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
+            if (!mod.getPlayer().getPosition().equals(targetPos) && mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
                 setDebugState("Positioning player before water");
                 return new GetToBlockTask(targetPos, false);
             }
@@ -167,7 +167,7 @@ public class PlaceObsidianBucketTask extends Task {
                 return null;
                 //return new DestroyBlockTask(waterCheck.up());
             }
-            return new InteractWithBlockTask(new ItemTarget(Items.WATER_BUCKET, 1), Direction.WEST, _pos.add(1, 1, 0), true);
+            return new InteractWithBlockTask(new ItemTarget(Items.WATER_BUCKET, 1), EnumFacing.WEST, _pos.add(1, 1, 0), true);
         }
         return null;
     }

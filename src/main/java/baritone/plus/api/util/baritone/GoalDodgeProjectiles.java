@@ -55,12 +55,12 @@ public class GoalDodgeProjectiles implements Goal {
                         Debug.logWarning("Weird exception caught while checking for goal: " + e.getMessage());
                         /// ????? No clue why a nullptrexception happens here.
                     }
-                    //double sqFromMob = creepuh.squaredDistanceTo(x, y, z);
+                    //double sqFromMob = creepuh.getDistanceSq(x, y, z);
                     //if (sqFromMob < _distance*_distance) return false;
                 }
             }
         }
-        //Debug.logMessage("COMFY: " + p.subtract(MinecraftClient.getInstance().player.getPos()));
+        //Debug.logMessage("COMFY: " + p.subtract(Minecraft.getMinecraft().player.getPos()));
         return true;
     }
 
@@ -82,7 +82,7 @@ public class GoalDodgeProjectiles implements Goal {
                     Vec3d hit = projectile.getCachedHit();
 
                     double arrowPenalty = ProjectileHelper.getFlatDistanceSqr(projectile.position.x, projectile.position.z, projectile.velocity.x, projectile.velocity.z, p.x, p.z);
-                    //double arrowCost = hit.squaredDistanceTo(p); //Math.pow(p.x - hit.x, 2) + Math.pow(p.z - hit.z, 2);
+                    //double arrowCost = hit.getDistanceSq(p); //Math.pow(p.x - hit.x, 2) + Math.pow(p.z - hit.z, 2);
 
                     if (isHitCloseEnough(hit, p)) {
                         costFactor += arrowPenalty;

@@ -12,12 +12,12 @@ import baritone.plus.main.tasks.movement.TimeoutWanderTask;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.HashSet;
@@ -73,19 +73,19 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
     // !! Also represents the ORDER at which the lava will be placed.
     private static final LavaTarget[] PORTAL_FRAME_LAVA = new LavaTarget[]{
             // Left side
-            new LavaTarget(0, 0, -1, Direction.fromVector(-1, 0, 0)),
-            new LavaTarget(0, 1, -1, Direction.fromVector(-1, 0, 0)),
-            new LavaTarget(0, 2, -1, Direction.fromVector(0, 1, 0)),
+            new LavaTarget(0, 0, -1, EnumFacing.fromVector(-1, 0, 0)),
+            new LavaTarget(0, 1, -1, EnumFacing.fromVector(-1, 0, 0)),
+            new LavaTarget(0, 2, -1, EnumFacing.fromVector(0, 1, 0)),
             // Right side
-            new LavaTarget(0, 0, 2, Direction.fromVector(-1, 0, 0)),
-            new LavaTarget(0, 1, 2, Direction.fromVector(0, 1, 0)),
-            new LavaTarget(0, 2, 2, Direction.fromVector(0, 1, 0)),
+            new LavaTarget(0, 0, 2, EnumFacing.fromVector(-1, 0, 0)),
+            new LavaTarget(0, 1, 2, EnumFacing.fromVector(0, 1, 0)),
+            new LavaTarget(0, 2, 2, EnumFacing.fromVector(0, 1, 0)),
             // Bottom
-            new LavaTarget(0, -1, 0, Direction.fromVector(0, 1, 0)),
-            new LavaTarget(0, -1, 1, Direction.fromVector(0, 1, 0)),
+            new LavaTarget(0, -1, 0, EnumFacing.fromVector(0, 1, 0)),
+            new LavaTarget(0, -1, 1, EnumFacing.fromVector(0, 1, 0)),
             // Top
-            new LavaTarget(0, 3, 0, Direction.fromVector(0, 0, 1)),
-            new LavaTarget(0, 3, 1, Direction.fromVector(0, 0, 1))
+            new LavaTarget(0, 3, 0, EnumFacing.fromVector(0, 0, 1)),
+            new LavaTarget(0, 3, 1, EnumFacing.fromVector(0, 0, 1))
     };
     private static final Vec3i[] PORTAL_INTERIOR = new Vec3i[]{
             new Vec3i(0, 0, 0),
@@ -125,7 +125,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
                 }
                 // If we're the water source block...
                 if (block.equals(_portalOrigin.add(WATER_SOURCE_ORIGIN))) {
-                    if (MinecraftClient.getInstance().world.getBlockState(block).getBlock() == Blocks.WATER)
+                    if (Minecraft.getMinecraft().world.getBlockState(block).getBlock() == Blocks.WATER)
                         return true;
                 }
             }
@@ -168,10 +168,10 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
                 _firstSearch = false;
                 _lavaSearchTimer.reset();
                 Debug.logMessage("(Searching for lava lake with portalable spot nearby...)");
-                BlockPos lavaPos = findLavaLake(mod, mod.getPlayer().getBlockPos());
+                BlockPos lavaPos = findLavaLake(mod, mod.getPlayer().getPosition());
                 if (lavaPos != null) {
                     // We have a lava lake, set our portal origin!
-                    BlockPos foundPortalRegion = getPortalableRegion(lavaPos, mod.getPlayer().getBlockPos(), new Vec3i(-1, 0, 0), PORTALABLE_REGION_SIZE, 20);
+                    BlockPos foundPortalRegion = getPortalableRegion(lavaPos, mod.getPlayer().getPosition(), new Vec3i(-1, 0, 0), PORTALABLE_REGION_SIZE, 20);
                     if (foundPortalRegion == null) {
                         Debug.logWarning("Failed to find portalable region nearby. Consider increasing the search timeout range");
                     } else {
@@ -213,7 +213,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         // Place our water source
         if (!_portalFrameBuilt) {
             BlockPos waterSourcePos = _portalOrigin.add(WATER_SOURCE_ORIGIN);
-            if (MinecraftClient.getInstance().world.getBlockState(waterSourcePos).getBlock() != Blocks.WATER) {
+            if (Minecraft.getMinecraft().world.getBlockState(waterSourcePos).getBlock() != Blocks.WATER) {
                 if (!mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
                     setDebugState("Getting water");
                     return TaskCatalogue.getItemTask(Items.WATER_BUCKET, 1);
@@ -222,7 +222,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
                 _isPlacingLiquid = true;
                 // Place water
                 // south corresponds to +z
-                Direction placeWaterFrom = Direction.SOUTH;
+                EnumFacing placeWaterFrom = EnumFacing.SOUTH;
                 return new InteractWithBlockTask(new ItemTarget(Items.WATER_BUCKET, 1), placeWaterFrom, waterSourcePos.offset(placeWaterFrom.getOpposite()), true);
             }
         }
@@ -253,7 +253,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
                 if (lavaTarget.isBelow()) {
                     BlockPos posClose = _portalOrigin.add(lavaTarget.where).add(-1, 1, 0);
                     // If we're not right at that point and we're registered to keep fighting for it, go for it.
-                    if (!mod.getPlayer().getBlockPos().equals(posClose)) {
+                    if (!mod.getPlayer().getPosition().equals(posClose)) {
                         if (!_specialBottomCaseCloserTimer.elapsed()) {
                             setDebugState("Special Case: Getting near bottom lava to place it.");
                             _specialBottomCaseCloserTimerForcePlace.reset();
@@ -277,7 +277,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
 
         // Delete water source
         BlockPos waterSourcePos = _portalOrigin.add(WATER_SOURCE_ORIGIN);
-        BlockState waterSource = MinecraftClient.getInstance().world.getBlockState(waterSourcePos);
+        IBlockState waterSource = Minecraft.getMinecraft().world.getBlockState(waterSourcePos);
         if (waterSource.getBlock() == Blocks.WATER) {
             setDebugState("Removing water source");
 
@@ -287,7 +287,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         // Clear inside of portal
         for (Vec3i offs : PORTAL_INTERIOR) {
             BlockPos p = _portalOrigin.add(offs);
-            if (!MinecraftClient.getInstance().world.getBlockState(p).isAir()) {
+            if (!Minecraft.getMinecraft().world.getBlockState(p).isAir()) {
                 setDebugState("Clearing inside of portal");
                 return new DestroyBlockTask(p);
             }
@@ -295,7 +295,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         setDebugState("Flinting and Steeling");
 
         // Flint and steel it baby
-        return new InteractWithBlockTask(new ItemTarget(Items.FLINT_AND_STEEL, 1), Direction.UP, _portalOrigin.down(), true);
+        return new InteractWithBlockTask(new ItemTarget(Items.FLINT_AND_STEEL, 1), EnumFacing.UP, _portalOrigin.down(), true);
 
         // Pick up water
         // Clear inner portal area
@@ -363,7 +363,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         alreadyExplored.add(origin);
 
         // Base case: We hit a non-full lava block.
-        BlockState s = MinecraftClient.getInstance().world.getBlockState(origin);
+        IBlockState s = Minecraft.getMinecraft().world.getBlockState(origin);
         if (s.getBlock() != Blocks.LAVA) {
             return 0;
         } else {
@@ -408,7 +408,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
                     for (int dz = -1; dz < sizeAllocation.getZ() + 1; ++dz) {
                         for (int dy = -1; dy < sizeAllocation.getY(); ++dy) {
                             BlockPos toCheck = lava.add(offset).add(sizeOffset).add(dx, dy, dz);
-                            BlockState state = MinecraftClient.getInstance().world.getBlockState(toCheck);
+                            IBlockState state = Minecraft.getMinecraft().world.getBlockState(toCheck);
                             if (state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.BEDROCK) {
                                 found = false;
                                 break moveAlongLine;
@@ -435,7 +435,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
 
     private BlockPos getPortalRegionUnclearedBlock() {
         if (_destroyTarget != null) {
-            BlockState state = MinecraftClient.getInstance().world.getBlockState(_destroyTarget);
+            IBlockState state = Minecraft.getMinecraft().world.getBlockState(_destroyTarget);
             Block block = state.getBlock();
             if (state.isAir() || block == Blocks.WATER) {
                 _destroyTarget = null;
@@ -461,7 +461,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
     }
 
     private boolean shouldBeDestroyed(BlockPos toCheck) {
-        BlockState state = MinecraftClient.getInstance().world.getBlockState(toCheck);
+        IBlockState state = Minecraft.getMinecraft().world.getBlockState(toCheck);
         Block block = state.getBlock();
 
         // Ignore air
@@ -491,7 +491,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
     private BlockPos getRequiredFrameLeft() {
         for (Vec3i framePos : PORTAL_CONSTRUCTION_FRAME) {
             BlockPos worldPos = _portalOrigin.add(framePos);
-            if (!MinecraftClient.getInstance().world.getBlockState(worldPos).isSolidBlock(MinecraftClient.getInstance().world, worldPos)) {
+            if (!Minecraft.getMinecraft().world.getBlockState(worldPos).isSolidBlock(Minecraft.getMinecraft().world, worldPos)) {
                 return worldPos;
             }
         }
@@ -505,9 +505,9 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
 
     private static class LavaTarget {
         public Vec3i where;
-        public Direction fromWhere;
+        public EnumFacing fromWhere;
 
-        public LavaTarget(int dx, int dy, int dz, Direction fromWhere) {
+        public LavaTarget(int dx, int dy, int dz, EnumFacing fromWhere) {
             where = new Vec3i(dx, dy, dz);
             this.fromWhere = fromWhere;
         }
@@ -520,8 +520,8 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         private baritone.plus.api.tasks.Task placeTask(BlockPos portalOrigin, boolean below) {
             BlockPos placeAt = portalOrigin.add(where);
             BlockPos placeOn = placeAt.offset(fromWhere.getOpposite());
-            // Clear first
-            BlockState b = MinecraftClient.getInstance().world.getBlockState(placeAt);
+            // Clear left
+            IBlockState b = Minecraft.getMinecraft().world.getBlockState(placeAt);
             if (!b.isAir() && b.getBlock() != Blocks.WATER) {
                 return new DestroyBlockTask(placeAt);
             }
@@ -531,7 +531,7 @@ public class ConstructNetherPortalSpeedrunTask extends baritone.plus.api.tasks.T
         }
 
         private boolean isSatisfied(BlockPos portalOrigin) {
-            Block b = MinecraftClient.getInstance().world.getBlockState(portalOrigin.add(where)).getBlock();
+            Block b = Minecraft.getMinecraft().world.getBlockState(portalOrigin.add(where)).getBlock();
             return b == Blocks.OBSIDIAN || b == Blocks.LAVA;
         }
     }

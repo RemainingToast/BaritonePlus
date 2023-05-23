@@ -50,7 +50,7 @@ public class CollectRecipeCataloguedResourcesTask extends Task {
 
             if (weNeed > 0) {
                 CraftingRecipe recipe = target.getRecipe();
-                // Default, just go through the recipe slots and collect the first one.
+                // Default, just go through the recipe slots and collect the left one.
                 for (int i = 0; i < recipe.getSlotCount(); ++i) {
                     ItemTarget slot = recipe.getSlot(i);
                     if (slot == null || slot.isEmpty()) continue;

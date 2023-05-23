@@ -9,18 +9,25 @@ import baritone.plus.launch.mixins.EntityAccessor;
 import baritone.plus.main.BaritonePlus;
 import baritone.process.MineProcess;
 import baritone.utils.BlockStateInterface;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -40,7 +47,7 @@ public interface WorldHelper {
      * Get the number of in-game ticks the game/world has been active for.
      */
     static int getTicks() {
-        ClientConnection con = Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getConnection();
+        ClientConnection con = Objects.requireNonNull(Minecraft.getMinecraft().getNetworkHandler()).getConnection();
         return ((ClientConnectionAccessor) con).getTicks();
     }
 
@@ -62,13 +69,13 @@ public interface WorldHelper {
     }
 
     static boolean isSourceBlock(BaritonePlus mod, BlockPos pos, boolean onlyAcceptStill) {
-        BlockState s = mod.getWorld().getBlockState(pos);
+        IBlockState s = mod.getWorld().getBlockState(pos);
         if (s.getBlock() instanceof FluidBlock) {
             // Only accept still fluids.
             if (!s.getFluidState().isStill() && onlyAcceptStill) return false;
             int level = s.getFluidState().getLevel();
             // Ignore if there's liquid above, we can't tell if it's a source block or not.
-            BlockState above = mod.getWorld().getBlockState(pos.up());
+            IBlockState above = mod.getWorld().getBlockState(pos.up());
             if (above.getBlock() instanceof FluidBlock) return false;
             return level == 8;
         }
@@ -105,7 +112,7 @@ public interface WorldHelper {
     }
 
     static Dimension getCurrentDimension() {
-        ClientWorld world = MinecraftClient.getInstance().world;
+        WorldClient world = Minecraft.getMinecraft().world;
         if (world == null) return Dimension.OVERWORLD;
         if (world.getDimension().ultrawarm()) return Dimension.NETHER;
         if (world.getDimension().natural()) return Dimension.OVERWORLD;
@@ -114,7 +121,7 @@ public interface WorldHelper {
 
 
     static boolean isSolid(BaritonePlus mod, BlockPos pos) {
-        BlockState state = mod.getWorld().getBlockState(pos);
+        IBlockState state = mod.getWorld().getBlockState(pos);
         return state.isSolidBlock(mod.getWorld(), pos) || state.hasSolidTopSurface(mod.getWorld(), pos, mod.getPlayer());
     }
 
@@ -122,9 +129,9 @@ public interface WorldHelper {
      * Get the "head" of a block with a bed, if the block is a bed.
      */
     static BlockPos getBedHead(BaritonePlus mod, BlockPos posWithBed) {
-        BlockState state = mod.getWorld().getBlockState(posWithBed);
+        IBlockState state = mod.getWorld().getBlockState(posWithBed);
         if (state.getBlock() instanceof BedBlock) {
-            Direction facing = state.get(BedBlock.FACING);
+            EnumFacing facing = state.get(BedBlock.FACING);
             if (mod.getWorld().getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.HEAD)) {
                 return posWithBed;
             }
@@ -137,9 +144,9 @@ public interface WorldHelper {
      * Get the "foot" of a block with a bed, if the block is a bed.
      */
     static BlockPos getBedFoot(BaritonePlus mod, BlockPos posWithBed) {
-        BlockState state = mod.getWorld().getBlockState(posWithBed);
+        IBlockState state = mod.getWorld().getBlockState(posWithBed);
         if (state.getBlock() instanceof BedBlock) {
-            Direction facing = state.get(BedBlock.FACING);
+            EnumFacing facing = state.get(BedBlock.FACING);
             if (mod.getWorld().getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.FOOT)) {
                 return posWithBed;
             }
@@ -151,20 +158,20 @@ public interface WorldHelper {
     // Get the left side of a chest, given a block pos.
     // Used to consistently identify whether a double chest is part of the same chest.
     static BlockPos getChestLeft(BaritonePlus mod, BlockPos posWithChest) {
-        BlockState state = mod.getWorld().getBlockState(posWithChest);
+        IBlockState state = mod.getWorld().getBlockState(posWithChest);
         if (state.getBlock() instanceof ChestBlock) {
             ChestType type = state.get(ChestBlock.CHEST_TYPE);
             if (type == ChestType.SINGLE || type == ChestType.LEFT) {
                 return posWithChest;
             }
-            Direction facing = state.get(ChestBlock.FACING);
+            EnumFacing facing = state.get(ChestBlock.FACING);
             return posWithChest.offset(facing.rotateYCounterclockwise());
         }
         return null;
     }
 
     static boolean isChestBig(BaritonePlus mod, BlockPos posWithChest) {
-        BlockState state = mod.getWorld().getBlockState(posWithChest);
+        IBlockState state = mod.getWorld().getBlockState(posWithChest);
         if (state.getBlock() instanceof ChestBlock) {
             ChestType type = state.get(ChestBlock.CHEST_TYPE);
             return (type == ChestType.RIGHT || type == ChestType.LEFT);
@@ -235,7 +242,7 @@ public interface WorldHelper {
         // Fall down
         for (int dy = 1; dy <= toBreak.getY() - WORLD_FLOOR_Y; ++dy) {
             BlockPos check = toBreak.down(dy);
-            BlockState s = mod.getWorld().getBlockState(check);
+            IBlockState s = mod.getWorld().getBlockState(check);
             boolean tooFarToFall = dy > mod.getClientBaritoneSettings().maxFallHeightNoWater.value;
             // Don't fall in lava
             if (MovementHelper.isLava(s))
@@ -312,10 +319,10 @@ public interface WorldHelper {
     }
 
     static Iterable<BlockPos> getBlocksTouchingPlayer(BaritonePlus mod) {
-        return getBlocksTouchingBox(mod, mod.getPlayer().getBoundingBox());
+        return getBlocksTouchingBox(mod, mod.getPlayer().getEntityBoundingBox());
     }
 
-    static Iterable<BlockPos> getBlocksTouchingBox(BaritonePlus mod, Box box) {
+    static Iterable<BlockPos> getBlocksTouchingBox(BaritonePlus mod, AxisAlignedBB box) {
         BlockPos min = new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ);
         BlockPos max = new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ);
         return scanRegion(mod, min, max);
@@ -349,7 +356,7 @@ public interface WorldHelper {
 
     static boolean fallingBlockSafeToBreak(BlockPos pos) {
         BlockStateInterface bsi = new BlockStateInterface(BaritoneAPI.getProvider().getPrimaryBaritone().getPlayerContext());
-        World w = MinecraftClient.getInstance().world;
+        World w = Minecraft.getMinecraft().world;
         assert w != null;
         while (isFallingBlock(pos)) {
             if (MovementHelper.avoidBreaking(bsi, pos.getX(), pos.getY(), pos.getZ(), w.getBlockState(pos)))
@@ -360,13 +367,13 @@ public interface WorldHelper {
     }
 
     static boolean isFallingBlock(BlockPos pos) {
-        World w = MinecraftClient.getInstance().world;
+        World w = Minecraft.getMinecraft().world;
         assert w != null;
         return w.getBlockState(pos).getBlock() instanceof FallingBlock;
     }
 
     static Entity getSpawnerEntity(BaritonePlus mod, BlockPos pos) {
-        BlockState state = mod.getWorld().getBlockState(pos);
+        IBlockState state = mod.getWorld().getBlockState(pos);
         if (state.getBlock() instanceof SpawnerBlock) {
             BlockEntity be = mod.getWorld().getBlockEntity(pos);
             if (be instanceof MobSpawnerBlockEntity blockEntity) {
@@ -396,7 +403,7 @@ public interface WorldHelper {
     }
 
     static boolean isChest(Block b) {
-        return b instanceof ChestBlock || b instanceof EnderChestBlock;
+        return b instanceof BlockChest || b instanceof BlockEnderChest;
     }
 
     static boolean isBlock(BaritonePlus mod, BlockPos pos, Block... blocks) {
@@ -405,37 +412,28 @@ public interface WorldHelper {
 
     static boolean canSleep() {
         int time = 0;
-        ClientWorld world = MinecraftClient.getInstance().world;
+        WorldClient world = Minecraft.getMinecraft().world;
         if (world != null) {
             // You can sleep during thunderstorms
             if (world.isThundering() && world.isRaining())
                 return canSleepOnServer();
-            time = (int) (world.getTimeOfDay() % 24000);
+            time = (int) (world.getWorldTime() % 24000);
         }
         // https://minecraft.fandom.com/wiki/Daylight_cycle
-        boolean canSleep = canSleepOnServer() && 12542 <= time && time <= 23992;
-//        Debug.logMessage("canSleep: " + canSleep);
-        return canSleep;
+        return canSleepOnServer() && 12542 <= time && time <= 23992;
     }
 
     static boolean canSleepOnServer() {
-        var mc = MinecraftClient.getInstance();
+        var mc = Minecraft.getMinecraft();
         var player = mc.player;
 
         if (player == null) {
-//            Debug.logMessage("canSleepOnServer (player == null): false");
             return false;
         }
 
-        var server = mc.getCurrentServerEntry();
-        var isSingleplayer = mc.isInSingleplayer();
+        var server = mc.getConnection();
+        var isSingleplayer = mc.isSingleplayer();
 
-        if (server != null && !isSingleplayer) {
-//            Debug.logMessage("canSleepOnServer (%s): false", server.address);
-            return false;
-        }
-
-//        Debug.logMessage("canSleepOnServer (isSingleplayer || server == null): true");
-        return true;
+        return server == null || isSingleplayer;
     }
 }

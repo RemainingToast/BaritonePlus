@@ -1,19 +1,6 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.BlockBreakingCancelEvent;
-import baritone.plus.api.event.events.BlockBreakingEvent;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-@Mixin(ClientPlayerInteractionManager.class)
+/*@Mixin(ClientPlayerInteractionManager.class)
 public final class ClientBlockBreakMixin {
 
     // for SOME REASON baritone triggers a block cancel breaking every other frame, so we have a 2 frame requirement for that?
@@ -23,8 +10,8 @@ public final class ClientBlockBreakMixin {
             method = "updateBlockBreakingProgress",
             at = @At("HEAD")
     )
-    private void onBreakUpdate(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> ci) {
-        ClientBlockBreakAccessor breakAccessor = (ClientBlockBreakAccessor) (MinecraftClient.getInstance().interactionManager);
+    private void onBreakUpdate(BlockPos pos, EnumFacing direction, CallbackInfoReturnable<Boolean> ci) {
+        ClientBlockBreakAccessor breakAccessor = (ClientBlockBreakAccessor) (Minecraft.getMinecraft().interactionManager);
         if (breakAccessor != null) {
             _breakCancelFrames = 2;
             EventBus.publish(new BlockBreakingEvent(pos, breakAccessor.getCurrentBreakingProgress()));
@@ -40,4 +27,4 @@ public final class ClientBlockBreakMixin {
             EventBus.publish(new BlockBreakingCancelEvent());
         }
     }
-}
+}*/

@@ -1,32 +1,21 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.BlockPlaceEvent;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-@Mixin(World.class)
+/*@Mixin(World.class)
 public class WorldBlockModifiedMixin {
 
-    private static boolean hasBlock(BlockState state, BlockPos pos) {
-        return !state.isAir() && state.isSolidBlock(MinecraftClient.getInstance().world, pos);
+    private static boolean hasBlock(IBlockState state, BlockPos pos) {
+        return !state.isAir() && state.isSolidBlock(Minecraft.getMinecraft().world, pos);
     }
 
     @Inject(
             method = "onBlockChanged",
             at = @At("HEAD")
     )
-    public void onBlockWasChanged(BlockPos pos, BlockState oldBlock, BlockState newBlock, CallbackInfo ci) {
+    public void onBlockWasChanged(BlockPos pos, IBlockState oldBlock, IBlockState newBlock, CallbackInfo ci) {
         if (!hasBlock(oldBlock, pos) && hasBlock(newBlock, pos)) {
             BlockPlaceEvent evt = new BlockPlaceEvent(pos, newBlock);
             EventBus.publish(evt);
         }
     }
     //onBlockChanged
-}
+}*/

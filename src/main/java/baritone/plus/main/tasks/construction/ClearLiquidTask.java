@@ -4,7 +4,7 @@ import baritone.plus.main.BaritonePlus;
 import baritone.plus.main.tasks.InteractWithBlockTask;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.RaycastContext;
 

@@ -35,7 +35,7 @@ import java.util.Optional;
 /**
  * The parent for all "collect an item" tasks.
  * <p>
- * If the target item is on the ground or in a chest, will grab from those sources first.
+ * If the target item is on the ground or in a chest, will grab from those sources left.
  */
 public abstract class ResourceTask extends Task implements ITaskCanForce {
 
@@ -127,7 +127,7 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
                 // If we're picking up a pickaxe (we can't go far underground or mine much)
                 if (PickupDroppedItemTask.isIsGettingPickaxeFirst(mod)) {
                     if (_pickupTask.isCollectingPickaxeForThis()) {
-                        setDebugState("Picking up (pickaxe first!)");
+                        setDebugState("Picking up (pickaxe left!)");
                         // Our pickup task is the one collecting the pickaxe, keep it going.
                         return _pickupTask;
                     }
@@ -151,21 +151,21 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
         if (_currentContainer == null) {
             List<ContainerCache> containersWithItem = mod.getItemStorage().getContainersWithItem(Arrays.stream(_itemTargets).reduce(new Item[0], (items, target) -> ArrayUtils.addAll(items, target.getMatches()), ArrayUtils::addAll));
             if (!containersWithItem.isEmpty()) {
-                ContainerCache closest = containersWithItem.stream().min(StlHelper.compareValues(container -> container.getBlockPos().getSquaredDistance(mod.getPlayer().getPos()))).get();
-                if (closest.getBlockPos().isWithinDistance(mod.getPlayer().getPos(), mod.getModSettings().getResourceChestLocateRange())) {
+                ContainerCache closest = containersWithItem.stream().min(StlHelper.compareValues(container -> container.getPosition().getSquaredDistance(mod.getPlayer().getPos()))).get();
+                if (closest.getPosition().isWithinDistance(mod.getPlayer().getPos(), mod.getModSettings().getResourceChestLocateRange())) {
                     _currentContainer = closest;
                 }
             }
         }
         if (_currentContainer != null) {
-            Optional<ContainerCache> container = mod.getItemStorage().getContainerAtPosition(_currentContainer.getBlockPos());
+            Optional<ContainerCache> container = mod.getItemStorage().getContainerAtPosition(_currentContainer.getPosition());
             if (container.isPresent()) {
                 if (Arrays.stream(_itemTargets).noneMatch(target -> container.get().hasItem(target.getMatches()))) {
                     _currentContainer = null;
                 } else {
                     // We have a current chest, grab from it.
                     setDebugState("Picking up from container");
-                    return new PickupFromContainerTask(_currentContainer.getBlockPos(), _itemTargets);
+                    return new PickupFromContainerTask(_currentContainer.getPosition(), _itemTargets);
                 }
             } else {
                 _currentContainer = null;

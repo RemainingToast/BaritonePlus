@@ -17,9 +17,6 @@ public abstract class TaskChain {
     }
 
     public void tick(BaritonePlus mod) {
-        if (paused) {
-            return; // return if paused
-        }
         _cachedTaskChain.clear();
         onTick(mod);
     }

@@ -9,7 +9,7 @@ import baritone.plus.main.tasks.construction.PlaceBlockNearbyTask;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

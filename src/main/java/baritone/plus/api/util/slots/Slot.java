@@ -1,7 +1,7 @@
 package baritone.plus.api.util.slots;
 
 import baritone.plus.main.Debug;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -68,7 +68,7 @@ public abstract class Slot {
     }
 
     private static ContainerType getCurrentType() {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getMinecraft().currentScreen;
         if (screen instanceof FurnaceScreen || screen instanceof SmithingScreen || screen instanceof SmokerScreen ||
                 screen instanceof BlastFurnaceScreen) {
             return ContainerType.FURNACE_OR_SMITH_OR_SMOKER_OR_BLAST;
@@ -90,7 +90,7 @@ public abstract class Slot {
 
     public static Iterable<Slot> getCurrentScreenSlots() {
         return () -> new Iterator<>() {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            final ClientPlayerEntity player = Minecraft.getMinecraft().player;
             final ScreenHandler handler = player != null ? player.currentScreenHandler : null;
             final int MAX = handler != null ? handler.slots.size() : 0;
             int i = -1;
@@ -158,7 +158,7 @@ public abstract class Slot {
      * @return Whether this slot exists within the player's inventory or in a container that's disconnected from the player's inventory.
      */
     public boolean isSlotInPlayerInventory() {
-        ScreenHandler handler = MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.currentScreenHandler : null;
+        ScreenHandler handler = Minecraft.getMinecraft().player != null ? Minecraft.getMinecraft().player.currentScreenHandler : null;
         int windowSlot = getWindowSlot();
         if (handler instanceof PlayerScreenHandler) {
             // Everything visible is player inventory.

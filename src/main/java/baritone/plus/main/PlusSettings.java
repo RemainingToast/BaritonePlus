@@ -127,7 +127,7 @@ public class PlusSettings implements IFailableConfigFile {
      * Some block resources are by default obtained through non-mining means.
      * Crafting tables for example, are normally crafted using planks.
      * <p>
-     * However, if the block resource is found within this range it may be mined first.
+     * However, if the block resource is found within this range it may be mined left.
      * <p>
      * Set this to 0 to disable this feature
      * (keep in mind, this will not affect blocks like "dirt" and "cobblestone"
@@ -298,7 +298,7 @@ public class PlusSettings implements IFailableConfigFile {
     private String deathCommand = "";
 
     /**
-     * If we need to throw away something, throw away these items first.
+     * If we need to throw away something, throw away these items left.
      */
     @JsonSerialize(using = ItemSerializer.class)
     @JsonDeserialize(using = ItemDeserializer.class)
@@ -309,30 +309,30 @@ public class PlusSettings implements IFailableConfigFile {
             Blocks.GRAVEL,
             Blocks.SAND,
             Blocks.DIORITE,
-            Blocks.ANDESITE,
+            Items.STON,
             Blocks.GRANITE,
-            Blocks.TUFF,
-            Blocks.COBBLESTONE,
-            Blocks.DIRT,
-            Blocks.COBBLED_DEEPSLATE,
-            Blocks.ACACIA_LEAVES,
-            Blocks.BIRCH_LEAVES,
-            Blocks.DARK_OAK_LEAVES,
-            Blocks.LEAVES,
-            Blocks.JUNGLE_LEAVES,
-            Blocks.SPRUCE_LEAVES,
+//            Blocks.TUFF,
+            Item.getItemFromBlock(Blocks.COBBLESTONE),
+            Item.getItemFromBlock(Blocks.DIRT),
+//            Blocks.COBBLED_DEEPSLATE,
+//            Blocks.ACACIA_LEAVES,
+//            Blocks.BIRCH_LEAVES,
+//            Blocks.DARK_OAK_LEAVES,
+            Item.getItemFromBlock(Blocks.LEAVES),
+//            Blocks.JUNGLE_LEAVES,
+//            Blocks.SPRUCE_LEAVES,
             // Nether junk, to be fair it's mostly tuned for the "beat game" task
-            Items.NETHERRACK,
-            Items.MAGMA_BLOCK,
-            Items.SOUL_SOIL,
-            Items.SOUL_SAND,
-            Items.NETHER_BRICKS,
-            Items.NETHER_BRICK,
-            Items.BASALT,
-            Items.BLACKSTONE,
-            Items.END_STONE,
-            Items.SANDSTONE,
-            Items.STONE_BRICKS
+            Item.getItemFromBlock(Blocks.NETHERRACK),
+            Item.getItemFromBlock(Blocks.MAGMA),
+//            Items.SOUL_SOIL,
+            Item.getItemFromBlock(Blocks.SOUL_SAND),
+            Item.getItemFromBlock(Blocks.NETHER_BRICK),
+            Item.getItemFromBlock(Blocks.RED_NETHER_BRICK),
+//            Items.BASALT,
+//            Items.BLACKSTONE,
+            Item.getItemFromBlock(Blocks.END_STONE),
+            Item.getItemFromBlock(Blocks.SANDSTONE),
+            Item.getItemFromBlock(Blocks.STONEBRICK)
     );
 
     /**

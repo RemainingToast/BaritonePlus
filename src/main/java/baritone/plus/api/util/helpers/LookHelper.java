@@ -7,7 +7,7 @@ import baritone.api.utils.IPlayerContext;
 import baritone.api.utils.RayTraceUtils;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.RotationUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +15,7 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.slot.ClickType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -28,11 +29,11 @@ import java.util.Optional;
  */
 public interface LookHelper {
 
-    static Optional<Rotation> getReach(BlockPos target, Direction side) {
+    static Optional<Rotation> getReach(BlockPos target, EnumFacing side) {
         Optional<Rotation> reachable;
         IPlayerContext ctx = BaritoneAPI.getProvider().getPrimaryBaritone().getPlayerContext();
         if (side == null) {
-            assert MinecraftClient.getInstance().player != null;
+            assert Minecraft.getMinecraft().player != null;
             reachable = RotationUtils.reachable(ctx.player(), target, ctx.playerController().getBlockReachDistance());
         } else {
             Vec3i sideVector = side.getVector();
@@ -89,7 +90,7 @@ public interface LookHelper {
     }
 
     static boolean cleanLineOfSight(Vec3d end, double maxRange) {
-        return cleanLineOfSight(MinecraftClient.getInstance().player, end, maxRange);
+        return cleanLineOfSight(Minecraft.getMinecraft().player, end, maxRange);
     }
 
     static boolean cleanLineOfSight(Entity entity, BlockPos block, double maxRange) {
@@ -98,7 +99,7 @@ public interface LookHelper {
         if (hit == null) return true;
         return switch (hit.getType()) {
             case MISS -> true;
-            case BLOCK -> hit.getBlockPos().equals(block);
+            case BLOCK -> hit.getPosition().equals(block);
             case ENTITY -> false;
         };
     }
@@ -127,10 +128,10 @@ public interface LookHelper {
     }
 
     static Rotation getLookRotation() {
-        if (MinecraftClient.getInstance().player == null) {
+        if (Minecraft.getMinecraft().player == null) {
             return new Rotation(0, 0);
         }
-        return getLookRotation(MinecraftClient.getInstance().player);
+        return getLookRotation(Minecraft.getMinecraft().player);
     }
 
     static Vec3d getCameraPos(Entity entity) {
@@ -191,7 +192,7 @@ public interface LookHelper {
             return true;
         }
 
-        HitResult result = MinecraftClient.getInstance().crosshairTarget;
+        HitResult result = Minecraft.getMinecraft().crosshairTarget;
         if (result == null) return false;
         if (result.getType() == HitResult.Type.BLOCK) {
             Vec3i resultGetPosOrigin = new Vec3i((int) result.getPos().getX(), (int) result.getPos().getY(), (int) result.getPos().getZ());
@@ -229,7 +230,7 @@ public interface LookHelper {
         lookAt(mod, targetRotation);
     }
 
-    static void lookAt(BaritonePlus mod, BlockPos toLook, Direction side) {
+    static void lookAt(BaritonePlus mod, BlockPos toLook, EnumFacing side) {
         Vec3d target = new Vec3d(toLook.getX() + 0.5, toLook.getY() + 0.5, toLook.getZ() + 0.5);
         if (side != null) {
             target.add(side.getVector().getX() * 0.5, side.getVector().getY() * 0.5, side.getVector().getZ() * 0.5);

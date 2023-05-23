@@ -5,7 +5,7 @@ import baritone.plus.api.event.EventBus;
 import baritone.plus.api.event.events.BlockBreakingCancelEvent;
 import baritone.plus.api.event.events.BlockBreakingEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Hand;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
 public class PlayerExtraController {
@@ -44,13 +44,14 @@ public class PlayerExtraController {
     }
 
     public boolean inRange(Entity entity) {
-        return _mod.getPlayer().isInRange(entity, _mod.getModSettings().getEntityReachRange());
+        return _mod.getPlayer().canEntityBeSeen(entity)
+                && _mod.getPlayer().getDistance(entity) <= _mod.getModSettings().getEntityReachRange();
     }
 
     public void attack(Entity entity) {
         if (inRange(entity)) {
             _mod.getController().attackEntity(_mod.getPlayer(), entity);
-            _mod.getPlayer().swingHand(Hand.MAIN_HAND);
+            _mod.getPlayer().swingArm(EnumHand.MAIN_HAND);
         }
     }
 }

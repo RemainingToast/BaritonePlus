@@ -51,8 +51,8 @@ public class UserTaskChain extends SingleTaskChain {
     @Override
     protected void onTick(BaritonePlus mod) {
 
-        // Pause if we're not loaded into a world.
-        if (!mod.inGame()) return;
+        // Pause if we're not loaded into a world or we are paused.
+        if (!mod.inGame() || isPaused()) return;
 
         super.onTick(mod);
     }

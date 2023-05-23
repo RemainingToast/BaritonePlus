@@ -44,11 +44,11 @@ public class GetCloseToBlockTask extends Task {
     }
 
     private int getCurrentDistance(BaritonePlus mod) {
-        return (int) Math.sqrt(mod.getPlayer().getBlockPos().getSquaredDistance(_toApproach));
+        return (int) Math.sqrt(mod.getPlayer().getPosition().getSquaredDistance(_toApproach));
     }
 
     private boolean inRange(BaritonePlus mod) {
-        return mod.getPlayer().getBlockPos().getSquaredDistance(_toApproach) <= _currentRange * _currentRange;
+        return mod.getPlayer().getPosition().getSquaredDistance(_toApproach) <= _currentRange * _currentRange;
     }
 
     @Override

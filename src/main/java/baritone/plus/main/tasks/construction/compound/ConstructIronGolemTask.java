@@ -11,7 +11,7 @@ import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -52,7 +52,7 @@ public class ConstructIronGolemTask extends Task {
                 }
             }
             if (_position == null) {
-                _position = mod.getPlayer().getBlockPos();
+                _position = mod.getPlayer().getPosition();
             }
         }
         if (!WorldHelper.isBlock(mod, _position, Blocks.IRON_BLOCK)) {
@@ -120,7 +120,7 @@ public class ConstructIronGolemTask extends Task {
     public boolean isFinished(BaritonePlus mod) {
         if (_position == null) return false;
         Optional<Entity> closestIronGolem = mod.getEntityTracker().getClosestEntity(new Vec3d(_position.getX(), _position.getY(), _position.getZ()), IronGolemEntity.class);
-        return closestIronGolem.isPresent() && closestIronGolem.get().getBlockPos().isWithinDistance(_position, 2) && _canBeFinished;
+        return closestIronGolem.isPresent() && closestIronGolem.get().getPosition().isWithinDistance(_position, 2) && _canBeFinished;
     }
 
     @Override

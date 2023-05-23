@@ -1,13 +1,14 @@
 package baritone.plus.main.tasks.speedrun;
 
-import baritone.plus.main.BaritonePlus;
-import baritone.plus.main.tasks.movement.CustomBaritoneGoalTask;
+import baritone.api.pathing.goals.Goal;
+import baritone.api.pathing.goals.GoalRunAway;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.progresscheck.MovementProgressChecker;
-import baritone.api.pathing.goals.Goal;
-import baritone.api.pathing.goals.GoalRunAway;
+import baritone.plus.main.BaritonePlus;
+import baritone.plus.main.tasks.movement.CustomBaritoneGoalTask;
 import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashSet;
@@ -17,8 +18,8 @@ public class DragonBreathTracker {
 
     public void updateBreath(BaritonePlus mod) {
         _breathBlocks.clear();
-        for (AreaEffectCloudEntity cloud : mod.getEntityTracker().getTrackedEntities(AreaEffectCloudEntity.class)) {
-            for (BlockPos bad : WorldHelper.getBlocksTouchingBox(mod, cloud.getBoundingBox())) {
+        for (EntityAreaEffectCloud cloud : mod.getEntityTracker().getTrackedEntities(EntityAreaEffectCloud.class)) {
+            for (BlockPos bad : WorldHelper.getBlocksTouchingBox(mod, cloud.getEntityBoundingBox())) {
                 _breathBlocks.add(bad);
             }
         }

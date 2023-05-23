@@ -6,7 +6,7 @@ import baritone.plus.main.tasks.construction.PlaceBlockTask;
 import baritone.plus.main.tasks.movement.GetToBlockTask;
 import baritone.plus.api.tasks.Task;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 public class ExampleTask extends Task {

@@ -1,16 +1,17 @@
 package baritone.plus.api.util.helpers;
 
-import baritone.plus.main.BaritonePlus;
 import baritone.plus.api.util.WoodType;
+import baritone.plus.main.BaritonePlus;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.init.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
@@ -287,8 +288,8 @@ public class ItemHelper {
         return _colorMap.get(color);
     }
 
-    public static ColorfulItems getColorfulItems(DyeColor color) {
-        return getColorfulItems(color.getMapColor());
+    public static ColorfulItems getColorfulItems(EnumDyeColor color) {
+        return getColorfulItems(MapColor.getBlockColor(color));
     }
 
     public static Collection<ColorfulItems> getColorfulItems() {

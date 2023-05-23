@@ -6,7 +6,7 @@ import baritone.plus.main.BaritonePlus;
 import baritone.plus.main.tasks.CraftInInventoryTask;
 import baritone.plus.main.tasks.ResourceTask;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.init.Items;
@@ -32,7 +32,7 @@ public class CollectAmethystBlockTask extends ResourceTask {
         // Bot will not break Budding Amethyst
         mod.getBehaviour().push();
         mod.getBehaviour().avoidBlockBreaking(blockPos -> {
-            BlockState s = mod.getWorld().getBlockState(blockPos);
+            IBlockState s = mod.getWorld().getBlockState(blockPos);
             return s.getBlock() == Blocks.BUDDING_AMETHYST;
         });
     }

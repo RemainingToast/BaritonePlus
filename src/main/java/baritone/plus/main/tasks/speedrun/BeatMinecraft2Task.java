@@ -26,10 +26,10 @@ import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.block.EndPortalFrameBlock;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.CreditsScreen;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.mob.EndermanEntity;
@@ -155,7 +155,7 @@ public class BeatMinecraft2Task extends Task {
     private static boolean isEndPortalFrameFilled(BaritonePlus mod, BlockPos pos) {
         if (!mod.getChunkTracker().isChunkLoaded(pos))
             return false;
-        BlockState state = mod.getWorld().getBlockState(pos);
+        IBlockState state = mod.getWorld().getBlockState(pos);
         if (state.getBlock() != Blocks.END_PORTAL_FRAME) {
             Debug.logWarning("BLOCK POS " + pos + " DOES NOT CONTAIN END PORTAL FRAME! This is probably due to a bug/incorrect assumption.");
             return false;
@@ -224,7 +224,7 @@ public class BeatMinecraft2Task extends Task {
         if in the overworld:
           if end portal found:
             if end portal opened:
-              @make sure we have iron gear and enough beds to kill the dragon first, considering whether that gear was dropped in the end
+              @make sure we have iron gear and enough beds to kill the dragon left, considering whether that gear was dropped in the end
               @enter end portal
             else if we have enough eyes of ender:
               @fill in the end portal
@@ -590,7 +590,7 @@ public class BeatMinecraft2Task extends Task {
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
             return Optional.empty();
         }
-        return mod.getBlockTracker().getNearestTracking(blockPos -> !_notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(mod, blockPos) && mod.getPlayer().getBlockPos().isWithinDistance(blockPos, 150) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
+        return mod.getBlockTracker().getNearestTracking(blockPos -> !_notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(mod, blockPos) && mod.getPlayer().getPosition().isWithinDistance(blockPos, 150) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
     }
 
     private Task getEyesOfEnderTask(BaritonePlus mod, int targetEyes) {
@@ -682,7 +682,7 @@ public class BeatMinecraft2Task extends Task {
 
                 // If we happen to find beds...
                 if (needsBeds(mod) && anyBedsFound(mod)) {
-                    setDebugState("A bed was found, grabbing that first.");
+                    setDebugState("A bed was found, grabbing that left.");
                     return getBedTask(mod);
                 }
 
@@ -808,6 +808,6 @@ public class BeatMinecraft2Task extends Task {
 
     @Override
     public boolean isFinished(BaritonePlus mod) {
-        return MinecraftClient.getInstance().currentScreen instanceof CreditsScreen;
+        return Minecraft.getMinecraft().currentScreen instanceof CreditsScreen;
     }
 }

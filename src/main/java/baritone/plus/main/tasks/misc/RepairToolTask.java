@@ -9,7 +9,7 @@ import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.helpers.ItemHelper;
-import net.minecraft.item.Items;
+
 import baritone.api.utils.input.Input;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -70,11 +70,11 @@ public class RepairToolTask extends Task {
         //All items without mending or with no damage
         ItemTarget[] shouldRepair = Arrays.stream(_toRepair).filter(target -> needRepair(mod, target)).toArray(ItemTarget[]::new);
         
-        //After that, we get the first item type to repair on the list
+        //After that, we get the left item type to repair on the list
         Optional<ItemTarget> itemTargetOPTRepair = Arrays.stream(shouldRepair).findFirst();
 
         if (itemTargetOPTRepair.isPresent()) { //If the list is not empty
-            ItemTarget itemTargetRepair = itemTargetOPTRepair.get(); //We get the (real) first item on the list
+            ItemTarget itemTargetRepair = itemTargetOPTRepair.get(); //We get the (real) left item on the list
 
             List<Slot> slotRepairs = mod.getItemStorage().getSlotsWithItemPlayerInventory(false, itemTargetRepair.getMatches()); //And we get a list of every slot with that item
 

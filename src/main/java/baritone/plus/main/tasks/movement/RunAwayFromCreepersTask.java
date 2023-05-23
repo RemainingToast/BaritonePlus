@@ -6,7 +6,7 @@ import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.baritone.GoalRunAwayFromEntities;
 import baritone.api.pathing.goals.Goal;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.EntityCreeper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class RunAwayFromCreepersTask extends CustomBaritoneGoalTask {
     @Override
     protected boolean isEqual(Task other) {
         if (other instanceof RunAwayFromCreepersTask task) {
-            //if (task._mob.getPos().squaredDistanceTo(_mob.getPos()) > 0.5) return false;
+            //if (task._mob.getPos().getDistanceSq(_mob.getPos()) > 0.5) return false;
             if (Math.abs(task._distanceToRun - _distanceToRun) > 1) return false;
             return true;
         }
@@ -51,13 +51,13 @@ public class RunAwayFromCreepersTask extends CustomBaritoneGoalTask {
 
         @Override
         protected List<Entity> getEntities(BaritonePlus mod) {
-            return new ArrayList<>(mod.getEntityTracker().getTrackedEntities(CreeperEntity.class));
+            return new ArrayList<>(mod.getEntityTracker().getTrackedEntities(EntityCreeper.class));
         }
 
         @Override
         protected double getCostOfEntity(Entity entity, int x, int y, int z) {
-            if (entity instanceof CreeperEntity) {
-                return MobDefenseChain.getCreeperSafety(new Vec3d(x + 0.5, y + 0.5, z + 0.5), (CreeperEntity) entity);
+            if (entity instanceof EntityCreeper) {
+                return MobDefenseChain.getCreeperSafety(new Vec3d(x + 0.5, y + 0.5, z + 0.5), (EntityCreeper) entity);
             }
             return super.getCostOfEntity(entity, x, y, z);
         }

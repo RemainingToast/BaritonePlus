@@ -39,7 +39,7 @@ public abstract class GoalRunAwayFromEntities implements Goal {
                     if (_xzOnly) {
                         sqDistance = entity.getPos().subtract(x, y, z).multiply(1, 0, 1).lengthSquared();
                     } else {
-                        sqDistance = entity.squaredDistanceTo(x, y, z);
+                        sqDistance = entity.getDistanceSq(x, y, z);
                     }
                     if (sqDistance < _distance * _distance) return false;
                 }
@@ -84,9 +84,9 @@ public abstract class GoalRunAwayFromEntities implements Goal {
     protected double getCostOfEntity(Entity entity, int x, int y, int z) {
         double heuristic = 0;
         if (!_xzOnly) {
-            heuristic += GoalYLevel.calculate(entity.getBlockPos().getY(), y);
+            heuristic += GoalYLevel.calculate(entity.getPosition().getY(), y);
         }
-        heuristic += GoalXZ.calculate(entity.getBlockPos().getX() - x, entity.getBlockPos().getZ() - z);
-        return heuristic; //entity.squaredDistanceTo(x, y, z);
+        heuristic += GoalXZ.calculate(entity.getPosition().getX() - x, entity.getPosition().getZ() - z);
+        return heuristic; //entity.getDistanceSq(x, y, z);
     }
 }

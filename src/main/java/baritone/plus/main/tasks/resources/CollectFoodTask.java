@@ -18,7 +18,7 @@ import baritone.plus.main.tasks.movement.PickupDroppedItemTask;
 import baritone.plus.main.tasks.movement.TimeoutWanderTask;
 import baritone.plus.main.tasks.speedrun.MarvionBeatMinecraftTask;
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -87,7 +87,7 @@ public class CollectFoodTask extends Task {
             }
         }
         // We're just an ordinary item.
-        if (food.getItem().isFood()) {
+        if (food.getItem().getItem() instanceof ItemFood) {
             assert food.getItem().getFoodComponent() != null;
             return count * food.getItem().getFoodComponent().getHunger();
         }
@@ -170,8 +170,8 @@ public class CollectFoodTask extends Task {
             // TODO: If we don't have cooking materials, cancel.
             setDebugState("Cooking...");
             if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                Minecraft.getMinecraft().gameSettings.getViewDistance().setValue(2);
+                Minecraft.getMinecraft().gameSettings.getEntityDistanceScaling().setValue(0.5);
             }
             return _smeltTask;
         }
@@ -252,7 +252,7 @@ public class CollectFoodTask extends Task {
             for (CropTarget target : CROPS) {
                 // If crops are nearby. Do not replant cause we don't care.
                 Task t = pickupBlockTaskOrNull(mod, target.cropBlock, target.cropItem, (blockPos -> {
-                    BlockState s = mod.getWorld().getBlockState(blockPos);
+                    IBlockState s = mod.getWorld().getBlockState(blockPos);
                     Block b = s.getBlock();
                     if (b instanceof CropBlock) {
                         boolean isWheat = !(b instanceof PotatoesBlock || b instanceof CarrotsBlock || b instanceof BeetrootsBlock);
@@ -289,7 +289,7 @@ public class CollectFoodTask extends Task {
                     if (livingEntity.isBaby()) continue;
                 }
                 int hungerPerformance = cookable.getCookedUnits();
-                double sqDistance = nearest.get().squaredDistanceTo(mod.getPlayer());
+                double sqDistance = nearest.get().getDistanceSq(mod.getPlayer());
                 double score = (double) 100 * hungerPerformance / (sqDistance);
                 if (cookable.isFish()) {
                     score *= FISH_PENALTY;
@@ -400,7 +400,7 @@ public class CollectFoodTask extends Task {
             if (nearestDrop.get().isInRange(mod.getPlayer(), maxRange)) {
                 return new PickupDroppedItemTask(new ItemTarget(itemToGrab), true);
             }
-            //return new GetToBlockTask(nearestDrop.getBlockPos(), false);
+            //return new GetToBlockTask(nearestDrop.getPosition(), false);
         }
         return null;
     }

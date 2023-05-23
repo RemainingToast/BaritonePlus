@@ -17,7 +17,7 @@ import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
-import net.minecraft.entity.projectile.DragonFireballEntity;
+import net.minecraft.entity.projectile.DragonEntityFireball;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 
@@ -87,7 +87,7 @@ public class WaitForDragonAndPearlTask extends Task implements IDragonWaiter {
 
         int minHeight = _targetToPearl.getY() + HEIGHT - 3;
 
-        int deltaY = minHeight - mod.getPlayer().getBlockPos().getY();
+        int deltaY = minHeight - mod.getPlayer().getPosition().getY();
         if (StorageHelper.getBuildingMaterialCount(mod) < Math.min(deltaY - 10, HEIGHT - 5) || _buildingMaterialsTask.isActive() && !_buildingMaterialsTask.isFinished(mod)) {
             setDebugState("Collecting building materials...");
             return _buildingMaterialsTask;
@@ -98,7 +98,7 @@ public class WaitForDragonAndPearlTask extends Task implements IDragonWaiter {
             Debug.logMessage("THROWING PEARL!!");
             return _throwPearlTask;
         }
-        if (mod.getPlayer().getBlockPos().getY() < minHeight) {
+        if (mod.getPlayer().getPosition().getY() < minHeight) {
             if (mod.getEntityTracker().entityFound(entity ->
                     mod.getPlayer().getPos().isInRange(entity.getPos(), 4), AreaEffectCloudEntity.class)) {
                 if (mod.getEntityTracker().getClosestEntity(EnderDragonEntity.class).isPresent() &&
@@ -115,7 +115,7 @@ public class WaitForDragonAndPearlTask extends Task implements IDragonWaiter {
                                 if (toDestroy.isInRange(mod.getPlayer(), 7)) {
                                     mod.getControllerExtras().attack(toDestroy);
                                 }
-                                if (mod.getPlayer().getBlockPos().getY() < minHeight) {
+                                if (mod.getPlayer().getPosition().getY() < minHeight) {
                                     return _heightPillarTask;
                                 } else {
                                     if (mod.getEntityTracker().getClosestEntity(EnderDragonEntity.class).isPresent() &&
@@ -134,7 +134,7 @@ public class WaitForDragonAndPearlTask extends Task implements IDragonWaiter {
         } else {
             setDebugState("We're high enough.");
             // If a fireball is too close, run UP
-            Optional<Entity> dragonFireball = mod.getEntityTracker().getClosestEntity(DragonFireballEntity.class);
+            Optional<Entity> dragonFireball = mod.getEntityTracker().getClosestEntity(DragonEntityFireball.class);
             if (dragonFireball.isPresent() && dragonFireball.get().isInRange(mod.getPlayer(), DRAGON_FIREBALL_TOO_CLOSE_RANGE) && LookHelper.cleanLineOfSight(mod.getPlayer(), dragonFireball.get().getPos(), DRAGON_FIREBALL_TOO_CLOSE_RANGE)) {
                 _pillarUpFurther = new GetToYTask(mod.getPlayer().getBlockY() + 5);
                 Debug.logMessage("HOLDUP");
@@ -146,7 +146,7 @@ public class WaitForDragonAndPearlTask extends Task implements IDragonWaiter {
                             if (toDestroy.isInRange(mod.getPlayer(), 7)) {
                                 mod.getControllerExtras().attack(toDestroy);
                             }
-                            if (mod.getPlayer().getBlockPos().getY() < minHeight) {
+                            if (mod.getPlayer().getPosition().getY() < minHeight) {
                                 return _heightPillarTask;
                             } else {
                                 if (mod.getEntityTracker().getClosestEntity(EnderDragonEntity.class).isPresent() &&

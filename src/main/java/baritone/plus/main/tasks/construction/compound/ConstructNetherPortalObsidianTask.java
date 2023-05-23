@@ -11,12 +11,12 @@ import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.time.TimerGame;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -79,12 +79,12 @@ public class ConstructNetherPortalObsidianTask extends Task {
     private BlockPos _destroyTarget;
 
     private static BlockPos getBuildableAreaNearby(BaritonePlus mod) {
-        BlockPos checkOrigin = mod.getPlayer().getBlockPos();
+        BlockPos checkOrigin = mod.getPlayer().getPosition();
         for (BlockPos toCheck : WorldHelper.scanRegion(mod, checkOrigin, checkOrigin.add(PORTALABLE_REGION_SIZE))) {
-            if (MinecraftClient.getInstance().world == null) {
+            if (Minecraft.getMinecraft().world == null) {
                 return null;
             }
-            BlockState state = MinecraftClient.getInstance().world.getBlockState(toCheck);
+            IBlockState state = Minecraft.getMinecraft().world.getBlockState(toCheck);
             boolean validToWorld = (WorldHelper.canPlace(mod, toCheck) || WorldHelper.canBreak(mod, toCheck));
             if (!validToWorld || state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.WATER || state.getBlock() == Blocks.BEDROCK) {
                 return null;
@@ -176,7 +176,7 @@ public class ConstructNetherPortalObsidianTask extends Task {
             }
         }
         // Flint and steel
-        return new InteractWithBlockTask(new ItemTarget(Items.FLINT_AND_STEEL, 1), Direction.UP, _origin.down(), true);
+        return new InteractWithBlockTask(new ItemTarget(Items.FLINT_AND_STEEL, 1), EnumFacing.UP, _origin.down(), true);
     }
 
     @Override

@@ -3,7 +3,9 @@ package baritone.plus.brain.utils;
 import baritone.plus.main.BaritonePlus;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 @Getter
@@ -12,33 +14,27 @@ public class WorldState {
     public final float playerHealth;
     public final int playerHunger;
     public final BlockPos playerLocation;
-    public final PlayerInventory playerInventory;
+    public final InventoryPlayer playerInventory;
 
     public WorldState(BaritonePlus mod) {
-        var player = mod.getPlayer();
-        var world = mod.getWorld();
-
+        EntityPlayer player = mod.getPlayer();
         this.playerHealth = player.getHealth();
-        this.playerHunger = player.getHungerManager().getFoodLevel();
-        this.playerLocation = player.getBlockPos();
-        this.playerInventory = player.getInventory();
+        this.playerHunger = player.getFoodStats().getFoodLevel();
+        this.playerLocation = player.getPosition();
+        this.playerInventory = player.inventory;
     }
 
-    private String inventoryToString(PlayerInventory inventory) {
-        var str = new StringBuilder();
-        var main = inventory.main;
-
-        main.forEach(itemStack -> {
-            if (itemStack == null || itemStack.isEmpty()) {
-                return;
+    private String inventoryToString(InventoryPlayer inventory) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack itemStack = inventory.getStackInSlot(i);
+            if (!itemStack.isEmpty()) {
+                str.append(itemStack.getCount())
+                        .append("x ")
+                        .append(itemStack.getDisplayName())
+                        .append(", ");
             }
-
-            str.append(itemStack.getCount())
-                    .append("x ")
-                    .append(itemStack.getItem().getName().getString())
-                    .append(", ");
-        });
-
+        }
         return str.toString();
     }
 

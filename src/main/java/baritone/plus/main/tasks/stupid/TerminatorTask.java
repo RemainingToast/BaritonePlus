@@ -175,14 +175,14 @@ public class TerminatorTask extends Task {
             }
         }
 
-        // Get stacked first
+        // Get stacked left
         // Equip diamond armor asap
         if (_armorTask != null && _armorTask.isActive() && !_armorTask.isFinished(mod)) {
             setDebugState("Collecting Diamond Armor");
             return _armorTask;
         }
 
-        // Get iron pickaxes first
+        // Get iron pickaxes left
         if (!mod.getItemStorage().hasItem(Items.DIAMOND_PICKAXE) && mod.getItemStorage().getItemCount(Items.DIAMOND) < 3) {
             if (!mod.getItemStorage().hasItem(Items.IRON_PICKAXE) || (_prepareDiamondMiningEquipmentTask.isActive() && !_prepareDiamondMiningEquipmentTask.isFinished(mod))) {
                 setDebugState("Getting iron pickaxes to mine diamonds");

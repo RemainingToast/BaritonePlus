@@ -11,15 +11,16 @@ import baritone.plus.main.Debug;
 import baritone.plus.main.TaskCatalogue;
 import baritone.plus.main.tasks.CraftInInventoryTask;
 import baritone.utils.ToolSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.*;
 import org.apache.commons.lang3.ArrayUtils;
@@ -37,21 +38,21 @@ public class StorageHelper {
     public static List<PlayerSlot> INACCESSIBLE_PLAYER_SLOTS = Stream.concat(Stream.of(PlayerSlot.CRAFT_INPUT_SLOTS), Stream.of(PlayerSlot.ARMOR_SLOTS)).toList();
 
     public static void closeScreen() {
-        if (MinecraftClient.getInstance().player == null)
+        if (Minecraft.getMinecraft().player == null)
             return;
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getMinecraft().currentScreen;
         if (
                 screen != null &&
                         !(screen instanceof GameMenuScreen) &&
                         !(screen instanceof GameOptionsScreen) &&
                         !(screen instanceof ChatScreen)) {
             // Close the screen if we're in-game
-            MinecraftClient.getInstance().player.closeHandledScreen();
+            Minecraft.getMinecraft().player.closeHandledScreen();
         }
     }
 
     public static ItemStack getItemStackInSlot(Slot slot) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getMinecraft().player;
         if (player == null)
             return ItemStack.EMPTY;
         // Cursor slot
@@ -128,7 +129,7 @@ public class StorageHelper {
         return miningRequirementMetInner(mod, true, requirement);
     }
 
-    public static Optional<Slot> getBestToolSlot(BaritonePlus mod, BlockState state) {
+    public static Optional<Slot> getBestToolSlot(BaritonePlus mod, IBlockState state) {
         // TODO: mod.configState.silkTouchOverrideMode {
         //      DONT_CARE (Default)
         //      PREFER (Always use silk touch if we have)
@@ -240,7 +241,7 @@ public class StorageHelper {
                     if (ItemHelper.canThrowAwayStack(mod, stack)) {
                         possibleSlots.add(slot);
                     }
-                    if (stack.getItem().isFood()) {
+                    if (stack.getItem().getItem() instanceof ItemFood) {
                         calcTotalFoodScore += Objects.requireNonNull(stack.getItem().getFoodComponent()).getHunger();
                     }
                 }
@@ -273,8 +274,8 @@ public class StorageHelper {
 
                     // Prioritize food over other things if we lack food.
                     boolean lacksFood = totalFoodScore < 8;
-                    boolean leftIsFood = left.getItem().isFood() && left.getItem() != Items.SPIDER_EYE;
-                    boolean rightIsFood = right.getItem().isFood() && right.getItem() != Items.SPIDER_EYE;
+                    boolean leftIsFood = left.getItem().getItem() instanceof ItemFood && left.getItem() != Items.SPIDER_EYE;
+                    boolean rightIsFood = right.getItem().getItem() instanceof ItemFood && right.getItem() != Items.SPIDER_EYE;
                     if (lacksFood) {
                         if (rightIsFood && !leftIsFood) {
                             return -1;
@@ -349,7 +350,7 @@ public class StorageHelper {
     }
 
     private static boolean isScreenOpenInner(Predicate<ScreenHandler> pNotNull) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getMinecraft().player;
         if (player != null)
             return pNotNull.test(player.currentScreenHandler);
         return false;
@@ -387,7 +388,7 @@ public class StorageHelper {
         int result = 0;
         if (!mod.getItemStorage().getItemStacksPlayerInventory(true).isEmpty()) {
             for (ItemStack stack : mod.getItemStorage().getItemStacksPlayerInventory(true)) {
-                if (stack.isFood())
+                if (stack.getItem() instanceof ItemFood)
                     result += Objects.requireNonNull(stack.getItem().getFoodComponent()).getHunger() * stack.getCount();
             }
         }
@@ -520,16 +521,16 @@ public class StorageHelper {
     }
 
     public static ItemStack getItemStackInCursorSlot() {
-        if (MinecraftClient.getInstance().player != null) {
-            if (MinecraftClient.getInstance().player.currentScreenHandler != null) {
-                return MinecraftClient.getInstance().player.currentScreenHandler.getCursorStack();
+        if (Minecraft.getMinecraft().player != null) {
+            if (Minecraft.getMinecraft().player.currentScreenHandler != null) {
+                return Minecraft.getMinecraft().player.currentScreenHandler.getCursorStack();
             }
         }
         return ItemStack.EMPTY;
     }
 
     public static int getBrewingStandFuel() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof BrewingStandScreenHandler stand)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof BrewingStandScreenHandler stand)
             return getBrewingStandFuel(stand);
         return -1;
     }
@@ -554,19 +555,19 @@ public class StorageHelper {
     }
 
     public static double getFurnaceFuel() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler furnace)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler furnace)
             return getFurnaceFuel(furnace);
         return -1;
     }
 
     public static double getSmokerFuel() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler smoker)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler smoker)
             return getSmokerFuel(smoker);
         return -1;
     }
 
     public static double getBlastFurnaceFuel() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler blastFurnace)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler blastFurnace)
             return getBlastFurnaceFuel(blastFurnace);
         return -1;
     }
@@ -584,19 +585,19 @@ public class StorageHelper {
     }
 
     public static double getFurnaceCookPercent() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler furnace)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler furnace)
             return getFurnaceCookPercent(furnace);
         return -1;
     }
 
     public static double getSmokerCookPercent() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler smoker)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler smoker)
             return getSmokerCookPercent(smoker);
         return -1;
     }
 
     public static double getBlastFurnaceCookPercent() {
-        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler blastFurnace)
+        if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.currentScreenHandler instanceof AbstractFurnaceScreenHandler blastFurnace)
             return getBlastFurnaceCookPercent(blastFurnace);
         return -1;
     }
@@ -626,7 +627,7 @@ public class StorageHelper {
     public static void instantFillRecipeViaBook(BaritonePlus mod, CraftingRecipe recipe, Item output, boolean craftAll) {
         Optional<Recipe<?>> recipeToSend = JankCraftingRecipeMapping.getMinecraftMappedRecipe(recipe, output);
         if (recipeToSend.isPresent()) {
-            mod.getController().clickRecipe(MinecraftClient.getInstance().player.currentScreenHandler.syncId, recipeToSend.get(), craftAll);
+            mod.getController().clickRecipe(Minecraft.getMinecraft().player.currentScreenHandler.syncId, recipeToSend.get(), craftAll);
         } else {
             Debug.logError("Could not find recipe stored in Minecraft!! Recipe: " + recipe + " with output " + output);
         }

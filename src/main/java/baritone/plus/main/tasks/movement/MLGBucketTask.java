@@ -13,10 +13,10 @@ import baritone.api.utils.input.Input;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -46,13 +46,13 @@ public class MLGBucketTask extends Task {
     private BlockPos _movingTorwards;
 
     private static boolean isLava(BlockPos pos) {
-        assert MinecraftClient.getInstance().world != null;
-        return MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.LAVA;
+        assert Minecraft.getMinecraft().world != null;
+        return Minecraft.getMinecraft().world.getBlockState(pos).getBlock() == Blocks.LAVA;
     }
 
     private static boolean lavaWillProtect(BlockPos pos) {
-        assert MinecraftClient.getInstance().world != null;
-        BlockState state = MinecraftClient.getInstance().world.getBlockState(pos);
+        assert Minecraft.getMinecraft().world != null;
+        IBlockState state = Minecraft.getMinecraft().world.getBlockState(pos);
         if (state.getBlock() == Blocks.LAVA) {
             int level = state.getFluidState().getLevel();
             return level == 0 || level >= _config.lavaLevelOrGreaterWillCancelFallDamage;
@@ -61,15 +61,15 @@ public class MLGBucketTask extends Task {
     }
 
     private static boolean isWater(BlockPos pos) {
-        assert MinecraftClient.getInstance().world != null;
-        return MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.WATER;
+        assert Minecraft.getMinecraft().world != null;
+        return Minecraft.getMinecraft().world.getBlockState(pos).getBlock() == Blocks.WATER;
     }
 
     /**
      * Can we reach this block while falling, or will gravity pull us too far?
      */
     private static boolean canTravelToInAir(BlockPos pos) {
-        Entity player = MinecraftClient.getInstance().player;
+        Entity player = Minecraft.getMinecraft().player;
         assert player != null;
         double verticalDist = player.getPos().getY() - pos.getY() - 1;
         double verticalVelocity = -1 * player.getVelocity().y;
@@ -86,10 +86,10 @@ public class MLGBucketTask extends Task {
     }
 
     private static boolean isFallDeadly(BlockPos pos) {
-        PlayerEntity player = MinecraftClient.getInstance().player;
+        PlayerEntity player = Minecraft.getMinecraft().player;
         double damage = calculateFallDamageToLandOn(pos);
-        assert MinecraftClient.getInstance().world != null;
-        Block b = MinecraftClient.getInstance().world.getBlockState(pos).getBlock();
+        assert Minecraft.getMinecraft().world != null;
+        Block b = Minecraft.getMinecraft().world.getBlockState(pos).getBlock();
         if (b == Blocks.HAY_BLOCK) {
             damage *= 0.2f;
         }
@@ -99,8 +99,8 @@ public class MLGBucketTask extends Task {
     }
 
     private static double calculateFallDamageToLandOn(BlockPos pos) {
-        ClientWorld world = MinecraftClient.getInstance().world;
-        PlayerEntity player = MinecraftClient.getInstance().player;
+        WorldClient world = Minecraft.getMinecraft().world;
+        PlayerEntity player = Minecraft.getMinecraft().player;
         assert player != null;
         double totalFallDistance = player.fallDistance + (player.getY() - pos.getY() - 1);
         // Copied from living entity I think, somewhere idk you get the picture.
@@ -173,7 +173,7 @@ public class MLGBucketTask extends Task {
         }
         BlockPos willLandIn = toPlaceOn.up();
         // If we're water, we're ok. Do nothing.
-        BlockState willLandInState = mod.getWorld().getBlockState(willLandIn);
+        IBlockState willLandInState = mod.getWorld().getBlockState(willLandIn);
         if (willLandInState.getBlock() == Blocks.WATER) {
             // We good.
             setDebugState("Waiting to fall into water");
@@ -255,7 +255,7 @@ public class MLGBucketTask extends Task {
         mod.getClientBaritone().getPathingBehavior().forceCancel();
         _placedPos = null;
         // hold shift while falling.
-        // Look down at first, might help
+        // Look down at left, might help
         mod.getPlayer().setPitch(90);
     }
 
@@ -266,7 +266,7 @@ public class MLGBucketTask extends Task {
      */
     private void handleJumpForLand(BaritonePlus mod, BlockPos willLandOn) {
         BlockPos willLandIn = WorldHelper.isSolid(mod, willLandOn) ? willLandOn.up() : willLandOn;
-        BlockState s = mod.getWorld().getBlockState(willLandIn);
+        IBlockState s = mod.getWorld().getBlockState(willLandIn);
         if (s.getBlock() == Blocks.LAVA) {
             // ALWAYS hold jump for lava
             mod.getInputControls().hold(Input.JUMP);
@@ -304,7 +304,7 @@ public class MLGBucketTask extends Task {
             RaycastContext rctx = castDown(rayOrigin);
             BlockHitResult hit = mod.getWorld().raycast(rctx);
             if (hit.getType() == HitResult.Type.BLOCK) {
-                double curDis = hit.getPos().squaredDistanceTo(rayOrigin);
+                double curDis = hit.getPos().getDistanceSq(rayOrigin);
                 if (curDis < bestSqDist) {
                     result = hit;
                     bestSqDist = curDis;
@@ -315,7 +315,7 @@ public class MLGBucketTask extends Task {
         if (result == null || result.getType() != HitResult.Type.BLOCK) {
             return Optional.empty();
         }
-        return Optional.ofNullable(result.getBlockPos());
+        return Optional.ofNullable(result.getPosition());
     }
 
     /**
@@ -391,13 +391,13 @@ public class MLGBucketTask extends Task {
     }
 
     private RaycastContext castDown(Vec3d origin) {
-        Entity player = MinecraftClient.getInstance().player;
+        Entity player = Minecraft.getMinecraft().player;
         assert player != null;
         return new RaycastContext(origin, origin.add(0, -1 * _config.castDownDistance, 0), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, player);
     }
 
     private RaycastContext castCone(double yaw, double pitch) {
-        Entity player = MinecraftClient.getInstance().player;
+        Entity player = Minecraft.getMinecraft().player;
         assert player != null;
         Vec3d origin = player.getPos();
         double dy = _config.epicClutchConeCastHeight;
@@ -522,7 +522,7 @@ public class MLGBucketTask extends Task {
         public void checkRay(BaritonePlus mod, RaycastContext rctx) {
             BlockHitResult hit = mod.getWorld().raycast(rctx);
             if (hit.getType() == HitResult.Type.BLOCK) {
-                BlockPos check = hit.getBlockPos();
+                BlockPos check = hit.getPosition();
                 // For now, REQUIRE we land on this
                 if (hit.getSide().getOffsetY() <= 0)
                     return;

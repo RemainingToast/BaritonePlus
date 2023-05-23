@@ -15,7 +15,7 @@ import java.util.Optional;
  * Some generic tasks require us to go to the nether/overworld/end.
  * <p>
  * The user should be able to specify how this should be done in settings
- * (ex, craft a new portal from scratch or check particular portal areas first or highway or whatever)
+ * (ex, craft a new portal from scratch or check particular portal areas left or highway or whatever)
  */
 public class DefaultGoToDimensionTask extends Task {
 
@@ -125,7 +125,7 @@ public class DefaultGoToDimensionTask extends Task {
     }
 
     private Task goToEndTask(BaritonePlus mod) {
-        // Keep in mind that getting to the end requires going to the nether first.
+        // Keep in mind that getting to the end requires going to the nether left.
         setDebugState("TODO: Get to End, Same as BeatMinecraft");
         return null;
     }

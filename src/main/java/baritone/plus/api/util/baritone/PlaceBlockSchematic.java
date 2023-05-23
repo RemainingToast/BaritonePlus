@@ -2,7 +2,7 @@ package baritone.plus.api.util.baritone;
 
 import baritone.api.schematic.AbstractSchematic;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class PlaceBlockSchematic extends AbstractSchematic {
     private final Block[] _blockToPlace;
     private final boolean _skipIfAlreadyThere;
     private final boolean _done;
-    private BlockState _targetPlace;
+    private IBlockState _targetPlace;
 
     public PlaceBlockSchematic(Block[] blocksToPlace, boolean skipIfAlreadyThere) {
         super(RANGE, RANGE, RANGE);
@@ -38,12 +38,12 @@ public class PlaceBlockSchematic extends AbstractSchematic {
 
     // No restrictions.
     //@Override
-    //public boolean inSchematic(int x, int y, int z, BlockState currentState) {
+    //public boolean inSchematic(int x, int y, int z, IBlockState currentState) {
     //    return true;
     //}
 
     @Override
-    public BlockState desiredState(int x, int y, int z, BlockState blockState, List<BlockState> list) {
+    public IBlockState desiredState(int x, int y, int z, IBlockState blockState, List<IBlockState> list) {
         // Only place at the origin.
         if (x != 0 || y != 0 || z != 0) {
             return blockState;
@@ -59,7 +59,7 @@ public class PlaceBlockSchematic extends AbstractSchematic {
         }
         //System.out.print("oof: [");
         if (!list.isEmpty()) {
-            for (BlockState possible : list) {
+            for (IBlockState possible : list) {
                 if (possible == null) {
                 /*
                 if (ToolSet.areShearsEffective(blockState.getBlock()) || BlockTags.FLOWERS.contains(blockState.getBlock())) {

@@ -6,8 +6,8 @@ import baritone.plus.main.BaritonePlus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-@Mod(modid = BaritonePlusModInit.MODID, name = BaritonePlusModInit.NAME, version = BaritonePlusModInit.VERSION)
-public class BaritonePlusModInit {
+@Mod(modid = BaritonePlusForge.MODID, name = BaritonePlusForge.NAME, version = BaritonePlusForge.VERSION)
+public class BaritonePlusForge {
     public static final String MODID = "baritone-plus";
     public static final String NAME = "Baritone+";
     public static final String VERSION = "1.12.2-beta1";

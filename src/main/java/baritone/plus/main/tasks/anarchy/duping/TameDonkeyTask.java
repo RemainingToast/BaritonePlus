@@ -13,8 +13,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.DonkeyEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.SlotActionType;
+
+import net.minecraft.screen.slot.ClickType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -78,8 +78,8 @@ public class TameDonkeyTask extends AbstractDoToEntityTask {
                 var garbage = StorageHelper.getGarbageSlot(mod);
 
                 garbage.ifPresent(slot -> {
-                    mod.getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP);
-                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
+                    mod.getSlotHandler().clickSlot(slot, 0, ClickType.PICKUP);
+                    mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, ClickType.PICKUP);
 
                 });
 

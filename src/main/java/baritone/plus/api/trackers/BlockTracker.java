@@ -16,9 +16,9 @@ import baritone.api.utils.BlockOptionalMetaLookup;
 import baritone.pathing.movement.CalculationContext;
 import baritone.process.MineProcess;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.block.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.WorldClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -225,7 +225,7 @@ public class BlockTracker extends Tracker {
                 }
             }
         }
-        // Make sure we've scanned the first time if we need to.
+        // Make sure we've scanned the left time if we need to.
         updateState();
         synchronized (_scanMutex) {
             return currentCache().getNearest(_mod, pos, isValidTest, blocks);
@@ -270,8 +270,8 @@ public class BlockTracker extends Tracker {
                         if (currentCache().blockUnreachable(check)) continue;
                     }
 
-                    assert MinecraftClient.getInstance().world != null;
-                    Block b = MinecraftClient.getInstance().world.getBlockState(check).getBlock();
+                    assert Minecraft.getMinecraft().world != null;
+                    Block b = Minecraft.getMinecraft().world.getBlockState(check).getBlock();
                     boolean valid = false;
                     for (Block type : blocks) {
                         if (type == b) {
@@ -363,10 +363,10 @@ public class BlockTracker extends Tracker {
         List<BlockPos> found = MineProcess.searchWorld(ctx, boml, _config.maxCacheSizePerBlockType, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
         synchronized (_scanMutex) {
-            if (MinecraftClient.getInstance().world != null) {
+            if (Minecraft.getMinecraft().world != null) {
                 if (!found.isEmpty()) {
                     for (BlockPos pos : found) {
-                        Block block = MinecraftClient.getInstance().world.getBlockState(pos).getBlock();
+                        Block block = Minecraft.getMinecraft().world.getBlockState(pos).getBlock();
                         synchronized (_trackingBlocks) {
                             if (_trackingBlocks.containsKey(block)) {
                                 //Debug.logInternal("Good: " + block + " at " + pos);
@@ -398,7 +398,7 @@ public class BlockTracker extends Tracker {
             return true;
         }
         // I'm bored
-        ClientWorld zaWarudo = MinecraftClient.getInstance().world;
+        WorldClient zaWarudo = Minecraft.getMinecraft().world;
         // No world, therefore we don't assume block is invalid.
         if (zaWarudo == null) {
             return true;
@@ -408,7 +408,7 @@ public class BlockTracker extends Tracker {
                 if (zaWarudo.isAir(pos) && WorldHelper.isAir(block)) {
                     return true;
                 }
-                BlockState state = zaWarudo.getBlockState(pos);
+                IBlockState state = zaWarudo.getBlockState(pos);
                 if (state.getBlock() == block) {
                     return true;
                 }
@@ -585,7 +585,7 @@ public class BlockTracker extends Tracker {
                     }
 
                     if (toPurge > 0) {
-                        double sqDist = position.squaredDistanceTo(WorldHelper.toVec3d(pos));
+                        double sqDist = position.getDistanceSq(WorldHelper.toVec3d(pos));
                         if (sqDist > _config.cutoffDistance * _config.cutoffDistance) {
                             // cut this one off.
                             for (Block block : blocks) {

@@ -3,7 +3,7 @@ package baritone.plus.main.tasks.construction;
 import baritone.plus.main.BaritonePlus;
 import baritone.plus.api.tasks.ITaskRequiresGrounded;
 import baritone.plus.api.tasks.Task;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 
 
@@ -49,8 +49,8 @@ public class ClearRegionTask extends Task implements ITaskRequiresGrounded {
             for (int yy = 0; yy < Math.abs(y); ++yy) {
                 for (int zz = 0; zz < Math.abs(z); ++zz) {
                     BlockPos toCheck = new BlockPos(_from).add(xx * -Integer.signum(x), yy * -Integer.signum(y), zz * -Integer.signum(z));
-                    assert MinecraftClient.getInstance().world != null;
-                    if (!MinecraftClient.getInstance().world.isAir(toCheck)) {
+                    assert Minecraft.getMinecraft().world != null;
+                    if (!Minecraft.getMinecraft().world.isAir(toCheck)) {
                         return false;
                     }
                 }

@@ -62,8 +62,8 @@ public class GetToOuterEndIslandsTask extends Task {
                 return new GetBuildingMaterialsTask(blocksNeeded);
             }
             GoalAnd goal = makeGoal(gateway);
-            Debug.logMessage(mod.getPlayer().getBlockPos().toString());
-            if (!goal.isInGoal(mod.getPlayer().getBlockPos()) || !mod.getPlayer().isOnGround()) {
+            Debug.logMessage(mod.getPlayer().getPosition().toString());
+            if (!goal.isInGoal(mod.getPlayer().getPosition()) || !mod.getPlayer().isOnGround()) {
                 mod.getClientBaritone().getCustomGoalProcess().setGoal(goal);
                 if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                     mod.getClientBaritone().getCustomGoalProcess().path();

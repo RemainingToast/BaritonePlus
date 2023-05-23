@@ -30,7 +30,7 @@ public class KillPlayerTask extends AbstractKillEntityTask {
         if (player.isEmpty()) {
             _distancePlayerCheck.reset();
         } else {
-            double distSq = player.get().squaredDistanceTo(mod.getPlayer());
+            double distSq = player.get().getDistanceSq(mod.getPlayer());
             if (distSq < 10 * 10) {
                 _distancePlayerCheck.reset();
             }

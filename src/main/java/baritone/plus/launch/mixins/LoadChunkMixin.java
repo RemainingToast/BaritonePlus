@@ -1,23 +1,6 @@
 package baritone.plus.launch.mixins;
 
-import baritone.plus.api.event.EventBus;
-import baritone.plus.api.event.events.ChunkLoadEvent;
-import baritone.plus.api.event.events.ChunkUnloadEvent;
-import net.minecraft.client.world.ClientChunkManager;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.ChunkData;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.WorldChunk;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.function.Consumer;
-
-@Mixin(ClientChunkManager.class)
+/*@Mixin(ClientChunkManager.class)
 public class LoadChunkMixin {
 
     @Inject(
@@ -35,4 +18,4 @@ public class LoadChunkMixin {
     private void onChunkUnload(int x, int z, CallbackInfo ci) {
         EventBus.publish(new ChunkUnloadEvent(new ChunkPos(x, z)));
     }
-}
+}*/

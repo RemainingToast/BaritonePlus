@@ -1,5 +1,12 @@
 package baritone.plus.main.chains;
 
+import baritone.api.utils.Rotation;
+import baritone.api.utils.input.Input;
+import baritone.plus.api.tasks.TaskRunner;
+import baritone.plus.api.util.ItemTarget;
+import baritone.plus.api.util.helpers.LookHelper;
+import baritone.plus.api.util.helpers.WorldHelper;
+import baritone.plus.api.util.time.TimerGame;
 import baritone.plus.main.BaritonePlus;
 import baritone.plus.main.tasks.DoToClosestBlockTask;
 import baritone.plus.main.tasks.InteractWithBlockTask;
@@ -8,28 +15,21 @@ import baritone.plus.main.tasks.movement.EnterNetherPortalTask;
 import baritone.plus.main.tasks.movement.EscapeFromLavaTask;
 import baritone.plus.main.tasks.movement.GetToBlockTask;
 import baritone.plus.main.tasks.movement.SafeRandomShimmyTask;
-import baritone.plus.api.tasks.TaskRunner;
-import baritone.plus.api.util.ItemTarget;
-import baritone.plus.api.util.helpers.LookHelper;
-import baritone.plus.api.util.helpers.WorldHelper;
-import baritone.plus.api.util.time.TimerGame;
-import baritone.api.utils.Rotation;
-import baritone.api.utils.input.Input;
-import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
 import net.minecraft.init.Blocks;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 import java.util.Optional;
 
 public class WorldSurvivalChain extends SingleTaskChain {
 
     private final TimerGame _wasInLavaTimer = new TimerGame(1);
+    private final TimerGame _portalStuckTimer = new TimerGame(5);
     private boolean _wasAvoidingDrowning;
-    private TimerGame _portalStuckTimer = new TimerGame(5);
 
     private BlockPos _extinguishWaterPosition;
 
@@ -57,18 +57,18 @@ public class WorldSurvivalChain extends SingleTaskChain {
 
         // Fire escape
         if (isInFire(mod)) {
-            setTask(new DoToClosestBlockTask(PutOutFireTask::new, Blocks.FIRE, Blocks.SOUL_FIRE));
+            setTask(new DoToClosestBlockTask(PutOutFireTask::new, Blocks.FIRE/*, Blocks.SOUL_FIRE*/));
             return 100;
         }
 
         // Extinguish with water
         if (mod.getModSettings().shouldExtinguishSelfWithWater()) {
-            if (!(_mainTask instanceof EscapeFromLavaTask && isCurrentlyRunning(mod)) && mod.getPlayer().isOnFire() && !mod.getPlayer().hasStatusEffect(StatusEffects.FIRE_RESISTANCE) && !mod.getWorld().getDimension().ultrawarm()) {
+            if (!(_mainTask instanceof EscapeFromLavaTask && isCurrentlyRunning(mod)) && mod.getPlayer().isBurning() && !mod.getPlayer().isPotionActive(MobEffects.FIRE_RESISTANCE)/* && !mod.getWorld().getDimension().ultrawarm()*/) {
                 // Extinguish ourselves
                 if (mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
-                    BlockPos targetWaterPos = mod.getPlayer().getBlockPos();
+                    BlockPos targetWaterPos = mod.getPlayer().getPosition();
                     if (WorldHelper.isSolid(mod, targetWaterPos.down()) && WorldHelper.canPlace(mod, targetWaterPos)) {
-                        Optional<Rotation> reach = LookHelper.getReach(targetWaterPos.down(), Direction.UP);
+                        Optional<Rotation> reach = LookHelper.getReach(targetWaterPos.down(), EnumFacing.UP);
                         if (reach.isPresent()) {
                             mod.getClientBaritone().getLookBehavior().updateTarget(reach.get(), true);
                             if (mod.getClientBaritone().getPlayerContext().isLookingAt(targetWaterPos.down())) {
@@ -86,7 +86,7 @@ public class WorldSurvivalChain extends SingleTaskChain {
                 return 90;
             } else if (mod.getItemStorage().hasItem(Items.BUCKET) && _extinguishWaterPosition != null && mod.getBlockTracker().blockIsValid(_extinguishWaterPosition, Blocks.WATER)) {
                 // Pick up the water
-                setTask(new InteractWithBlockTask(new ItemTarget(Items.BUCKET, 1), Direction.UP, _extinguishWaterPosition.down(), true));
+                setTask(new InteractWithBlockTask(new ItemTarget(Items.BUCKET, 1), EnumFacing.UP, _extinguishWaterPosition.down(), true));
                 return 60;
             } else {
                 _extinguishWaterPosition = null;
@@ -117,7 +117,8 @@ public class WorldSurvivalChain extends SingleTaskChain {
         boolean avoidedDrowning = false;
         if (mod.getModSettings().shouldAvoidDrowning()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
-                if (mod.getPlayer().isTouchingWater() && mod.getPlayer().getAir() < mod.getPlayer().getMaxAir()) {
+                // TODO Calculate Depth?
+                if (mod.getPlayer().isInWater() && mod.getPlayer().getAir() < 300 /*mod.getPlayer().getMaxAir()*/) {
                     // Swim up!
                     mod.getInputControls().hold(Input.JUMP);
                     //mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.JUMP, true);
@@ -135,18 +136,18 @@ public class WorldSurvivalChain extends SingleTaskChain {
     }
 
     private boolean isInLavaOhShit(BaritonePlus mod) {
-        if (mod.getPlayer().isInLava() && !mod.getPlayer().hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+        if (mod.getPlayer().isInLava() && !mod.getPlayer().isPotionActive(MobEffects.FIRE_RESISTANCE)) {
             _wasInLavaTimer.reset();
             return true;
         }
-        return mod.getPlayer().isOnFire() && !_wasInLavaTimer.elapsed();
+        return mod.getPlayer().isBurning() && !_wasInLavaTimer.elapsed();
     }
 
     private boolean isInFire(BaritonePlus mod) {
-        if (mod.getPlayer().isOnFire() && !mod.getPlayer().hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+        if (mod.getPlayer().isBurning() && !mod.getPlayer().isPotionActive(MobEffects.FIRE_RESISTANCE)) {
             for (BlockPos pos : WorldHelper.getBlocksTouchingPlayer(mod)) {
                 Block b = mod.getWorld().getBlockState(pos).getBlock();
-                if (b instanceof AbstractFireBlock) {
+                if (b instanceof BlockFire) {
                     return true;
                 }
             }

@@ -18,6 +18,7 @@
     "ClientUIMixin",
     "DeathScreenAccessor",
     "EntityAccessor",
+    "EntityCreeperAccessor",
     "EntryMixin",
     "GameOverlayMixin",
     "LoadChunkMixin",

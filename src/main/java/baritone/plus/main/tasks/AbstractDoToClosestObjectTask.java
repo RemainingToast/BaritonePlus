@@ -81,7 +81,7 @@ public abstract class AbstractDoToClosestObjectTask<T> extends Task {
                 if (isMovingToClosestPos(mod)) {
                     setDebugState("Moving towards closest...");
                     double currentHeuristic = getCurrentCalculatedHeuristic(mod);
-                    double closestDistanceSqr = getPos(mod, _currentlyPursuing).squaredDistanceTo(mod.getPlayer().getPos());
+                    double closestDistanceSqr = getPos(mod, _currentlyPursuing).getDistanceSq(mod.getPlayer().getPos());
                     int lastTick = WorldHelper.getTicks();
 
                     if (!_heuristicMap.containsKey(_currentlyPursuing)) {
@@ -94,7 +94,7 @@ public abstract class AbstractDoToClosestObjectTask<T> extends Task {
                     if (_heuristicMap.containsKey(newClosest)) {
                         // Our new object has a past potential heuristic calculated, if it's better try it out.
                         CachedHeuristic maybeReAttempt = _heuristicMap.get(newClosest);
-                        double maybeClosestDistance = getPos(mod, newClosest).squaredDistanceTo(mod.getPlayer().getPos());
+                        double maybeClosestDistance = getPos(mod, newClosest).getDistanceSq(mod.getPlayer().getPos());
                         // Get considerably closer (divide distance by 2)
                         if (maybeReAttempt.getHeuristicValue() < h.getHeuristicValue() || maybeClosestDistance < maybeReAttempt.getClosestDistanceSqr() / 4) {
                             setDebugState("Retrying old heuristic!");

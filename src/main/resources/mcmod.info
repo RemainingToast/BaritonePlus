@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "baritone-plus",
+    "name": "Baritone+",
+    "description": "Plays Block Game.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://maven.toastmc.dev",
+    "authorList": [
+      "RemainingToast",
+      "Baritone",
+      "AltoClef"
+    ],
+    "logoFile": "assets/baritone-plus/baritone-plus.png"
+  }
+]

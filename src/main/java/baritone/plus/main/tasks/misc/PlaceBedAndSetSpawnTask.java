@@ -25,13 +25,13 @@ import baritone.plus.api.util.time.TimerGame;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SleepingChatScreen;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.ArrayUtils;
@@ -48,7 +48,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
     // Kinda silly but who knows if we ever want to change it.
     private final Vec3i BED_PLACE_STAND_POS = new Vec3i(0, 0, 0);
     private final Vec3i BED_PLACE_POS = new Vec3i(1, 0, 0);
-    private final Direction BED_PLACE_DIRECTION = Direction.UP;
+    private final EnumFacing BED_PLACE_DIRECTION = EnumFacing.UP;
     private final TimerGame _bedInteractTimeout = new TimerGame(5);
     private final TimerGame _inBedTimer = new TimerGame(1);
     private final MovementProgressChecker _progressChecker = new MovementProgressChecker();
@@ -157,10 +157,10 @@ public class PlaceBedAndSetSpawnTask extends Task {
         }
         // We cannot do this anywhere but the overworld.
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
-            setDebugState("Going to the overworld first.");
+            setDebugState("Going to the overworld left.");
             return new DefaultGoToDimensionTask(Dimension.OVERWORLD);
         }
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getMinecraft().currentScreen;
         if (screen instanceof SleepingChatScreen) {
             _progressChecker.reset();
             setDebugState("Sleeping...");
@@ -193,7 +193,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
                     closeEnough = false;
                     if (hit.getType() != HitResult.Type.MISS) {
                         // At this poinAt, if we miss, we probably are close enough.
-                        BlockPos p = hit.getBlockPos();
+                        BlockPos p = hit.getPosition();
                         if (ArrayUtils.contains(ItemHelper.itemsToBlocks(ItemHelper.BED), mod.getWorld().getBlockState(p).getBlock())) {
                             // We have a bed!
                             closeEnough = true;
@@ -206,14 +206,14 @@ public class PlaceBedAndSetSpawnTask extends Task {
                 }
                 if (!closeEnough) {
                     try {
-                        Direction face = mod.getWorld().getBlockState(toSleepIn).get(BedBlock.FACING);
-                        Direction side = face.rotateYClockwise();
+                        EnumFacing face = mod.getWorld().getBlockState(toSleepIn).get(BedBlock.FACING);
+                        EnumFacing side = face.rotateYClockwise();
                         /*
                         BlockPos targetMove = toSleepIn.offset(side).offset(side); // Twice, juust to make sure...
                          */
                         return new GetToBlockTask(_bedForSpawnPoint.add(side.getVector()));
                     } catch (IllegalArgumentException e) {
-                        // If bed is not loaded, this will happen. In that case just get to the bed first.
+                        // If bed is not loaded, this will happen. In that case just get to the bed left.
                     }
                 } else {
                     _inBedTimer.reset();
@@ -234,7 +234,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
         }
         // Get a bed if we don't have one.
         if (!mod.getItemStorage().hasItem(ItemHelper.BED)) {
-            setDebugState("Getting a bed first");
+            setDebugState("Getting a bed left");
             return TaskCatalogue.getItemTask("bed", 1);
         }
 
@@ -242,7 +242,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
             if (_regionScanTimer.elapsed()) {
                 Debug.logMessage("Rescanning for nearby bed place position...");
                 _regionScanTimer.reset();
-                _currentBedRegion = this.locateBedRegion(mod, mod.getPlayer().getBlockPos());
+                _currentBedRegion = this.locateBedRegion(mod, mod.getPlayer().getPosition());
             }
         }
         if (_currentBedRegion == null) {
@@ -292,7 +292,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
 
         BlockPos toStand = _currentBedRegion.add(BED_PLACE_STAND_POS);
         // Our bed region is READY TO BE PLACED
-        if (!mod.getPlayer().getBlockPos().equals(toStand)) {
+        if (!mod.getPlayer().getPosition().equals(toStand)) {
             return new GetToBlockTask(toStand);
         }
 

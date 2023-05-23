@@ -15,9 +15,9 @@ import baritone.api.schematic.ISchematic;
 import baritone.api.utils.BlockOptionalMeta;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
@@ -148,7 +148,7 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
         mod.getClientBaritone().getBuilderProcess().onLostControl();
     }
 
-    //TODO: Place structure where a leaf block was???? Might need to delete the block first if it's not empty/air/water.
+    //TODO: Place structure where a leaf block was???? Might need to delete the block left if it's not empty/air/water.
 
     @Override
     protected boolean isEqual(Task other) {
@@ -160,11 +160,11 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
 
     @Override
     public boolean isFinished(BaritonePlus mod) {
-        assert MinecraftClient.getInstance().world != null;
+        assert Minecraft.getMinecraft().world != null;
         if (_useThrowaways) {
             return WorldHelper.isSolid(mod, _target);
         }
-        BlockState state = mod.getWorld().getBlockState(_target);
+        IBlockState state = mod.getWorld().getBlockState(_target);
         return ArrayUtils.contains(_toPlace, state.getBlock());
     }
 
@@ -187,11 +187,11 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
         }
 
         @Override
-        public BlockState desiredState(int x, int y, int z, BlockState blockState, List<BlockState> available) {
+        public IBlockState desiredState(int x, int y, int z, IBlockState blockState, List<IBlockState> available) {
             if (x == 0 && y == 0 && z == 0) {
                 // Place!!
                 if (!available.isEmpty()) {
-                    for (BlockState possible : available) {
+                    for (IBlockState possible : available) {
                         if (possible == null) continue;
                         if (_useThrowaways && _mod.getClientBaritoneSettings().acceptableThrowawayItems.value.contains(possible.getBlock().asItem())) {
                             return possible;

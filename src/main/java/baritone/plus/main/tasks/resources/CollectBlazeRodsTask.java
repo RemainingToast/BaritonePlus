@@ -15,7 +15,7 @@ import baritone.plus.api.util.helpers.WorldHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.BlazeEntity;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -42,7 +42,7 @@ public class CollectBlazeRodsTask extends ResourceTask {
 
     private static boolean isHoveringAboveLavaOrTooHigh(BaritonePlus mod, Entity entity) {
         int MAX_HEIGHT = 11;
-        for (BlockPos check = entity.getBlockPos(); entity.getBlockPos().getY() - check.getY() < MAX_HEIGHT; check = check.down()) {
+        for (BlockPos check = entity.getPosition(); entity.getPosition().getY() - check.getY() < MAX_HEIGHT; check = check.down()) {
             if (mod.getWorld().getBlockState(check).getBlock() == Blocks.LAVA) return true;
             if (WorldHelper.isSolid(mod, check)) return false;
         }
@@ -78,12 +78,12 @@ public class CollectBlazeRodsTask extends ResourceTask {
                 Entity kill = toKill.get();
                 Vec3d nearest = kill.getPos();
 
-                double sqDistanceToPlayer = nearest.squaredDistanceTo(mod.getPlayer().getPos());//_foundBlazeSpawner.getX(), _foundBlazeSpawner.getY(), _foundBlazeSpawner.getZ());
+                double sqDistanceToPlayer = nearest.getDistanceSq(mod.getPlayer().getPos());//_foundBlazeSpawner.getX(), _foundBlazeSpawner.getY(), _foundBlazeSpawner.getZ());
                 // Ignore if the blaze is too far away.
                 if (sqDistanceToPlayer > SPAWNER_BLAZE_RADIUS * SPAWNER_BLAZE_RADIUS) {
                     // If the blaze can see us it needs to go lol
                     BlockHitResult hit = mod.getWorld().raycast(new RaycastContext(mod.getPlayer().getCameraPosVec(1.0F), kill.getCameraPosVec(1.0F), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mod.getPlayer()));
-                    if (hit != null && hit.getBlockPos().getSquaredDistance(mod.getPlayer().getPos()) < sqDistanceToPlayer) {
+                    if (hit != null && hit.getPosition().getSquaredDistance(mod.getPlayer().getPos()) < sqDistanceToPlayer) {
                         toKill = Optional.empty();
                     }
                 }

@@ -105,7 +105,7 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
     }
 
     private BlockPos stuckInBlock(BaritonePlus mod) {
-        BlockPos p = mod.getPlayer().getBlockPos();
+        BlockPos p = mod.getPlayer().getPosition();
         if (isAnnoying(mod, p)) return p;
         if (isAnnoying(mod, p.up())) return p.up();
         BlockPos[] toCheck = generateSides(p);
@@ -173,7 +173,7 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
         // If we're getting a pickaxe for THIS resource...
         if (isIsGettingPickaxeFirst(mod) && _collectingPickaxeForThisResource && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
             _progressChecker.reset();
-            setDebugState("Collecting pickaxe first");
+            setDebugState("Collecting pickaxe left");
             return getPickaxeFirstTask;
         } else {
             if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
@@ -185,9 +185,9 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
         if (!_progressChecker.check(mod)) {
             mod.getClientBaritone().getPathingBehavior().forceCancel();
             if (_currentDrop != null && !_currentDrop.getStack().isEmpty()) {
-                // We might want to get a pickaxe first.
+                // We might want to get a pickaxe left.
                 if (!isGettingPickaxeFirstFlag && mod.getModSettings().shouldCollectPickaxeFirst() && !StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.STONE)) {
-                    Debug.logMessage("Failed to pick up drop, will try to collect a stone pickaxe first and try again!");
+                    Debug.logMessage("Failed to pick up drop, will try to collect a stone pickaxe left and try again!");
                     _collectingPickaxeForThisResource = true;
                     isGettingPickaxeFirstFlag = true;
                     return getPickaxeFirstTask;
@@ -232,7 +232,7 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
     protected Vec3d getPos(BaritonePlus mod, ItemEntity obj) {
         if (!obj.isOnGround() && !obj.isTouchingWater()) {
             // Assume we'll land down one or two blocks from here. We could do this more advanced but whatever.
-            BlockPos p = obj.getBlockPos();
+            BlockPos p = obj.getPosition();
             if (!WorldHelper.isSolid(mod, p.down(3))) {
                 return obj.getPos().subtract(0, 2, 0);
             }

@@ -10,7 +10,7 @@ import baritone.plus.main.tasks.ResourceTask;
 import baritone.plus.main.tasks.movement.DefaultGoToDimensionTask;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 
 public class CollectGoldNuggetsTask extends ResourceTask {
 

@@ -9,7 +9,7 @@ import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.SmeltTarget;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package baritone.plus.api.util;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -18,8 +18,8 @@ public class JankCraftingRecipeMapping {
     private static final HashMap<Item, List<Recipe<?>>> _recipeMapping = new HashMap<>();
 
     private static void reloadRecipeMapping() {
-        if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-            RecipeManager recipes = MinecraftClient.getInstance().getNetworkHandler().getRecipeManager();
+        if (Minecraft.getMinecraft().getNetworkHandler() != null) {
+            RecipeManager recipes = Minecraft.getMinecraft().getNetworkHandler().getRecipeManager();
             if (recipes != null) {
                 for (Recipe<?> recipe : recipes.values()) {
                     Item output = recipe.getOutput(DynamicRegistryManager.EMPTY).getItem();
@@ -58,7 +58,7 @@ public class JankCraftingRecipeMapping {
                         }
                     }
                 }
-                /*int i = -1; // ++i first
+                /*int i = -1; // ++i left
                 boolean found = true;
                 for (Object ingredientObj : checkRecipe.getIngredients()) {
                     ++i;

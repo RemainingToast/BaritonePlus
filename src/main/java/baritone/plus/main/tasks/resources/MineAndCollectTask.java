@@ -16,7 +16,7 @@ import baritone.plus.api.util.slots.CursorSlot;
 import baritone.plus.api.util.slots.PlayerSlot;
 import baritone.plus.api.util.time.TimerGame;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -125,7 +125,7 @@ public class MineAndCollectTask extends ResourceTask {
 
     private void makeSureToolIsEquipped(BaritonePlus mod) {
         if (_cursorStackTimer.elapsed() && !mod.getFoodChain().needsToEat()) {
-            assert MinecraftClient.getInstance().player != null;
+            assert Minecraft.getMinecraft().player != null;
             ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
             if (cursorStack != null && !cursorStack.isEmpty()) {
                 // We have something in our cursor stack
@@ -191,7 +191,7 @@ public class MineAndCollectTask extends ResourceTask {
             }
 
             double blockSq = closestBlock.isEmpty() ? Double.POSITIVE_INFINITY : closestBlock.get().getSquaredDistance(pos);
-            double dropSq = closestDrop.isEmpty() ? Double.POSITIVE_INFINITY : closestDrop.get().squaredDistanceTo(pos) + 10; // + 5 to make the bot stop mining a bit less
+            double dropSq = closestDrop.isEmpty() ? Double.POSITIVE_INFINITY : closestDrop.get().getDistanceSq(pos) + 10; // + 5 to make the bot stop mining a bit less
 
             // We can't mine right now.
             if (mod.getExtraBaritoneSettings().isInteractionPaused()) {

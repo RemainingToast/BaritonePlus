@@ -84,7 +84,7 @@ abstract class ChunkSearchTask extends Task {
 
         // WTF This is a horrible idea.
         // Backup in case if chunk search fails?
-        //onChunkLoad((WorldChunk) mod.getWorld().getChunk(mod.getPlayer().getBlockPos()));
+        //onChunkLoad((WorldChunk) mod.getWorld().getChunk(mod.getPlayer().getPosition()));
 
         synchronized (_searchMutex) {
             // Search all items from _justLoaded that we ought to search.

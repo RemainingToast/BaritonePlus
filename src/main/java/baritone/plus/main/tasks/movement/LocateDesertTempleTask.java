@@ -47,6 +47,6 @@ public class LocateDesertTempleTask extends Task {
 
     @Override
     public boolean isFinished(BaritonePlus mod) {
-        return mod.getPlayer().getBlockPos().equals(_finalPos);
+        return mod.getPlayer().getPosition().equals(_finalPos);
     }
 }

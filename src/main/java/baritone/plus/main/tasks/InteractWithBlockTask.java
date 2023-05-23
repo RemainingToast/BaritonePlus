@@ -1,10 +1,11 @@
 package baritone.plus.main.tasks;
 
-import baritone.plus.main.BaritonePlus;
-import baritone.plus.main.Debug;
-import baritone.plus.main.TaskCatalogue;
-import baritone.plus.main.tasks.movement.SafeRandomShimmyTask;
-import baritone.plus.main.tasks.movement.TimeoutWanderTask;
+import baritone.api.pathing.goals.Goal;
+import baritone.api.pathing.goals.GoalNear;
+import baritone.api.pathing.goals.GoalTwoBlocks;
+import baritone.api.process.ICustomGoalProcess;
+import baritone.api.utils.Rotation;
+import baritone.api.utils.input.Input;
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.baritone.GoalAnd;
@@ -16,18 +17,18 @@ import baritone.plus.api.util.helpers.WorldHelper;
 import baritone.plus.api.util.progresscheck.MovementProgressChecker;
 import baritone.plus.api.util.slots.Slot;
 import baritone.plus.api.util.time.TimerGame;
-import baritone.api.pathing.goals.Goal;
-import baritone.api.pathing.goals.GoalNear;
-import baritone.api.pathing.goals.GoalTwoBlocks;
-import baritone.api.process.ICustomGoalProcess;
-import baritone.api.utils.Rotation;
-import baritone.api.utils.input.Input;
-import net.minecraft.block.*;
+import baritone.plus.main.BaritonePlus;
+import baritone.plus.main.Debug;
+import baritone.plus.main.TaskCatalogue;
+import baritone.plus.main.tasks.movement.SafeRandomShimmyTask;
+import baritone.plus.main.tasks.movement.TimeoutWanderTask;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.ClickType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class InteractWithBlockTask extends Task {
     private final MovementProgressChecker _moveChecker = new MovementProgressChecker();
     private final MovementProgressChecker stuckCheck = new MovementProgressChecker();
     private final ItemTarget _toUse;
-    private final Direction _direction;
+    private final EnumFacing _direction;
     private final BlockPos _target;
     private final boolean _walkInto;
     private final Vec3i _interactOffset;
@@ -67,7 +68,7 @@ public class InteractWithBlockTask extends Task {
     private Task _unstuckTask = null;
     private ClickResponse _cachedClickStatus = ClickResponse.CANT_REACH;
 
-    public InteractWithBlockTask(ItemTarget toUse, Direction direction, BlockPos target, Input interactInput, boolean walkInto, Vec3i interactOffset, boolean shiftClick) {
+    public InteractWithBlockTask(ItemTarget toUse, EnumFacing direction, BlockPos target, Input interactInput, boolean walkInto, Vec3i interactOffset, boolean shiftClick) {
         _toUse = toUse;
         _direction = direction;
         _target = target;
@@ -77,11 +78,11 @@ public class InteractWithBlockTask extends Task {
         _shiftClick = shiftClick;
     }
 
-    public InteractWithBlockTask(ItemTarget toUse, Direction direction, BlockPos target, Input interactInput, boolean walkInto, boolean shiftClick) {
-        this(toUse, direction, target, interactInput, walkInto, Vec3i.ZERO, shiftClick);
+    public InteractWithBlockTask(ItemTarget toUse, EnumFacing direction, BlockPos target, Input interactInput, boolean walkInto, boolean shiftClick) {
+        this(toUse, direction, target, interactInput, walkInto, Vec3i.NULL_VECTOR, shiftClick);
     }
 
-    public InteractWithBlockTask(ItemTarget toUse, Direction direction, BlockPos target, boolean walkInto) {
+    public InteractWithBlockTask(ItemTarget toUse, EnumFacing direction, BlockPos target, boolean walkInto) {
         this(toUse, direction, target, Input.CLICK_RIGHT, walkInto, true);
     }
 
@@ -91,22 +92,22 @@ public class InteractWithBlockTask extends Task {
     }
 
     public InteractWithBlockTask(ItemTarget toUse, BlockPos target, boolean walkInto) {
-        this(toUse, target, walkInto, Vec3i.ZERO);
+        this(toUse, target, walkInto, Vec3i.NULL_VECTOR);
     }
 
     public InteractWithBlockTask(ItemTarget toUse, BlockPos target) {
         this(toUse, target, false);
     }
 
-    public InteractWithBlockTask(Item toUse, Direction direction, BlockPos target, Input interactInput, boolean walkInto, Vec3i interactOffset, boolean shiftClick) {
+    public InteractWithBlockTask(Item toUse, EnumFacing direction, BlockPos target, Input interactInput, boolean walkInto, Vec3i interactOffset, boolean shiftClick) {
         this(new ItemTarget(toUse, 1), direction, target, interactInput, walkInto, interactOffset, shiftClick);
     }
 
-    public InteractWithBlockTask(Item toUse, Direction direction, BlockPos target, Input interactInput, boolean walkInto, boolean shiftClick) {
+    public InteractWithBlockTask(Item toUse, EnumFacing direction, BlockPos target, Input interactInput, boolean walkInto, boolean shiftClick) {
         this(new ItemTarget(toUse, 1), direction, target, interactInput, walkInto, shiftClick);
     }
 
-    public InteractWithBlockTask(Item toUse, Direction direction, BlockPos target, boolean walkInto) {
+    public InteractWithBlockTask(Item toUse, EnumFacing direction, BlockPos target, boolean walkInto) {
         this(new ItemTarget(toUse, 1), direction, target, walkInto);
     }
 
@@ -139,11 +140,11 @@ public class InteractWithBlockTask extends Task {
         };
     }
 
-    private static Goal createGoalForInteract(BlockPos target, int reachDistance, Direction interactSide, Vec3i interactOffset, boolean walkInto) {
+    private static Goal createGoalForInteract(BlockPos target, int reachDistance, EnumFacing interactSide, Vec3i interactOffset, boolean walkInto) {
 
         boolean sideMatters = interactSide != null;
         if (sideMatters) {
-            Vec3i offs = interactSide.getVector();
+            Vec3i offs = interactSide.getDirectionVec();
             if (offs.getY() == -1) {
                 // If we're below, place ourselves two blocks below.
                 offs = offs.down();
@@ -181,7 +182,7 @@ public class InteractWithBlockTask extends Task {
 
     // This happens all the time in mineshafts and swamps/jungles
     private BlockPos stuckInBlock(BaritonePlus mod) {
-        BlockPos p = mod.getPlayer().getBlockPos();
+        BlockPos p = mod.getPlayer().getPosition();
         if (isAnnoying(mod, p)) return p;
         if (isAnnoying(mod, p.up())) return p.up();
         BlockPos[] toCheck = generateSides(p);
@@ -254,7 +255,7 @@ public class InteractWithBlockTask extends Task {
 
         _cachedClickStatus = ClickResponse.CANT_REACH;
 
-        // Get our use item first
+        // Get our use item left
         if (!ItemTarget.nullOrEmpty(_toUse) && !StorageHelper.itemTargetsMet(mod, _toUse)) {
             _moveChecker.reset();
             _clickTimer.reset();

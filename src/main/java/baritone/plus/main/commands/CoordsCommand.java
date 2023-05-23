@@ -12,7 +12,7 @@ public class CoordsCommand extends PlusCommand {
 
     @Override
     protected void call(BaritonePlus mod, String label, IArgConsumer args) {
-        mod.log("CURRENT COORDINATES: " + mod.getPlayer().getBlockPos().toShortString() + " (Current dimension: " + WorldHelper.getCurrentDimension() + ")");
+        mod.log("CURRENT COORDINATES: " + mod.getPlayer().getPosition().toShortString() + " (Current dimension: " + WorldHelper.getCurrentDimension() + ")");
         finish();
     }
 }

@@ -13,7 +13,7 @@ import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -59,7 +59,7 @@ public class ReplaceBlocksTask extends Task {
 
         //_forceReplace.clear();
         _blockBrokenSubscription = EventBus.subscribe(BlockBrokenEvent.class, evt -> {
-            if (evt.player.equals(MinecraftClient.getInstance().player)) {
+            if (evt.player.equals(Minecraft.getMinecraft().player)) {
                 if (isWithinRange(evt.blockPos)) {
                     boolean wasAReplacable = ArrayUtils.contains(_toFind, evt.blockState.getBlock());
                     if (wasAReplacable) {
