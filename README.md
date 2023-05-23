@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/cabaletta/baritone/tree/1.12.2"><img src="https://img.shields.io/badge/MC-1.12.2-brightgreen.svg" alt="Minecraft"/></a>
-  <a href="https://github.com/cabaletta/baritone/tree/1.19.4"><img src="https://img.shields.io/badge/MC-1.19.4-brightgreen.svg" alt="Minecraft"/></a>
-  <a href="https://github.com/cabaletta/baritone/tree/1.20"><img src="https://img.shields.io/badge/MC-1.20-brightgreen.svg" alt="Minecraft"/></a>
+  <a href="https://github.com/RemainingToast/BaritonePlus/tree/1.12.2"><img src="https://img.shields.io/badge/MC-1.12.2-brightgreen.svg" alt="Minecraft"/></a>
+  <a href="https://github.com/RemainingToast/BaritonePlus/tree/1.19.4"><img src="https://img.shields.io/badge/MC-1.19.4-brightgreen.svg" alt="Minecraft"/></a>
+  <a href="https://github.com/RemainingToast/BaritonePlus/tree/1.20"><img src="https://img.shields.io/badge/MC-1.20-brightgreen.svg" alt="Minecraft"/></a>
 </p>
 
 A Minecraft "Task"finder Bot.
