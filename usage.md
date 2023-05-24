@@ -1,6 +1,6 @@
 # Usage Guide
 
-Bartione+ has a variety of commands, settings and modes. This will give users an overview on how to use the bot.
+Bartione+ has a variety of plusCommands, settings and modes. This will give users an overview on how to use the bot.
 
 Keep in mind this project is still in rapid development. A lot of features are placeholders and a work in progress.
 
@@ -8,19 +8,19 @@ Keep in mind this project is still in rapid development. A lot of features are p
 
 Commands are prefixed with `@`. Here's a list along with their functions:
 
-| command | description | examples |
+| plusCommand | description | examples |
 | --------| ------------|---|
-| `help` | Lists all commands | |
+| `help` | Lists all plusCommands | |
 | `coords` | Prints the bot's current coordinates. This is here in cases where the `F3` menu gets too crowded.|
 | `equip {material}` or `equip [items...]` | Equips a `material` armor set or `[items...]`. If not in the bot's inventory, bot will obtain it. | `@equip [diamond_chestplate, gold_leggings]` `@equip netherite`|
-| `follow {player = <you>}` | Follow a player. If sent via `/msg`, will follow the player who sent the command. | `@follow TacoTechnica` `/msg Bot follow` |
+| `follow {player = <you>}` | Follow a player. If sent via `/msg`, will follow the player who sent the plusCommand. | `@follow TacoTechnica` `/msg Bot follow` |
 | `hero` | Kills all hostile mobs | `@hero` |
 | `food {amount}` | Collects `amount` units of food (1 unit = 1/2 drumstick). Collects from various sources (animals, crops) | `@food 20` |
 | `gamer` | Beats the game epic style | `@gamer` |
 | `get [items...]` | Gets all items in `[items...]`. Can either do one item or pass a comma-separated list to get multiple items. Not every resource is get-able. | `@get diamond 3` `@get [cobblestone 40, wooden_door, glass 4]` |
 | `list` | Prints a list of all get-able items | |
-| `give {player = <you>} {item} {quantity=1}` | Gives `player` `quantity` units of `item`, getting said items if the bot doesn't have them. If sent via `/msg`, will follow the player who sent the command. | `/msg Bot give iron_pickaxe` |
-| `deposit [items... = <Everything>]` | Deposit a list of items in the nearest container, making a chest if we can't find one. Will only deposit items present in the bot's inventory (at the time of running this command). Leave out the list to deposit every non-tool/armor item in the bot's inventory. Useful with command chaining. | `@deposit diamond 3` `@deposit [cobblestone 1000, raw_iron 100]` `@deposit` |
+| `give {player = <you>} {item} {quantity=1}` | Gives `player` `quantity` units of `item`, getting said items if the bot doesn't have them. If sent via `/msg`, will follow the player who sent the plusCommand. | `/msg Bot give iron_pickaxe` |
+| `deposit [items... = <Everything>]` | Deposit a list of items in the nearest container, making a chest if we can't find one. Will only deposit items present in the bot's inventory (at the time of running this plusCommand). Leave out the list to deposit every non-tool/armor item in the bot's inventory. Useful with plusCommand chaining. | `@deposit diamond 3` `@deposit [cobblestone 1000, raw_iron 100]` `@deposit` |
 | `stash {x0} {y0} {z0} {x1} {y0} {z1} [items... = <Everything>]` | Same as `@deposit`, but you specify an area from `(x0, y0, z0)` to `(x1, y1, z1)` where the bot stores the item list (these coordinates being a chest stash). Just like `@deposit`, providing no items simply deposits everything in the bots inventory. | `@stash 100 64 100 200 70 100 diamond 3` |
 | `goto {x} {y} {z} {dimension=<current>}` | Goes to (`x`,`y`, `z`) in a given `dimension`. Travels to `dimension` if not there already. Can also omit coordinates to just go to a dimension. Passing 2 values as coordinates goes to X Z coordinates instead. | `@goto 100 64 100 overworld` `@goto nether` `@goto 100 100` |
 | `elytra [x] [z]` | Goes to (`[x]`, `[z]`) using an elytra, it will do the same thing as `goto [x] [z]` if we don't have one| `@elytra 1000 500` |
@@ -28,21 +28,21 @@ Commands are prefixed with `@`. Here's a list along with their functions:
 | `locate_structure {structure_type}` | Attempts to locate a `structure_type` structure. Can find strongholds or desert temples. | `@locate_structure stronghold`, `@locate_structure desert_temple` |
 | `reload_settings` | Reloads the local settings file. Run this every time you want your settings to be updated. | |
 | `gamma {brightness=1}` | Sets the game's gamma. Useful for testing. 0 is "Moody" and 1 is "Bright", and you can go beyond to enable fullbright. | `@gamma 1000` |
-| `status` | Prints the status of the currently executing command. Mostly useful when running through `/msg`. | |
-| `stop` | Forcefully stops the currently running command. The shortcut `CTRL+K` also achieves this. | |
-| `test {testname}` | Runs a "test" command. These vary, and will be described below. | |
+| `status` | Prints the status of the currently executing plusCommand. Mostly useful when running through `/msg`. | |
+| `stop` | Forcefully stops the currently running plusCommand. The shortcut `CTRL+K` also achieves this. | |
+| `test {testname}` | Runs a "test" plusCommand. These vary, and will be described below. | |
 
 ### Command chaining
 
-Execute consecutve commands by separating them with `;`
+Execute consecutve plusCommands by separating them with `;`
 
 `@get iron_axe;get log 100;goto 0 0;give Player log 100`
 
 will get an iron axe, then get 100 logs, then go to `x=0 z=0` and then give 100 logs to a player with the name `Player`
 
-### Notable test commands
+### Notable test plusCommands
 
-Test commands are temporary/only exist as an experiment, but some of these might be interesting.
+Test plusCommands are temporary/only exist as an experiment, but some of these might be interesting.
 For example, `@test terminate` runs the terminator.
 Here's a list of some highlights.
 
@@ -63,25 +63,25 @@ Here's a list of some highlights.
 After running the game with the mod once, a folder called `altoclef` should appear in your `.minecraft` directory. This
 contains `altoclef` related settings and configurations.
 
-With regards to the `altoclef_settings.json` file
+With regards to the `settings.json` file
 Check [Settings.java](https://github.com/gaucho-matrero/altoclef/blob/main/src/main/java/adris/altoclef/Settings.java)
 
 After modifying your local settings, run `@reload_settings` to apply your changes in-game.
 
 ## /msg: The Butler System
 
-This bot lets other players run commands on the bot via server messages. When sending a command via `/msg` you may omit
+This bot lets other players run plusCommands on the bot via server messages. When sending a plusCommand via `/msg` you may omit
 the `@`.
 
-You'll have to append each player's name to a file called `altoclef_butler_whitelist.txt`
-located in your `.minecraft/altoclef` directory. Make sure your name is not found in `altoclef_butler_blacklist.txt`
+You'll have to append each player's name to a file called `butler_whitelist.txt`
+located in your `.minecraft/altoclef` directory. Make sure your name is not found in `butler_blacklist.txt`
 too.
 
 ### Disabling/Enabling Blacklist/Whitelist
 
 To toggle whitelist/blacklist, check the `useButlerBlacklist` and `useButlerWhitelist` settings.
 
-**WARNING:** If you set `useButlerWhitelist` to false, ALL PLAYERS will be able to send commands to the bot. Be extra
+**WARNING:** If you set `useButlerWhitelist` to false, ALL PLAYERS will be able to send plusCommands to the bot. Be extra
 careful with this one.
 
 ### Expect delayed messages
@@ -100,4 +100,4 @@ picked up by altoclef, you can append the server's custom whisper format in the 
 like `[Player -> me] message` the format string is `\[{from} -> {to}\] {message}`
 
 **WARNING:** Be careful with this one as well, as the bot will trust these formats for ALL non-player chat messages.
-Messing up the format's ordering can let unauthorized people execute bot commands.
+Messing up the format's ordering can let unauthorized people execute bot plusCommands.
