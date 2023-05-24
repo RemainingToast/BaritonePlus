@@ -14,8 +14,6 @@ A Minecraft "Task"finder Bot.
 
 Baritone+ is an "extension" of the Baritone mod, built on top of Alto Clef, providing extended functionality to complete many diverse Minecraft tasks.
 
-[**Baritone Discord Server**](http://discord.gg/s6fRBAUpmr)
-
 ## Current Capabilities (out-dated)
 
 - Obtain 400+ Items from a fresh survival world, like diamond armor, cake, and nether brick stairs
@@ -31,11 +29,11 @@ Baritone+ is an "extension" of the Baritone mod, built on top of Alto Clef, prov
 
 ## Quick Download
 
-| Forge                                                                      | Fabric                                                                      |
-|----------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| [1.12.2 Forge](https://github.com/RemainingToast/BaritonePlus/tree/1.12.2) |                                                                             |
-|                                                                            | [1.19.4 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.19.4) |
-|                                                                            | [1.20 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.20)     |
+| Forge                                                                          | Fabric                                                                                      |
+|--------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| ~~[1.12.2 Forge](https://github.com/RemainingToast/BaritonePlus/tree/1.12.2)~~ |                                                                                             |
+|                                                                                | [1.19.4 Fabric](https://github.com/RemainingToast/BaritonePlus/releases/tag/v1.19.4-beta.4) |
+|                                                                                | ~~[1.20 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.20)~~                 |
 
 
 *For any other version, try ViaFabricPlus or ViaForge*

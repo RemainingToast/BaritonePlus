@@ -1,14 +1,13 @@
 plugins {
     id "maven-publish"
     id "fabric-loom" version "1.1-SNAPSHOT"
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "io.freefair.lombok" version "8.0.1"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = "${project.minecraft_version}-${project.mod_version}"
 group = project.maven_group
 
 repositories {
@@ -26,24 +25,19 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'org.projectlombok:lombok:1.18.22'
-
-    //to change the versions see the gradle.properties file
+    /* @see the gradle.properties file */
     minecraft("com.mojang:minecraft:${project.minecraft_version}")
     mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
     modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
     // Jackson JSON
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0-rc2'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2'
-
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0-rc2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     shadow('com.fasterxml.jackson.core:jackson-core:2.15.0-rc2')
     shadow('com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2')
     shadow('com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2')
@@ -54,14 +48,16 @@ dependencies {
 
     // Baritone Plus
     implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
-    shadow('com.theokanning.openai-gpt3-java:service:0.12.0')
-    implementation 'org.reflections:reflections:0.9.12'
-    shadow('org.reflections:reflections:0.9.12')
+    implementation 'org.reflections:reflections:0.10.2'
     implementation 'com.github.umjammer:jlayer:1.0.2'
+    shadow('com.theokanning.openai-gpt3-java:service:0.12.0')
+    shadow('org.reflections:reflections:0.9.12')
     shadow('com.github.umjammer:jlayer:1.0.2')
 }
+
 shadowJar {
     configurations = [project.configurations.shadow]
+    archivesBaseName = project.archives_base_name
 }
 
 remapJar {
@@ -70,12 +66,11 @@ remapJar {
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.mod_version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version
+    filesMatching("fabric.mod.json") {
         duplicatesStrategy DuplicatesStrategy.EXCLUDE
+        expand "version": project.mod_version
     }
 
     from(sourceSets.main.resources.srcDirs) {
@@ -84,17 +79,11 @@ processResources {
     }
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.incremental = true
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
@@ -103,11 +92,15 @@ jar {
     from "LICENSE"
 }
 
-// configure the maven publication
+// TODO FIX - System.getenv not working? ¯\_(ツ)_/¯
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
+            // (Baritone+) is not a valid Maven identifier ([A-Za-z0-9_\-.]+)
+            artifactId = project.name.replace("+", "Plus")
+            artifact(shadowJar) {
+                builtBy shadowJar
+            }
             artifact(remapJar) {
                 builtBy remapJar
             }
@@ -117,9 +110,19 @@ publishing {
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+        maven {
+            name = "toast-maven"
+            url = System.getenv("MAVEN_URL")
+
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_TOKEN")
+            }
+
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
     }
 }

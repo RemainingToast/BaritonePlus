@@ -7,7 +7,7 @@
   "authors": [
     "RemainingToast",
     "Baritone",
-    "AltoClef"
+    "BaritonePlus"
   ],
   "contact": {
     "homepage": "https://toastmc.dev",
@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "adris.altoclef.AltoClef"
+      "baritone.plus.launch.BaritonePlusModInit"
     ]
   },
   "mixins": [
