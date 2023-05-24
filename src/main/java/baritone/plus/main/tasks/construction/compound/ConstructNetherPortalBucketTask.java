@@ -159,7 +159,7 @@ public class ConstructNetherPortalBucketTask extends Task {
             }
         }
         if (_refreshTimer.elapsed()) {
-            Debug.logMessage("Duct tape: Refreshing inventory again just in case");
+//            Debug.logMessage("Duct tape: Refreshing inventory again just in case");
             _refreshTimer.reset();
             mod.getSlotHandler().refreshInventory();
         }

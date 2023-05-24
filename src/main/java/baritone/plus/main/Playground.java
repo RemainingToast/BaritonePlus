@@ -82,7 +82,8 @@ public class Playground {
     }
 
     public static void IDLE_TEST_INIT_FUNCTION(BaritonePlus mod) {
-        printAllTaskClasses();
+        /*printAllTaskClasses();*/
+
         // Test code here
 
         // Print all uncatalogued resources as well as resources that don't have a corresponding item

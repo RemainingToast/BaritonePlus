@@ -1,12 +1,13 @@
 plugins {
     id "maven-publish"
     id "fabric-loom" version "1.1-SNAPSHOT"
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "io.freefair.lombok" version "8.0.1"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
-version = project.mod_version
+version = "${project.minecraft_version}-${project.mod_version}"
 group = project.maven_group
 
 repositories {
@@ -24,9 +25,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'org.projectlombok:lombok:1.18.22'
-
     /* @see the gradle.properties file */
     minecraft("com.mojang:minecraft:${project.minecraft_version}")
     mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
@@ -40,6 +38,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0-rc2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
+    shadow('com.fasterxml.jackson.core:jackson-core:2.15.0-rc2')
+    shadow('com.fasterxml.jackson.core:jackson-annotations:2.15.0-rc2')
+    shadow('com.fasterxml.jackson.core:jackson-databind:2.15.0-rc2')
 
     // Baritone
     modImplementation "cabaletta:baritone-unoptimized-fabric:1.19.4-beta1"
@@ -49,8 +50,13 @@ dependencies {
     implementation 'com.theokanning.openai-gpt3-java:service:0.12.0'
     implementation 'org.reflections:reflections:0.10.2'
     implementation 'com.github.umjammer:jlayer:1.0.2'
+    shadow('com.theokanning.openai-gpt3-java:service:0.12.0')
+    shadow('org.reflections:reflections:0.9.12')
+    shadow('com.github.umjammer:jlayer:1.0.2')
 }
+
 shadowJar {
+    configurations = [project.configurations.shadow]
     archivesBaseName = project.archives_base_name
 }
 
@@ -60,12 +66,11 @@ remapJar {
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.mod_version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version
+    filesMatching("fabric.mod.json") {
         duplicatesStrategy DuplicatesStrategy.EXCLUDE
+        expand "version": project.mod_version
     }
 
     from(sourceSets.main.resources.srcDirs) {

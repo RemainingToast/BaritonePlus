@@ -247,9 +247,9 @@ public class SlotHandler {
         if (MinecraftClient.getInstance().player == null)
             return;
         for (int i = 0; i < MinecraftClient.getInstance().player.getInventory().main.size(); ++i) {
-            Slot slot = Slot.getFromCurrentScreenInventory(i);
+            /*Slot slot = Slot.getFromCurrentScreenInventory(i);
             clickSlotForce(slot, 0, SlotActionType.PICKUP);
-            clickSlotForce(slot, 0, SlotActionType.PICKUP);
+            clickSlotForce(slot, 0, SlotActionType.PICKUP);*/
         }
     }
 }
