@@ -22,6 +22,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.io.FileUtils;
@@ -83,7 +85,7 @@ public class SchematicBuildTask extends Task {
     private Task _resourceTask;
 
     public SchematicBuildTask(final String schematicFileName) {
-        this(schematicFileName, MinecraftClient.getInstance().player.getBlockPos());
+        this(schematicFileName, Objects.requireNonNull(MinecraftClient.getInstance().player).getBlockPos());
     }
 
     public SchematicBuildTask(final String schematicFileName, final BlockPos startPos) {
@@ -398,12 +400,14 @@ public class SchematicBuildTask extends Task {
             mod.getClientBaritoneSettings().breakFromAbove.value = true;
 
             // Ignore Blocks Baritone Struggles With - Start
-            // TODO - Add *ALL* Problematic Blocks
+            // Add *ALL* Problematic Blocks
             mod.getClientBaritoneSettings().buildIgnoreProperties.value.addAll(List.of(
                     "facing", "half", "shape", "waterlogged", "open", "powered", "occupied", "part", "type"
             ));
 
-            mod.getClientBaritoneSettings().buildSkipBlocks.value.add(Blocks.CHEST);
+            mod.getClientBaritoneSettings().buildSkipBlocks.value.addAll(collectProblematicBlocks());
+
+            /*mod.getClientBaritoneSettings().buildSkipBlocks.value.add(Blocks.CHEST);
             mod.getClientBaritoneSettings().buildSkipBlocks.value.add(Blocks.CHAIN);
             mod.getClientBaritoneSettings().buildSkipBlocks.value.add(Blocks.LANTERN);
             mod.getClientBaritoneSettings().buildSkipBlocks.value.addAll(List.of(
@@ -416,8 +420,9 @@ public class SchematicBuildTask extends Task {
 
             mod.getClientBaritoneSettings().buildSkipBlocks.value.addAll(List.of(
                     ItemHelper.itemsToBlocks(ItemHelper.WOOD_DOOR)
-            ));
+            ));*/
 
+            // Unobtainables
             var unobtainable = List.of(
                     ItemHelper.itemsToBlocks(
                             ItemHelper.getUnobtainables().toArray(Item[]::new)
@@ -469,6 +474,35 @@ public class SchematicBuildTask extends Task {
 
             mod.getClientBaritoneSettings().buildValidSubstitutes.value =
                     mod.getClientBaritoneSettings().buildValidSubstitutes.defaultValue;
+        }
+
+        public List<Block> collectProblematicBlocks() {
+            List<Block> problematicBlocks = new ArrayList<>();
+
+            for (Identifier identifier : Registries.BLOCK.getIds()) {
+                Block block = Registries.BLOCK.get(identifier);
+                BlockState defaultState = block.getDefaultState();
+
+                // Check for specific conditions that define a block as problematic
+                if (hasProperty(defaultState) || isSpecialBlock(block)) {
+                    problematicBlocks.add(block);
+                }
+            }
+
+            return problematicBlocks;
+        }
+
+        private boolean isSpecialBlock(Block block) {
+            return block instanceof net.minecraft.block.StairsBlock
+                    || block instanceof net.minecraft.block.ChestBlock
+                    || block instanceof net.minecraft.block.ChainBlock
+                    || block instanceof net.minecraft.block.LanternBlock
+                    || block instanceof net.minecraft.block.TrapdoorBlock
+                    || block instanceof net.minecraft.block.DoorBlock;
+        }
+
+        private static boolean hasProperty(BlockState state) {
+            return state.getProperties().isEmpty();
         }
     }
 }

@@ -39,7 +39,7 @@ public abstract class PlusCommand extends Command {
     }
 
     @Override
-    public Stream<String> tabComplete(String s, IArgConsumer args) {
+    public Stream<String> tabComplete(String s, IArgConsumer args) throws CommandException {
         return Stream.empty();
     }
 

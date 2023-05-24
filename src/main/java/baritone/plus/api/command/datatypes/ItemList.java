@@ -13,9 +13,16 @@ public class ItemList {
         this.items = items;
     }
 
+    // TODO - Quantities don't work?
     public static ItemList parseRemainder(String line) throws CommandException {
         line = line.trim();
-        if (line.startsWith("[") && line.endsWith("]")) {
+        if (line.contains(":")) {
+            var split = line.split(":");
+            if (split.length > 1) {
+                line = split[1];
+            }
+        }
+        if (line.contains(",")/*line.startsWith("[") && line.endsWith("]")*/) {
             line = line.substring(1, line.length() - 1);
             String[] parts = line.split(",");
             HashMap<String, Integer> items = new HashMap<>();

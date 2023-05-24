@@ -39,13 +39,39 @@ import java.util.stream.Stream;
 public class SmeltInFurnaceTask extends ResourceTask {
     private final SmeltTarget[] _targets;
 
-    private final DoSmeltInFurnaceTask _doTask;
+    private DoSmeltInFurnaceTask _doTask;
 
     public SmeltInFurnaceTask(SmeltTarget[] targets) {
         super(extractItemTargets(targets));
         _targets = targets;
-        // TODO: Do them in order.
         _doTask = new DoSmeltInFurnaceTask(targets[0]);
+
+        // Process tasks until all are finished
+        while (!_doTask.isFinished(BaritonePlus.INSTANCE)) {
+            // Process the current task
+            // ...
+            // When the task finishes, move on to the next task
+            moveOnToNextTask();
+        }
+    }
+
+    private void moveOnToNextTask() {
+        // Find the index of the current task
+        int currentIndex = -1;
+        for (int i = 0; i < _targets.length; i++) {
+            if (_targets[i] == _doTask._target) {
+                currentIndex = i;
+                break;
+            }
+        }
+
+        // If the current task is found and there is a next task, create a new DoSmeltInFurnaceTask instance
+        if (currentIndex >= 0 && currentIndex + 1 < _targets.length) {
+            _doTask = new DoSmeltInFurnaceTask(_targets[currentIndex + 1]);
+        } else {
+            // All tasks finished
+            _doTask = null;
+        }
     }
 
     public SmeltInFurnaceTask(SmeltTarget target) {

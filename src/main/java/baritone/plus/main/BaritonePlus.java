@@ -43,8 +43,7 @@ public class BaritonePlus {
 
     public static BaritonePlus INSTANCE;
 
-    // Static access to altoclef
-    private static final Queue<Consumer<BaritonePlus>> _postInitQueue = new ArrayDeque<>();
+    public static final Queue<Consumer<BaritonePlus>> _postInitQueue = new ArrayDeque<>();
 
     // Central Managers
 //    private static CommandExecutor _commandExecutor;

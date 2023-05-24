@@ -360,7 +360,7 @@ public class ItemHelper {
     public static boolean canStackTogether(ItemStack from, ItemStack to) {
         if (to.isEmpty() && from.getCount() <= from.getMaxCount())
             return true;
-        return to.getItem().equals(from.getItem()) && (from.getCount() + to.getCount() < to.getMaxCount());
+        return to.getItem().equals(from.getItem()) && (from.getCount() + to.getCount() <= to.getMaxCount());
     }
 
     private static Map<Item, Integer> getFuelTimeMap() {
@@ -391,6 +391,10 @@ public class ItemHelper {
         return getFuelTimeMap().containsKey(item);
     }
 
+    public static boolean isRawFood(Item item) {
+        return _cookableFoodMap.containsKey(item);
+    }
+
     public static List<Item> getUnobtainables() {
         var unobtainable = new ArrayList<Item>();
         for (Identifier id : Registries.ITEM.getIds()) {
@@ -402,8 +406,12 @@ public class ItemHelper {
         return unobtainable;
     }
 
-    public boolean isRawFood(Item item) {
-        return _cookableFoodMap.containsKey(item);
+    public static boolean isObtainable(Identifier id) {
+        return isObtainable(Registries.ITEM.get(id));
+    }
+
+    public static boolean isObtainable(Item item) {
+        return !getUnobtainables().contains(item);
     }
 
     public static class ColorfulItems {

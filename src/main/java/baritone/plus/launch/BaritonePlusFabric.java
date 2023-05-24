@@ -5,7 +5,7 @@ import baritone.plus.api.event.events.TitleScreenEntryEvent;
 import baritone.plus.main.BaritonePlus;
 import net.fabricmc.api.ModInitializer;
 
-public class BaritonePlusModInit implements ModInitializer {
+public class BaritonePlusFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         // This code runs as soon as Minecraft is in a mod-load-ready state.

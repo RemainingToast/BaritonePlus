@@ -1,18 +1,20 @@
 package baritone.plus.main;
 
 import baritone.plus.api.command.PlusCommand;
-import baritone.plus.brain.commands.BrainPlusCommand;
 import baritone.plus.main.commands.*;
 
 import java.util.HashMap;
 
 public class PlusCommands {
     private final HashMap<String, PlusCommand> _commandSheet = new HashMap<>();
+
+    // TODO - Reflection.
     public PlusCommands() {
         // List commands here
         registerNewCommand(
                 new AnarchyCommand(),
-                new BrainPlusCommand(),
+                new BuildPlusCommand(),
+//                new BrainPlusCommand(),
 //                new HelpPlusCommand(),
                 new GetCommand(),
                 new FollowCommand(),

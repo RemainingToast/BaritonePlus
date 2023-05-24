@@ -33,6 +33,7 @@ public class MoveItemToSlotTask extends Task {
 
     }
 
+    // TODO - use shift click where possible
     @Override
     protected Task onTick(BaritonePlus mod) {
         if (mod.getSlotHandler().canDoSlotAction()) {
