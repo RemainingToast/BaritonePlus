@@ -29,11 +29,11 @@ Baritone+ is an "extension" of the Baritone mod, built on top of Alto Clef, prov
 
 ## Quick Download
 
-| Forge                                                                      | Fabric                                                                      |
-|----------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| [1.12.2 Forge](https://github.com/RemainingToast/BaritonePlus/tree/1.12.2) |                                                                             |
-|                                                                            | [1.19.4 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.19.4) |
-|                                                                            | [1.20 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.20)     |
+| Forge                                                                          | Fabric                                                                                      |
+|--------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| ~~[1.12.2 Forge](https://github.com/RemainingToast/BaritonePlus/tree/1.12.2)~~ |                                                                                             |
+|                                                                                | [1.19.4 Fabric](https://github.com/RemainingToast/BaritonePlus/releases/tag/v1.19.4-beta.4) |
+|                                                                                | ~~[1.20 Fabric](https://github.com/RemainingToast/BaritonePlus/tree/1.20)~~                 |
 
 
 *For any other version, try ViaFabricPlus or ViaForge*
