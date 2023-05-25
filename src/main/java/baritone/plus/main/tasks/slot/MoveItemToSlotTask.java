@@ -70,7 +70,7 @@ public class MoveItemToSlotTask extends Task {
                     Debug.logError("Called MoveItemToSlotTask when item/not enough item is available! valid items: " + StlHelper.toString(validItems, Item::getTranslationKey));
                     return null;
                 }
-                mod.getSlotHandler().clickSlot(toPlace.get(), 0, SlotActionType.PICKUP);
+                mod.getSlotHandler().clickSlot(toPlace.get(), 0, SlotActionType.QUICK_MOVE);
                 return null;
             }
 

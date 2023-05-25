@@ -244,12 +244,10 @@ public class SlotHandler {
     }
 
     public void refreshInventory() {
-        if (MinecraftClient.getInstance().player == null)
+        if (MinecraftClient.getInstance().player == null) {
             return;
-        for (int i = 0; i < MinecraftClient.getInstance().player.getInventory().main.size(); ++i) {
-            /*Slot slot = Slot.getFromCurrentScreenInventory(i);
-            clickSlotForce(slot, 0, SlotActionType.PICKUP);
-            clickSlotForce(slot, 0, SlotActionType.PICKUP);*/
         }
+
+        MinecraftClient.getInstance().player.getInventory().updateItems();
     }
 }

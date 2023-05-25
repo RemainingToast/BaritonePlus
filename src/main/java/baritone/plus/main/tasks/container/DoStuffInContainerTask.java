@@ -152,6 +152,7 @@ public abstract class DoStuffInContainerTask extends Task {
             mod.getSlotHandler().clickSlot(toMoveTo.get(), 0, SlotActionType.PICKUP);
             return null;
         }
+
         return _openTableTask;
         //return new GetToBlockTask(nearest, true);
     }
@@ -173,6 +174,7 @@ public abstract class DoStuffInContainerTask extends Task {
     protected void onStop(BaritonePlus mod, Task interruptTask) {
         mod.getBehaviour().pop();
         mod.getBlockTracker().stopTracking(_containerBlocks);
+        mod.getPlayer().closeScreen();
     }
 
     @Override

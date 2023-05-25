@@ -28,6 +28,7 @@ public enum NumberDatatype implements IDatatypeFor<Number> {
     }
 
     public Stream<String> tabComplete(IDatatypeContext ctx) throws CommandException {
+        // TODO FIX
         return ctx.getConsumer().hasAtMostOne() ? Stream.of(String.valueOf(new Random().nextInt(10, 64))) : Stream.empty();
     }
 }

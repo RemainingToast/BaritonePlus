@@ -2,6 +2,7 @@ package baritone.plus.main.tasks.container;
 
 import baritone.plus.api.tasks.Task;
 import baritone.plus.api.util.ItemTarget;
+import baritone.plus.api.util.MiningRequirement;
 import baritone.plus.api.util.RecipeTarget;
 import baritone.plus.api.util.helpers.ItemHelper;
 import baritone.plus.api.util.helpers.StorageHelper;
@@ -14,15 +15,17 @@ import baritone.plus.main.tasks.CraftGenericManuallyTask;
 import baritone.plus.main.tasks.CraftGenericWithRecipeBooksTask;
 import baritone.plus.main.tasks.CraftInInventoryTask;
 import baritone.plus.main.tasks.ResourceTask;
-import baritone.plus.main.tasks.construction.DestroyBlockTask;
 import baritone.plus.main.tasks.movement.PickupDroppedItemTask;
 import baritone.plus.main.tasks.movement.TimeoutWanderTask;
 import baritone.plus.main.tasks.resources.CollectRecipeCataloguedResourcesTask;
+import baritone.plus.main.tasks.resources.MineAndCollectTask;
 import baritone.plus.main.tasks.slot.EnsureFreeInventorySlotTask;
 import baritone.plus.main.tasks.slot.MoveInaccessibleItemToInventoryTask;
 import baritone.plus.main.tasks.slot.ReceiveCraftingOutputSlotTask;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -35,7 +38,6 @@ import java.util.*;
 /**
  * Crafts an item in a crafting table, obtaining and placing the table down if none was found.
  */
-// TODO - Should pick Crafting Table back up when complete
 public class CraftInTableTask extends ResourceTask {
 
     private final RecipeTarget[] _targets;
@@ -81,19 +83,23 @@ public class CraftInTableTask extends ResourceTask {
         if (!_craftTask.isFinished(mod)) {
             return _craftTask;
         }
+        StorageHelper.closeScreen();
         // Pickup Crafting Table when we finish
         Optional<BlockPos> _nearestTable = mod.getBlockTracker().getNearestTracking(Blocks.CRAFTING_TABLE);
         Optional<ItemEntity> _nearestDropped = mod.getEntityTracker().getClosestItemDrop(Items.CRAFTING_TABLE);
         if (!mod.getItemStorage().hasItem(Items.CRAFTING_TABLE)) {
-            setDebugState("Picking Crafting Table Backup.");
+            setDebugState("Picking up Crafting Table.");
             if (!mod.getItemStorage().hasEmptyInventorySlot()) {
                 return new EnsureFreeInventorySlotTask();
             }
-            if (_nearestTable.isPresent()
-                    && _nearestTable.get().isWithinDistance(mod.getPlayer().getPos(), 10)) {
-                return new DestroyBlockTask(_nearestTable.get());
+            if (_nearestTable.isPresent() &&
+                _nearestTable.get().isWithinDistance(mod.getPlayer().getPos(), 30)
+            ) {
+                return new MineAndCollectTask(new ItemTarget[] {
+                            new ItemTarget(Items.CRAFTING_TABLE, 1)
+                        }, MiningRequirement.HAND);
             } else if (_nearestDropped.isPresent()
-                    && _nearestDropped.get().distanceTo(mod.getPlayer()) <= 15
+                    && _nearestDropped.get().distanceTo(mod.getPlayer()) <= 30
             ) {
                 return new PickupDroppedItemTask(Items.CRAFTING_TABLE, 1);
             }
@@ -114,9 +120,8 @@ public class CraftInTableTask extends ResourceTask {
             // Try throwing away cursor slot if it's garbage
             garbage.ifPresent(slot -> mod.getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP));
             mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
-        } else {
-            StorageHelper.closeScreen();
         }
+        StorageHelper.closeScreen();
     }
 
     @Override
@@ -154,6 +159,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     private final CollectRecipeCataloguedResourcesTask _collectTask;
     private final TimerGame _craftResetTimer = new TimerGame(CRAFT_RESET_TIMER_BONUS_SECONDS);
     private int _craftCount;
+    private boolean _crafted;
 
     public DoCraftInTableTask(RecipeTarget[] targets, boolean collect, boolean ignoreUncataloguedSlots) {
         super(Blocks.CRAFTING_TABLE, new ItemTarget("crafting_table"));
@@ -182,10 +188,9 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
             // Try throwing away cursor slot if it's garbage
             garbage.ifPresent(slot -> mod.getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP));
             mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
-        } else {
-            StorageHelper.closeScreen();
         }
         _collectTask.reset();
+        StorageHelper.closeScreen();
     }
 
     @Override
@@ -201,9 +206,8 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
             // Try throwing away cursor slot if it's garbage
             garbage.ifPresent(slot -> mod.getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP));
             mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
-        } else {
-            StorageHelper.closeScreen();
         }
+        StorageHelper.closeScreen();
         super.onStop(mod, interruptTask);
         mod.getBehaviour().pop();
     }
@@ -286,6 +290,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     protected Task containerSubTask(BaritonePlus mod) {
         // Refresh crafting table Juuust in case
         _craftResetTimer.setInterval(mod.getModSettings().getContainerItemMoveDelay() * 10 + CRAFT_RESET_TIMER_BONUS_SECONDS);
+
         if (_craftResetTimer.elapsed()) {
             Debug.logMessage("Refreshing crafting table.");
             return new TimeoutWanderTask(5);
@@ -294,6 +299,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         for (RecipeTarget target : _targets) {
             if (mod.getItemStorage().getItemCount(target.getOutputItem()) >= target.getTargetCount())
                 continue;
+
             // No need to free, handled automatically I believe.
             setDebugState("Crafting");
 
@@ -303,19 +309,27 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         }
 
         setDebugState("DONE? Shouldn't be here");
+        _crafted = true;
         return null;
     }
 
     @Override
     public boolean isFinished(BaritonePlus mod) {
-        return _craftCount >= _targets.length;//_crafted;
+        var items = Arrays.stream(_targets)
+                .map(item -> new ItemTarget(
+                        item.getOutputItem(),
+                        item.getTargetCount()
+                )).toArray(ItemTarget[]::new);
+        return mod.getItemStorage().hasItem(items)
+                || _craftCount >= _targets.length
+                || _crafted;
     }
 
     @Override
     protected double getCostToMakeNew(BaritonePlus mod) {
         Optional<BlockPos> closestCraftingTable = mod.getBlockTracker().getNearestTracking(Blocks.CRAFTING_TABLE);
         if (closestCraftingTable.isPresent()) {
-            if (closestCraftingTable.get().isWithinDistance(mod.getPlayer().getPos(), 40)) {
+            if (closestCraftingTable.get().isWithinDistance(mod.getPlayer().getPos(), 50)) {
                 return Double.POSITIVE_INFINITY;
             }
         }
@@ -324,7 +338,20 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         if (axe || mod.getItemStorage().hasItem(ItemHelper.LOG) || mod.getItemStorage().getItemCount(ItemHelper.PLANKS) >= 4) {
             return 10;
         }
-        // TODO: If cached and the closest log is really far away, strike the price UP
+
+        // If cached and the closest log is really far away, strike the price UP
+        Block[] logBlocks = Arrays.stream(ItemHelper.LOG)
+                .filter(item -> item instanceof BlockItem)
+                .map(item -> ((BlockItem) item).getBlock())
+                .toArray(Block[]::new);
+
+        Optional<BlockPos> closestLog = mod.getBlockTracker().getNearestTracking(logBlocks);
+        if (closestLog.isPresent()) {
+            if (closestLog.get().getSquaredDistance(mod.getPlayer().getPos()) >= 100) {
+                return Double.POSITIVE_INFINITY;
+            }
+        }
+
         return 100;
     }
 

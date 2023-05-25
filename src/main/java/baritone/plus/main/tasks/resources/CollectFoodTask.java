@@ -64,7 +64,7 @@ public class CollectFoodTask extends Task {
     private static final CropTarget[] CROPS = new CropTarget[]{
             new CropTarget(Items.WHEAT, Blocks.WHEAT),
             new CropTarget(Items.CARROT, Blocks.CARROTS),
-            new CropTarget(Items.APPLE, Blocks.OAK_LEAVES)
+            /*new CropTarget(Items.APPLE, Blocks.OAK_LEAVES)*/
     };
 
     private final double _unitsNeeded;
@@ -303,6 +303,14 @@ public class CollectFoodTask extends Task {
             if (bestEntity != null) {
                 setDebugState("Killing " + bestEntity.getType().getTranslationKey());
                 _currentResourceTask = killTaskOrNull(bestEntity, bestRawFood);
+                return _currentResourceTask;
+            }
+
+            // Apples (separate from crops because they should have a lower priority than everything else cause they take long to collect)
+            Task applePickup = pickupBlockTaskOrNull(mod, Blocks.OAK_LEAVES, Items.APPLE, 144);
+            if (applePickup != null) {
+                setDebugState("Getting apples (no better foods are present)");
+                _currentResourceTask = applePickup;
                 return _currentResourceTask;
             }
 
