@@ -14,6 +14,8 @@ A Minecraft "Task"finder Bot.
 
 Baritone+ is an "extension" of the Baritone mod, built on top of Alto Clef, providing extended functionality to complete many diverse Minecraft tasks.
 
+[**Baritone+ Discord Server**](https://discord.gg/f84JhhsenS)
+
 ## Current Capabilities (out-dated)
 
 - Obtain 400+ Items from a fresh survival world, like diamond armor, cake, and nether brick stairs
