@@ -21,7 +21,7 @@ Baritone+ is an "extension" of the Baritone mod, built on top of Alto Clef, prov
 - Obtain 400+ Items from a fresh survival world, like diamond armor, cake, and nether brick stairs
 - Dodge mob projectiles and force field mobs away while accomplishing arbitrary tasks
 - Collect + smelt food from animals, hay, & crops
-- Receive Commands from chat whispers via /msg. Whitelist + Blacklist configurable (hereby dubbed the Butler System). Here's a [demo video](https://drive.google.com/file/d/1axVYYMJ5VjmVHaWlCifFHTwiXlFssOUc/view?usp=sharing)
+- ~~Receive Commands from chat whispers via /msg. Whitelist + Blacklist configurable (hereby dubbed the Butler System). Here's a [demo video](https://drive.google.com/file/d/1axVYYMJ5VjmVHaWlCifFHTwiXlFssOUc/view?usp=sharing)~~
 - Simple config file that can be reloaded via Command (check .minecraft directory)
 - Beat the entire game on its own (no user input.)
 - Print the entire bee movie script with signs in a straight line, automatically collecting signs + bridging materials
