@@ -7,6 +7,7 @@ import baritone.plus.api.util.ItemTarget;
 import baritone.plus.api.util.helpers.ItemHelper;
 import baritone.plus.api.util.helpers.StorageHelper;
 import baritone.plus.api.util.progresscheck.MovementProgressChecker;
+import baritone.plus.api.util.schematic.SchematicReader;
 import baritone.plus.api.util.time.TimerGame;
 import baritone.plus.main.BaritonePlus;
 import baritone.plus.main.Debug;
@@ -134,6 +135,8 @@ public class SchematicBuildTask extends Task {
         }
 
         overrideMissing();
+
+        /*SchematicReader.test(schematicFile);*/
 
         if (!isNull(schematicSize) && builder.isFromAltoclef() && !this.addedAvoidance) {
             this.bounds = new CubeBounds(mod.getPlayer().getBlockPos(), this.schematicSize.getX(), this.schematicSize.getY(), this.schematicSize.getZ());
@@ -394,7 +397,7 @@ public class SchematicBuildTask extends Task {
         protected void onStart() {
             mod.getClientBaritoneSettings().allowParkour.value = true;
             mod.getClientBaritoneSettings().allowParkourAscend.value = true;
-            mod.getClientBaritoneSettings().buildInLayers.value = false;
+            mod.getClientBaritoneSettings().buildInLayers.value = true;
             mod.getClientBaritoneSettings().buildIgnoreDirection.value = false;
             mod.getClientBaritoneSettings().buildIgnoreExisting.value = true;
             mod.getClientBaritoneSettings().breakFromAbove.value = true;
